@@ -1,57 +1,79 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.Grid
 {
     [RequireComponent(typeof(BoxCollider))]
     public class GridVisualizer : MonoBehaviour
     {
-        private const float InnerRadius = HexRadius * 0.866025404f;
         private const float HexRadius = 1f;
-        [SerializeField] private Vector2Int _gridSize = new Vector2Int(24, 24);
+        private const float InnerRadius = HexRadius * 0.866025404f;
+
+        [SerializeField] private Vector2Int gridSize = new(24, 24);
+        [SerializeField] private Texture2D noise;
+        [SerializeField] private float noiseScale = 1f;
+
         private BoxCollider _collider;
-        
+
         private void OnDrawGizmos()
         {
-            if (_collider == null) _collider = GetComponent<BoxCollider>();
+            if (_collider == null)
+                _collider = GetComponent<BoxCollider>();
+
             Gizmos.color = Color.yellow;
-            for (int x = 0; x < _gridSize.x; x++)
+
+            for (var y = 0; y < gridSize.y; y++)
             {
-                for (int y = 0; y < _gridSize.y; y++)
+                for (var x = 0; x < gridSize.x; x++)
                 {
-                    var cellPosition = GetCellPosition(x, y);
-                    Gizmos.DrawSphere(cellPosition, 0.1f);
-                    Gizmos.DrawLine(GetCellCorner(cellPosition, 0), GetCellCorner(cellPosition, 1));
-                    Gizmos.DrawLine(GetCellCorner(cellPosition, 1), GetCellCorner(cellPosition, 2));
-                    Gizmos.DrawLine(GetCellCorner(cellPosition, 2), GetCellCorner(cellPosition, 3));
-                    Gizmos.DrawLine(GetCellCorner(cellPosition, 3), GetCellCorner(cellPosition, 4));
-                    Gizmos.DrawLine(GetCellCorner(cellPosition, 4), GetCellCorner(cellPosition, 5));
-                    Gizmos.DrawLine(GetCellCorner(cellPosition, 5), GetCellCorner(cellPosition, 0));
+                    var center = GetCellPosition(x, y);
+                    Gizmos.DrawSphere(center, 0.05f);
+                    
+                    for (int i = 0; i < 6; i++)
+                    {
+                        var a = GetSharedCornerPosition(x, y, i);
+                        var b = GetSharedCornerPosition(x, y, (i + 1) % 6);
+                        Gizmos.DrawLine(a, b);
+                    }
                 }
             }
 
-            _collider.size = new Vector3(_gridSize.x * InnerRadius * 2, 0, _gridSize.y * HexRadius * 1.5f);
-            
-        }
-
-        private Vector3 GetCellPosition(int x, int y)
-        {
-            return new Vector3((x + y * 0.5f - y / 2) * InnerRadius * 2, 0, y * HexRadius * 1.5f)
-                   - new Vector3(_gridSize.x * InnerRadius, 0, _gridSize.y * HexRadius / 1.5f)
-                   + new Vector3(HexRadius / 2f, 0, -InnerRadius * 1.5f);
-        }
-
-        private Vector3 GetCellCorner(Vector3 center, int cornerIndex)
-        {
-            return _corners[cornerIndex] + center;
+            _collider.size = new Vector3(gridSize.x * InnerRadius * 2.5f, 0.1f, gridSize.y * HexRadius * 2f);
         }
         
-        public static Vector3[] _corners = {
-            new Vector3(0f, 0f, HexRadius),
-            new Vector3(InnerRadius, 0f, 0.5f * HexRadius),
-            new Vector3(InnerRadius, 0f, -0.5f * HexRadius),
-            new Vector3(0f, 0f, -HexRadius),
-            new Vector3(-InnerRadius, 0f, -0.5f * HexRadius),
-            new Vector3(-InnerRadius, 0f, 0.5f * HexRadius)
-        };
+        private Vector3 GetCellPosition(int x, int y)
+        {
+            var offsetX = (y % 2 == 0) ? 0 : InnerRadius;
+            var posX = (x * InnerRadius * 2f) + offsetX;
+            var posY = y * HexRadius * 1.5f;
+
+            var centerX = (gridSize.x * InnerRadius * 2f) / 2f - (InnerRadius / 2f);
+            var centerY = (gridSize.y * HexRadius * 1.5f) / 2f - (HexRadius / 2f);
+
+            return new Vector3(posX - centerX, 0, posY - centerY);
+        }
+        
+        private Vector3 GetSharedCornerPosition(int x, int y, int cornerIndex)
+        {
+            var center = GetCellPosition(x, y);
+
+            var angleDeg = 60f * cornerIndex;
+            var angleRad = Mathf.Deg2Rad * angleDeg;
+            var corner = center + new Vector3(Mathf.Sin(angleRad) * HexRadius, 0, Mathf.Cos(angleRad) * HexRadius);
+            corner = Perturb(corner);
+            return corner;
+        }
+        
+        private Vector3 Perturb (Vector3 position) {
+            var sample = SampleNoise(position);
+            position.x += (sample.x * 2f - 1f) * noiseScale;
+            position.z += (sample.z * 2f - 1f) * noiseScale;;
+            return position;
+        }
+
+        private Vector4 SampleNoise(Vector3 position)
+        {
+            return noise.GetPixelBilinear(position.x, position.z);
+        }
     }
 }

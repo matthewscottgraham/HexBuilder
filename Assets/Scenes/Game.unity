@@ -266,6 +266,7 @@ GameObject:
   m_Component:
   - component: {fileID: 363354382}
   - component: {fileID: 363354381}
+  - component: {fileID: 363354384}
   - component: {fileID: 363354383}
   m_Layer: 0
   m_Name: Game
@@ -312,7 +313,31 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed3b6901d76c1402aac9a5f5d11ff3d1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Game::GridVisualizer
+  m_EditorClassIdentifier: Game::Game.Grid.GridVisualizer
+  gridSize: {x: 24, y: 24}
+  noise: {fileID: 2800000, guid: 867273021db984a77a78015c4eef1dd5, type: 3}
+  noiseScale: 0.19
+--- !u!65 &363354384
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 363354380}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 51.961525, y: 0.1, z: 48}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
