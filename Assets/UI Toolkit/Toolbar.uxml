@@ -1,0 +1,10 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:ToggleButtonGroup label="Tools" value="1">
+            <ui:Button text="Up" />
+            <ui:Button text="Down" />
+            <ui:Button text="Water" />
+            <ui:Button text="Trees" />
+        </ui:ToggleButtonGroup>
+    </ui:VisualElement>
+</ui:UXML>
