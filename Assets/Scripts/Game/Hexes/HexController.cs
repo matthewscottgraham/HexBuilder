@@ -1,6 +1,7 @@
 using App.Events;
 using App.Services;
 using Game.Grid;
+using Game.Tools;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -34,7 +35,12 @@ namespace Game.Hexes
 
         private void ExecuteCommandOnHex(Vector2Int cell)
         {
-            if (_map[cell.x, cell.y] != null) return;
+            if (_map[cell.x, cell.y] == null) CreateNewHex(cell);
+            ServiceLocator.Instance.Get<ToolController>()?.UseSelectedTool(_map[cell.x, cell.y]);
+        }
+
+        private void CreateNewHex(Vector2Int cell)
+        {
             var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
             _map[cell.x, cell.y] = _hexFactory.CreateHex(cell, hexGrid, this.transform);
         }

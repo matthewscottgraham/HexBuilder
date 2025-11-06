@@ -1,6 +1,7 @@
 using App.Services;
 using Game.Grid;
 using Game.Hexes;
+using Game.Tools;
 using UnityEngine;
 
 namespace Game
@@ -9,6 +10,7 @@ namespace Game
     {
         [SerializeField] private GridPreset gridPreset;
         [SerializeField] private Transform water;
+        
         private void Awake()
         {
             if (ServiceLocator.Instance == null) return;
@@ -31,7 +33,11 @@ namespace Game
             hexController.Initialize();
             ServiceLocator.Instance.Register(hexController);
             
-            water.transform.localScale = new Vector3(grid.WorldWidth() + 3, 0.1f, grid.WorldHeight() + 3);
+            var toolController = gameObject.AddComponent<ToolController>();
+            toolController.Initialize();
+            ServiceLocator.Instance.Register(toolController);
+            
+            water.transform.localScale = new Vector3(grid.WorldWidth() + 3, 1, grid.WorldHeight() + 3);
         }
     }
 }
