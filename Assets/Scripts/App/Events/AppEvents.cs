@@ -1,7 +1,6 @@
-using App.Events;
 using UnityEngine;
 
-namespace App
+namespace App.Events
 {
     public struct SceneLoadedEvent : IEvent
     {

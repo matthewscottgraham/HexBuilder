@@ -49,6 +49,27 @@ namespace Game.Grid
             return closestCenter;
         }
         
+        public Vector2Int GetClosestCellToPosition(Vector3 position)
+        {
+            var closestDistanceSquared = Mathf.Infinity;
+            var closestCell = Vector2Int.zero;
+    
+            for (var x = 0; x < GridSize.x; x++)
+            {
+                for (var y = 0; y < GridSize.y; y++)
+                {
+                    var center = GetHexCenter(x, y);
+                    var distanceSquared = (position - center).sqrMagnitude;
+
+                    if (!(distanceSquared < closestDistanceSquared)) continue;
+                    closestDistanceSquared = distanceSquared;
+                    closestCell = new Vector2Int(x, y);
+                }
+            }
+
+            return closestCell;
+        }
+        
         public Vector3 GetHexCenter(int x, int y)
         {
             var offsetX = (y % 2 == 0) ? 0 : InnerRadius;

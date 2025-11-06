@@ -1,5 +1,6 @@
 using App.Services;
 using Game.Grid;
+using Game.Hexes;
 using UnityEngine;
 
 namespace Game
@@ -25,6 +26,10 @@ namespace Game
         {
             var grid = gridPreset.CreateGrid();
             ServiceLocator.Instance.Register(grid);
+            
+            var hexController = gameObject.AddComponent<HexController>();
+            hexController.Initialize();
+            ServiceLocator.Instance.Register(hexController);
             
             var boxCollider = gameObject.AddComponent<BoxCollider>();
             boxCollider.size = new Vector3(grid.WorldWidth() + 3, 0.1f, grid.WorldHeight() + 3);
