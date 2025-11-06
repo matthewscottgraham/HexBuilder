@@ -8,7 +8,7 @@ namespace Game
     public class Game : MonoBehaviour
     {
         [SerializeField] private GridPreset gridPreset;
-        
+        [SerializeField] private Transform water;
         private void Awake()
         {
             if (ServiceLocator.Instance == null) return;
@@ -31,8 +31,7 @@ namespace Game
             hexController.Initialize();
             ServiceLocator.Instance.Register(hexController);
             
-            var boxCollider = gameObject.AddComponent<BoxCollider>();
-            boxCollider.size = new Vector3(grid.WorldWidth() + 3, 0.1f, grid.WorldHeight() + 3);
+            water.transform.localScale = new Vector3(grid.WorldWidth() + 3, 0.1f, grid.WorldHeight() + 3);
         }
     }
 }
