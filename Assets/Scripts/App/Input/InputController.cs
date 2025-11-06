@@ -1,6 +1,5 @@
 using App.Services;
 using App.Events;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,12 +7,16 @@ using UnityEngine.InputSystem;
 
 namespace App.Input
 {
-    public class InputController : IDisposable
+    public class InputController : MonoBehaviour
     {
-        private readonly EventSystem _eventSystem;
-        private readonly InputSystem_Actions _inputSystem;
+        private EventSystem _eventSystem;
+        private InputSystem_Actions _inputSystem;
         
-        public InputController()
+        public static bool PointerHasMovedThisFrame { get; private set; }
+        public static Vector2 PointerPosition => Mouse.current.position.ReadValue();
+        public static Vector2 LastMousePosition { get; private set; }
+        
+        public void Initialize()
         {
             _eventSystem = EventSystem.current;
             _inputSystem = new InputSystem_Actions();
@@ -22,20 +25,26 @@ namespace App.Input
             _inputSystem.Player.Move.performed += HandleMove;
             _inputSystem.Player.Interact.started += HandleInteract;
             
-            ServiceLocator.Instance.Register(new EventBus<MoveEvent>());
-            ServiceLocator.Instance.Register(new EventBus<InteractEvent>());
+            ServiceLocator.Instance?.Register(new EventBus<MoveEvent>());
+            ServiceLocator.Instance?.Register(new EventBus<InteractEvent>());
         }
 
-        public void Dispose()
+        public void OnDestroy()
         {
-            ServiceLocator.Instance.Deregister(typeof(MoveEvent));
-            ServiceLocator.Instance.Deregister(typeof(InteractEvent));
+            ServiceLocator.Instance?.Deregister(typeof(MoveEvent));
+            ServiceLocator.Instance?.Deregister(typeof(InteractEvent));
             
             _inputSystem.Player.Move.performed -= HandleMove;
             _inputSystem.Player.Interact.performed -= HandleInteract;
             _inputSystem?.Dispose();
         }
 
+        private void Update()
+        {
+            PointerHasMovedThisFrame = Vector2.Distance(LastMousePosition, PointerPosition) > Mathf.Epsilon;
+            LastMousePosition = PointerPosition;
+        }
+        
         private bool IsPointerOverUI()
         {
             var pointerEventData = new PointerEventData(_eventSystem)

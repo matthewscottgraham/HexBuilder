@@ -31,7 +31,10 @@ namespace App
             serviceLocator.Register(new IOController());
             serviceLocator.Register(new ConfigController());
             serviceLocator.Register(new SaveDataController());
-            serviceLocator.Register(new InputController());
+            
+            var inputController = gameObject.AddComponent<InputController>();
+            inputController.Initialize();
+            serviceLocator.Register(inputController);
             
             ServiceLocator.Instance.Get<SceneController>().LoadScene(GameSceneName, false);
             
