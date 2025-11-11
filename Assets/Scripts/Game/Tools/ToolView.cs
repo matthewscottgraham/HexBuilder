@@ -17,11 +17,6 @@ namespace Game.Tools
             _buttonGroup.RegisterValueChangedCallback(HandleToolChanged);
         }
 
-        private void OnDestroy()
-        {
-            
-        }
-
         private void HandleToolChanged(ChangeEvent<ToggleButtonGroupState> evt)
         {
             var toolIndex = evt.newValue.GetActiveOptions(stackalloc int[evt.newValue.length]);

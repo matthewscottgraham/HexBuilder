@@ -7,5 +7,6 @@ namespace App.Config
         public bool IsFullScreen;
         public int ScreenWidth;
         public int ScreenHeight;
+        public int SaveId;
     }
 }

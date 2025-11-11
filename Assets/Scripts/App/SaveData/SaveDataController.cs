@@ -23,6 +23,12 @@ namespace App.SaveData
             ServiceLocator.Instance.Deregister(this);
         }
 
+        public SaveData? GetMetaData(int id)
+        {
+            return ServiceLocator.Instance.Get<IOController>()
+                .ReadJson<SaveData>(Path.Combine(SaveDirectoryName, id.ToString()), SaveFileName);
+        }
+
         private void LoadConfig(int id)
         {
             ServiceLocator.Instance.Get<EventBus<FileLoadEvent>>().Raise(new FileLoadEvent());

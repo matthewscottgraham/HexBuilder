@@ -8,5 +8,6 @@ namespace App.SaveData
         public string AppVersion;
         public int Id;
         public DateTime SaveTime;
+        public string IconPath;
     }
 }

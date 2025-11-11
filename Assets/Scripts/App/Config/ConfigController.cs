@@ -48,6 +48,7 @@ namespace App.Config
                 IsFullScreen = Screen.fullScreen,
                 ScreenWidth = Screen.width,
                 ScreenHeight = Screen.height,
+                SaveId = 0
             };
             return config;
         }
