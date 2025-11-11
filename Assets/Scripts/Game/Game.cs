@@ -1,4 +1,5 @@
 using App.Services;
+using Game.Cameras;
 using Game.Grid;
 using Game.Hexes;
 using Game.Tools;
@@ -36,6 +37,12 @@ namespace Game
             var toolController = gameObject.AddComponent<ToolController>();
             toolController.Initialize();
             ServiceLocator.Instance.Register(toolController);
+            
+            var hexSelector = new GameObject().AddComponent<HexSelector>();
+            hexSelector.Initialize();
+            ServiceLocator.Instance.Register(hexSelector);
+            
+            ServiceLocator.Instance.Register(new CameraController(Camera.main));
             
             water.transform.localScale = new Vector3(grid.WorldWidth() + 3, 1, grid.WorldHeight() + 3);
         }

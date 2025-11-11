@@ -36,7 +36,7 @@ namespace Game.Tools
 
         private void OnDestroy()
         {
-            ServiceLocator.Instance.Deregister(this);
+            ServiceLocator.Instance?.Deregister(this);
         }
     }
 }

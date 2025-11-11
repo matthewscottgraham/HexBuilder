@@ -2,6 +2,7 @@ using App;
 using App.Events;
 using App.Input;
 using App.Services;
+using Game.Events;
 using Game.Grid;
 using UnityEngine;
 
@@ -15,41 +16,48 @@ namespace Game.Hexes
         private EventBinding<MoveEvent> _moveEventBinding;
         
         public static Vector2Int SelectedCell { get; private set; }
-        
-        private void Start()
+
+        public void Initialize()
         {
+            _moveEventBinding = new EventBinding<MoveEvent>(HandleMoveEvent);
+            ServiceLocator.Instance.Get<EventBus<MoveEvent>>().Register(_moveEventBinding);
+            ServiceLocator.Instance.Register(new EventBus<CellSelectedEvent>());
+            
             _camera = Camera.main;
             _cellHighlighter = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
             _cellHighlighter.SetParent(this.transform);
-        }
-
-        private void Awake()
-        {
-            if (ServiceLocator.Instance == null) return;
-        
-            _moveEventBinding = new EventBinding<MoveEvent>(HandleMoveEvent);
-            ServiceLocator.Instance.Get<EventBus<MoveEvent>>().Register(_moveEventBinding);
+            _cellHighlighter.localPosition = Vector3.up;
         }
 
         private void OnDestroy()
         {
-            if (ServiceLocator.Instance == null) return;
-            ServiceLocator.Instance.Get<EventBus<MoveEvent>>().Deregister(_moveEventBinding);
+            ServiceLocator.Instance?.Get<EventBus<MoveEvent>>().Deregister(_moveEventBinding);
+            ServiceLocator.Instance?.Deregister(typeof(CellSelectedEvent));
         }
 
         private void Update()
         {
             if (!InputController.PointerHasMovedThisFrame) return;
         
-            Ray ray = _camera.ScreenPointToRay(InputController.PointerPosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            var ray = _camera.ScreenPointToRay(InputController.PointerPosition);
+            if (!Physics.Raycast(ray, out var hit)) return;
+            
+            var originalCell = SelectedCell;
+            transform.position = ClampPositionToCell(hit.point);
+            NotifyIfNewSelection(originalCell);
+        }
+
+        private static void NotifyIfNewSelection(Vector2Int originalCell)
+        {
+            if (SelectedCell != originalCell)
             {
-                transform.position = ClampPositionToCell(hit.point);
+                ServiceLocator.Instance.Get<EventBus<CellSelectedEvent>>().Raise(new CellSelectedEvent(SelectedCell));
             }
         }
 
         private void HandleMoveEvent(MoveEvent moveEvent)
         {
+            var originalCell = SelectedCell;
             if (moveEvent.Delta.y != 0)
             {
                 var nudge = moveEvent.Delta.y > 0 ? 1 : -1;
@@ -65,6 +73,8 @@ namespace Game.Hexes
                     0,
                     transform.position.z + moveEvent.Delta.y * 1.5f));
             }
+            
+            NotifyIfNewSelection(originalCell);
         }
 
         private Vector3 ClampPositionToCell(Vector3 position)
