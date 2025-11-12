@@ -1,0 +1,72 @@
+SaveGameChooser {
+    background-color: black;
+    border-width: 1px;
+    border-color: white;
+    border-radius: 12px;
+    padding: 24px;
+    position: absolute;
+    width: 80%;
+    height: 60%;
+    align-self: center;
+    top: 20%
+}
+
+.header-bar {
+    flex-direction: row;
+    height: 64px;
+    align-items: center;
+}
+
+.header-bar-label {
+    color: white;
+    -unity-font-style: bold;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+.cancel-button {
+    background-color: coral;
+    border-color: white;
+    border-radius: 24px;
+    border-width: 0;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 48px;
+    width: 48px;
+    -unity-font-style: bold;
+    font-size: 24px;
+}
+
+.cancel-button:hover {
+    background-color: brown;
+    border-width: 1px;
+}
+
+.save-slot-container {
+    flex-direction: row;
+    height: 100%;
+    padding: 12px;
+}
+
+.save-slot {
+    border-width: 1px;
+    border-color: white;
+    border-radius: 12px;
+    flex-grow: 1;
+    padding: 48px;
+}
+
+.save-icon {
+    align-self: center;
+    background-color: rgba(1,1,1,0.5);
+    height: 256px;
+    width: 256px;
+}
+
+.save-info-label {
+    flex-grow: 1;
+    margin-top: 12px;
+    white-space: normal;
+}

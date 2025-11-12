@@ -1,6 +1,9 @@
+using App.Config;
 using App.SaveData;
+using App.Scenes;
 using App.Services;
-using UnityEngine.Profiling.Memory.Experimental;
+using App.Utils;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Game.Menu
@@ -11,64 +14,67 @@ namespace Game.Menu
         public SaveGameChooser(bool isNewGame)
         {
             CreateHeader();
+            
+            var slotContainer = this.AddNew<VisualElement>(new VisualElement(), "save-slot-container");
+            
             // TODO: the max save slots should be added to the config
             const int saveSlotCount = 3;
             for (var i = 0; i < saveSlotCount; i++)
             {
-                var index = i;
-                CreateSlotButton(index);
+                CreateSlotButton(slotContainer, i);
             }
         }
 
         private void CreateHeader()
         {
-            var header = new VisualElement();
-            header.AddToClassList("header-bar");
-            Add(header);
+            var header = this.AddNew<VisualElement>(new VisualElement(), "header-bar");
 
-            var label = new Label(_isNewGame ? "Choose Slot for New Game" : "Choose Game to Load");
-            label.AddToClassList("header-bar-label");
-            header.Add(label);
-            
-            var spacer = new VisualElement();
-            spacer.AddToClassList("spacer");
-            header.Add(spacer);
+            var labelText = _isNewGame ? "Choose Slot for New Game" : "Choose Game to Load";
+            header.AddNew<Label>(new Label(labelText), "header-bar-label");
 
-            var cancelButton = new Button();
-            cancelButton.AddToClassList("cancel-button");
-            cancelButton.text = "Cancel";
-            header.Add(cancelButton);
+            header.AddSpacer();
+
+            var cancelButton = header.AddNew<Button>(new Button(CloseWindow), "cancel-button");
+            cancelButton.text = "X";
         }
 
-        private void CreateSlotButton(int index)
+        private void CreateSlotButton(VisualElement parentContainer, int index)
         {
             var saveData = ServiceLocator.Instance.Get<SaveDataController>().GetMetaData(index);
-            
-            if (!saveData.HasValue)
-            {
-                CreateSlotButton(index, null, null);
-            }
-            else
-            {
-                CreateSlotButton(index, saveData.Value.IconPath, saveData.Value.SaveTime.ToString());
-            }
+
+            parentContainer.Add(!saveData.HasValue
+                ? CreateSlotButton(index, null, null)
+                : CreateSlotButton(index, saveData.Value.IconPath, saveData.Value.SaveTime.ToString()));
         }
 
-        private void CreateSlotButton(int index, string iconPath, string labelText)
+        private VisualElement CreateSlotButton(int index, string iconPath, string labelText)
         {
             var saveSlot = new Button();
-            Add(saveSlot);
+            saveSlot.clicked += () => HandleSlotClicked(index);
             saveSlot.AddToClassList("save-slot");
 
-            var icon = new Image();
+            var icon = saveSlot.AddNew<Image>(new Image(), "save-icon");
             icon.image = null; // TODO Load Image from save file
-            icon.AddToClassList("save-icon");
-            saveSlot.Add(icon);
             
             if (string.IsNullOrEmpty(labelText)) labelText = "New Game";
-            var infoLabel = new Label(labelText);
-            infoLabel.AddToClassList("save-info-label");
-            saveSlot.Add(infoLabel);
+            saveSlot.AddNew<Label>(new Label(labelText), "save-info-label");
+            
+            return saveSlot;
+        }
+
+        private void CloseWindow()
+        {
+            RemoveFromHierarchy();
+        }
+
+        private void HandleSlotClicked(int index)
+        {
+            var configController = ServiceLocator.Instance.Get<ConfigController>();
+            var config = configController.Config;
+            config.SaveId = index;
+            configController.SetModifiedConfig(config);
+            ServiceLocator.Instance.Get<SceneController>().LoadGameScene();
+            CloseWindow();
         }
     }
 }

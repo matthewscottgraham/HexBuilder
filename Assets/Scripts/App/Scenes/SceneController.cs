@@ -2,6 +2,7 @@ using System;
 using App.Events;
 using App.Services;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,6 +10,7 @@ namespace App.Scenes
 {
     public class SceneController : IDisposable
     {
+        private const string GameSceneName = "Game";
         private readonly HashSet<string> _loadedScenes = new();
         
         private EventBinding<SceneLoadedEvent> _sceneLoaded;
@@ -19,18 +21,6 @@ namespace App.Scenes
             ServiceLocator.Instance.Register(new EventBus<SceneLoadedEvent>());
             ServiceLocator.Instance.Register(new EventBus<SceneUnloadedEvent>());
         }
-        
-        public void LoadScene(string sceneName, bool isAdditive = true)
-        {
-            if (_loadedScenes.Contains(sceneName)) return;
-            LoadSceneAsync(sceneName, isAdditive);
-        }
-
-        public void UnloadScene(string sceneName)
-        {
-            if (!_loadedScenes.Contains(sceneName)) return;
-            UnloadSceneAsync(sceneName);
-        }
 
         public void Dispose()
         {
@@ -40,16 +30,24 @@ namespace App.Scenes
             ServiceLocator.Instance.Deregister(typeof(EventBus<SceneUnloadedEvent>));
         }
 
-        private async void LoadSceneAsync(string sceneName, bool isAdditive)
+        public async void LoadGameScene()
         {
+            await UnloadSceneAsync(GameSceneName);
+            await LoadSceneAsync(GameSceneName, true);
+        }
+
+        public async Task LoadSceneAsync(string sceneName, bool isAdditive)
+        {
+            if (_loadedScenes.Contains(sceneName)) return;
             if (!isAdditive) _loadedScenes.Clear();
             _loadedScenes.Add(sceneName);
             await SceneManager.LoadSceneAsync(sceneName, isAdditive? LoadSceneMode.Additive : LoadSceneMode.Single);
             ServiceLocator.Instance.Get<EventBus<SceneLoadedEvent>>().Raise(new SceneLoadedEvent(sceneName));
         }
 
-        private async void UnloadSceneAsync(string sceneName)
+        public async Task UnloadSceneAsync(string sceneName)
         {
+            if (!_loadedScenes.Contains(sceneName)) return;
             _loadedScenes.Remove(sceneName);
             await SceneManager.UnloadSceneAsync(sceneName);
             ServiceLocator.Instance.Get<EventBus<SceneUnloadedEvent>>().Raise(new SceneUnloadedEvent(sceneName));

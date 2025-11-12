@@ -22,6 +22,12 @@ namespace App.Config
             ServiceLocator.Instance.Deregister(this);
         }
 
+        public void SetModifiedConfig(Config config)
+        {
+            Config = config;
+            SaveConfig(Config);
+        }
+
         private void LoadConfig()
         {
             ServiceLocator.Instance.Get<EventBus<FileLoadEvent>>().Raise(new FileLoadEvent());

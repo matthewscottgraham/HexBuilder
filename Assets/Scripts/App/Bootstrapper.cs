@@ -11,7 +11,6 @@ namespace App
     public class Bootstrapper : MonoBehaviour
     {
         private const string MainSceneName = "App";
-        private const string GameSceneName = "Game";
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Main()
@@ -36,7 +35,7 @@ namespace App
             inputController.Initialize();
             serviceLocator.Register(inputController);
             
-            ServiceLocator.Instance.Get<SceneController>().LoadScene(GameSceneName, false);
+            ServiceLocator.Instance.Get<SceneController>().LoadGameScene();
             
             Destroy(this);
         }       

@@ -32,7 +32,7 @@ namespace Game.Hexes
         private void OnDestroy()
         {
             ServiceLocator.Instance?.Get<EventBus<MoveEvent>>().Deregister(_moveEventBinding);
-            ServiceLocator.Instance?.Deregister(typeof(CellSelectedEvent));
+            ServiceLocator.Instance?.Deregister(typeof(EventBus<CellSelectedEvent>));
         }
 
         private void Update()

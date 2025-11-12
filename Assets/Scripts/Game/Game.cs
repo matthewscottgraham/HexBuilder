@@ -22,6 +22,11 @@ namespace Game
 
         private void OnDestroy()
         {
+            ServiceLocator.Instance?.Deregister(typeof(HexGrid));
+            ServiceLocator.Instance?.Deregister(typeof(HexController));
+            ServiceLocator.Instance?.Deregister(typeof(ToolController));
+            ServiceLocator.Instance?.Deregister(typeof(HexSelector));
+            ServiceLocator.Instance?.Deregister(typeof(CameraController));
             ServiceLocator.Instance?.Deregister(this);
         }
 
