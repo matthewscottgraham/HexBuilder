@@ -81,5 +81,26 @@ namespace App
             var json = File.ReadAllText(Path.Combine(_appDataPath, relativePath, fileName + ".json"));
             return JsonConvert.DeserializeObject<T>(json);
         }
+
+        public string GetFileSaveTime(string relativePath, string fileName)
+        {
+            if (!DoesFileExist(relativePath, fileName))
+            {
+                return string.Empty;
+            }
+            
+            var fileInfo = new FileInfo(Path.Combine(_appDataPath, relativePath, fileName));
+            return fileInfo.LastWriteTimeUtc.ToString();
+        }
+
+        public Texture2D LoadJpg(string relativePath, string fileName)
+        {
+            if (!DoesFileExist(relativePath, fileName)) return null;
+            
+            byte[] bytes = File.ReadAllBytes(Path.Combine(_appDataPath, relativePath, fileName));
+            var tex = new Texture2D(2, 2);
+            tex.LoadImage(bytes);
+            return tex;
+        }
     }
 }

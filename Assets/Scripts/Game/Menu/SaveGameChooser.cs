@@ -42,19 +42,17 @@ namespace Game.Menu
         {
             var saveData = ServiceLocator.Instance.Get<SaveDataController>().GetMetaData(index);
 
-            parentContainer.Add(!saveData.HasValue
-                ? CreateSlotButton(index, null, null)
-                : CreateSlotButton(index, saveData.Value.IconPath, saveData.Value.SaveTime.ToString()));
+            parentContainer.Add(CreateSlotButton(index, saveData.Item1, saveData.Item2));
         }
 
-        private VisualElement CreateSlotButton(int index, string iconPath, string labelText)
+        private VisualElement CreateSlotButton(int index, Texture2D screenshot, string labelText)
         {
             var saveSlot = new Button();
             saveSlot.clicked += () => HandleSlotClicked(index);
             saveSlot.AddToClassList("save-slot");
 
             var icon = saveSlot.AddNew<Image>(new Image(), "save-icon");
-            icon.image = null; // TODO Load Image from save file
+            icon.image = screenshot;
             
             if (string.IsNullOrEmpty(labelText)) labelText = "New Game";
             saveSlot.AddNew<Label>(new Label(labelText), "save-info-label");

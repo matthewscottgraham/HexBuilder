@@ -15,7 +15,7 @@ namespace Game.Hexes
     
         private EventBinding<MoveEvent> _moveEventBinding;
         
-        public static Vector2Int SelectedCell { get; private set; }
+        public static Coordinate SelectedCell { get; private set; }
 
         public void Initialize()
         {
@@ -47,9 +47,9 @@ namespace Game.Hexes
             NotifyIfNewSelection(originalCell);
         }
 
-        private static void NotifyIfNewSelection(Vector2Int originalCell)
+        private static void NotifyIfNewSelection(Coordinate originalCell)
         {
-            if (SelectedCell != originalCell)
+            if (!SelectedCell.Equals(originalCell))
             {
                 ServiceLocator.Instance.Get<EventBus<CellSelectedEvent>>().Raise(new CellSelectedEvent(SelectedCell));
             }

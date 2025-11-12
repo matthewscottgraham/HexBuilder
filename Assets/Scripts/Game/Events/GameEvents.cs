@@ -1,14 +1,15 @@
 using App.Events;
+using Game.Hexes;
 using UnityEngine;
 
 namespace Game.Events
 {
     public struct CellSelectedEvent : IEvent
     {
-        public CellSelectedEvent(Vector2Int cell)
+        public CellSelectedEvent(Coordinate cell)
         {
             Cell = cell;
         }
-        public Vector2Int Cell;
+        public Coordinate Cell;
     }
 }

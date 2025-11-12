@@ -18,7 +18,7 @@ namespace Game.Hexes
         }
         private void OnDestroy()
         {
-            ServiceLocator.Instance?.Get<EventBus<CellSelectedEvent>>().Deregister(_cellSelectedEventBinging);
+            ServiceLocator.Instance?.Get<EventBus<CellSelectedEvent>>()?.Deregister(_cellSelectedEventBinging);
         }
 
         private void HandleCellSelected()
@@ -26,7 +26,7 @@ namespace Game.Hexes
             transform.position = CoordinateToPosition(HexSelector.SelectedCell);
         }
 
-        private Vector3 CoordinateToPosition(Vector2Int coordinate)
+        private Vector3 CoordinateToPosition(Coordinate coordinate)
         {
             return ServiceLocator.Instance.Get<HexGrid>().GetHexCenter(coordinate.x, coordinate.y);
         }

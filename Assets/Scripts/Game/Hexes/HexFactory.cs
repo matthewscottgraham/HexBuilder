@@ -7,7 +7,7 @@ namespace Game.Hexes
     public class HexFactory
     {
         private Material _material;
-        public GameObject CreateHex(Vector2Int cell, HexGrid grid, Transform parent)
+        public GameObject CreateHex(Coordinate cell, HexGrid grid, Transform parent)
         {
             var go = new GameObject(cell.ToString());
             go.transform.position = grid.GetHexCenter(cell.x, cell.y);

@@ -1,3 +1,4 @@
+using Game.Hexes;
 using UnityEngine;
 
 namespace Game.Grid
@@ -49,10 +50,10 @@ namespace Game.Grid
             return closestCenter;
         }
         
-        public Vector2Int GetClosestCellToPosition(Vector3 position)
+        public Coordinate GetClosestCellToPosition(Vector3 position)
         {
             var closestDistanceSquared = Mathf.Infinity;
-            var closestCell = Vector2Int.zero;
+            var closestCell = new Coordinate(0, 0);
     
             for (var x = 0; x < GridSize.x; x++)
             {
@@ -63,7 +64,7 @@ namespace Game.Grid
 
                     if (!(distanceSquared < closestDistanceSquared)) continue;
                     closestDistanceSquared = distanceSquared;
-                    closestCell = new Vector2Int(x, y);
+                    closestCell = new Coordinate(x, y);
                 }
             }
 

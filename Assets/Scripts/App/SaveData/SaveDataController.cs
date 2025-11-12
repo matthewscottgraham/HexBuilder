@@ -1,68 +1,68 @@
+#nullable enable
 using System;
 using System.IO;
+using System.Threading.Tasks;
+using App.Config;
 using App.Events;
 using App.Services;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace App.SaveData
 {
+    public struct SaveData
+    {
+        public int SaveID;
+        public string AppName;
+        public string AppVersion;
+        public DateTime SaveTime;
+        public object Data;
+    }
+    
     public class SaveDataController : IDisposable
     {
-        private const string SaveFileName = "saveData";
+        private const string SaveDataFileName = "gameData";
+        private const string SaveImageFileName = "gameScreenshot";
         private const string SaveDirectoryName = "UserData";
-        
-        public SaveData Data { get; private set; }
-
-        public SaveDataController()
-        {
-            LoadConfig(0);
-        }
 
         public void Dispose()
         {
             ServiceLocator.Instance.Deregister(this);
         }
 
-        public SaveData? GetMetaData(int id)
+        public (Texture2D, string) GetMetaData(int saveID)
         {
-            return ServiceLocator.Instance.Get<IOController>()
-                .ReadJson<SaveData>(Path.Combine(SaveDirectoryName, id.ToString()), SaveFileName);
+            var ioController = ServiceLocator.Instance.Get<IOController>();
+            Texture2D tex = ioController.LoadJpg(Path.Combine(SaveDirectoryName, saveID.ToString()), SaveImageFileName);
+            var saveTime = ioController.GetFileSaveTime(Path.Combine(SaveDirectoryName, saveID.ToString()), SaveDataFileName);
+            return (tex, saveTime);
         }
-
-        private void LoadConfig(int id)
+        
+        public async void Save(object gameData)
         {
-            ServiceLocator.Instance.Get<EventBus<FileLoadEvent>>().Raise(new FileLoadEvent());
-            var data =  ServiceLocator.Instance.Get<IOController>()
-                .ReadJson<SaveData>(Path.Combine(SaveDirectoryName, id.ToString()), SaveFileName);
-
-            if (!data.HasValue)
-            {
-                Data = CreateNewConfig();
-                Save(Data);
-            }
-            else
-            {
-                Data = data.Value;
-            }
-        }
-
-        private static SaveData CreateNewConfig()
-        {
-            var data = new SaveData()
-            {
-                AppName = Application.productName,
-                AppVersion = Application.version,
-                Id = 0,
-                SaveTime = DateTime.Now
-            };
-            return data;
-        }
-
-        private static async void Save(SaveData data)
-        {
+            var saveId = ServiceLocator.Instance.Get<ConfigController>().Config.SaveId;
+            var saveData = CreateSaveData(saveId, gameData);
+            var ioController = ServiceLocator.Instance.Get<IOController>();
+            await ioController.WriteJson(saveData, Path.Combine(SaveDirectoryName, saveId.ToString()), SaveDataFileName);
             ServiceLocator.Instance.Get<EventBus<FileSaveEvent>>().Raise(new FileSaveEvent());
-            await ServiceLocator.Instance.Get<IOController>()
-                .WriteJson(data, Path.Combine(SaveDirectoryName, data.Id.ToString()), SaveFileName);
+        }
+        
+        public SaveData? Load()
+        {
+            var saveId = ServiceLocator.Instance.Get<ConfigController>().Config.SaveId;
+            var ioController = ServiceLocator.Instance.Get<IOController>();
+            return ioController.ReadJson<SaveData>(Path.Combine(SaveDirectoryName, saveId.ToString()), SaveDataFileName);
+        }
+        
+        private static SaveData CreateSaveData(int saveId, object gameData)
+        {
+            var saveData = new SaveData();
+            saveData.SaveID = saveId;
+            saveData.AppName = Application.productName;
+            saveData.AppVersion = Application.version;
+            saveData.SaveTime = DateTime.Now;
+            saveData.Data = gameData;
+            return saveData;
         }
     }
 }
