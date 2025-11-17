@@ -6,10 +6,10 @@ namespace Game.Events
 {
     public struct CellSelectedEvent : IEvent
     {
-        public CellSelectedEvent(Coordinate cell)
+        public CellSelectedEvent(Cell cell)
         {
             Cell = cell;
         }
-        public Coordinate Cell;
+        public Cell Cell;
     }
 }

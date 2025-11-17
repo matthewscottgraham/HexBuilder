@@ -73,10 +73,7 @@ namespace App
         #nullable enable
         public T? ReadJson<T>(string relativePath, string fileName) where T : struct
         {
-            if (!DoesFileExist(relativePath, fileName))
-            {
-                return null;
-            }
+            if (!DoesFileExist(relativePath, fileName + ".json")) return null;
             
             var json = File.ReadAllText(Path.Combine(_appDataPath, relativePath, fileName + ".json"));
             return JsonConvert.DeserializeObject<T>(json);
@@ -84,10 +81,7 @@ namespace App
 
         public string GetFileSaveTime(string relativePath, string fileName)
         {
-            if (!DoesFileExist(relativePath, fileName))
-            {
-                return string.Empty;
-            }
+            if (!DoesFileExist(relativePath, fileName + ".json")) return string.Empty;
             
             var fileInfo = new FileInfo(Path.Combine(_appDataPath, relativePath, fileName));
             return fileInfo.LastWriteTimeUtc.ToString();

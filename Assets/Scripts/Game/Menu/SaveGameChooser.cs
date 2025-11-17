@@ -3,6 +3,7 @@ using App.SaveData;
 using App.Scenes;
 using App.Services;
 using App.Utils;
+using Game.Hexes;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -10,9 +11,12 @@ namespace Game.Menu
 {
     public class SaveGameChooser : VisualElement
     {
-        private bool _isNewGame;
+        private readonly bool _isNewGame;
+        
         public SaveGameChooser(bool isNewGame)
         {
+            _isNewGame = isNewGame;
+            
             CreateHeader();
             
             var slotContainer = this.AddNew<VisualElement>(new VisualElement(), "save-slot-container");
@@ -67,6 +71,11 @@ namespace Game.Menu
 
         private void HandleSlotClicked(int index)
         {
+            ServiceLocator.Instance.Get<HexController>().Save();
+            if (_isNewGame)
+            {
+                ServiceLocator.Instance.Get<SaveDataController>().DeleteSaveData(index);
+            }
             var configController = ServiceLocator.Instance.Get<ConfigController>();
             var config = configController.Config;
             config.SaveId = index;

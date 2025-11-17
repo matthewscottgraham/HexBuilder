@@ -33,7 +33,7 @@ namespace Game.Menu
 
         private void HandleLoadButtonClicked()
         {
-            _document.rootVisualElement.Add(new SaveGameChooser(true));
+            _document.rootVisualElement.Add(new SaveGameChooser(false));
         }
     }
 }

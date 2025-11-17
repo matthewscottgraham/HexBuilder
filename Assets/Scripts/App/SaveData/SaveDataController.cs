@@ -10,15 +10,6 @@ using UnityEngine;
 
 namespace App.SaveData
 {
-    public struct SaveData
-    {
-        public int SaveID;
-        public string AppName;
-        public string AppVersion;
-        public DateTime SaveTime;
-        public object Data;
-    }
-    
     public class SaveDataController : IDisposable
     {
         private const string SaveDataFileName = "gameData";
@@ -37,6 +28,12 @@ namespace App.SaveData
             var saveTime = ioController.GetFileSaveTime(Path.Combine(SaveDirectoryName, saveID.ToString()), SaveDataFileName);
             return (tex, saveTime);
         }
+
+        public void DeleteSaveData(int saveId)
+        {
+            var ioController = ServiceLocator.Instance.Get<IOController>();
+            ioController.DeleteDirectory(Path.Combine(SaveDirectoryName, saveId.ToString()));
+        }
         
         public async void Save(object gameData)
         {
@@ -47,16 +44,16 @@ namespace App.SaveData
             ServiceLocator.Instance.Get<EventBus<FileSaveEvent>>().Raise(new FileSaveEvent());
         }
         
-        public SaveData? Load()
+        public SaveData<T>? Load<T>()
         {
             var saveId = ServiceLocator.Instance.Get<ConfigController>().Config.SaveId;
             var ioController = ServiceLocator.Instance.Get<IOController>();
-            return ioController.ReadJson<SaveData>(Path.Combine(SaveDirectoryName, saveId.ToString()), SaveDataFileName);
+            return ioController.ReadJson<SaveData<T>>(Path.Combine(SaveDirectoryName, saveId.ToString()), SaveDataFileName);
         }
         
-        private static SaveData CreateSaveData(int saveId, object gameData)
+        private static SaveData<T> CreateSaveData<T>(int saveId, T gameData)
         {
-            var saveData = new SaveData();
+            var saveData = new SaveData<T>();
             saveData.SaveID = saveId;
             saveData.AppName = Application.productName;
             saveData.AppVersion = Application.version;

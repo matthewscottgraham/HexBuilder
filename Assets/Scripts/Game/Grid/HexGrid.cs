@@ -50,10 +50,10 @@ namespace Game.Grid
             return closestCenter;
         }
         
-        public Coordinate GetClosestCellToPosition(Vector3 position)
+        public Cell GetClosestCellToPosition(Vector3 position)
         {
             var closestDistanceSquared = Mathf.Infinity;
-            var closestCell = new Coordinate(0, 0);
+            var closestCell = new Cell(0, 0);
     
             for (var x = 0; x < GridSize.x; x++)
             {
@@ -64,7 +64,7 @@ namespace Game.Grid
 
                     if (!(distanceSquared < closestDistanceSquared)) continue;
                     closestDistanceSquared = distanceSquared;
-                    closestCell = new Coordinate(x, y);
+                    closestCell = new Cell(x, y);
                 }
             }
 

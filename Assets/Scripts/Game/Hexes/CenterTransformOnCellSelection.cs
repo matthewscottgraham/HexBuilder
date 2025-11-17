@@ -26,9 +26,9 @@ namespace Game.Hexes
             transform.position = CoordinateToPosition(HexSelector.SelectedCell);
         }
 
-        private Vector3 CoordinateToPosition(Coordinate coordinate)
+        private Vector3 CoordinateToPosition(Cell cell)
         {
-            return ServiceLocator.Instance.Get<HexGrid>().GetHexCenter(coordinate.x, coordinate.y);
+            return ServiceLocator.Instance.Get<HexGrid>().GetHexCenter(cell.x, cell.y);
         }
     }
 }

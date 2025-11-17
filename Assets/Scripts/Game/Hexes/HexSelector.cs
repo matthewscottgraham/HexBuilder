@@ -15,7 +15,7 @@ namespace Game.Hexes
     
         private EventBinding<MoveEvent> _moveEventBinding;
         
-        public static Coordinate SelectedCell { get; private set; }
+        public static Cell SelectedCell { get; private set; }
 
         public void Initialize()
         {
@@ -47,7 +47,7 @@ namespace Game.Hexes
             NotifyIfNewSelection(originalCell);
         }
 
-        private static void NotifyIfNewSelection(Coordinate originalCell)
+        private static void NotifyIfNewSelection(Cell originalCell)
         {
             if (!SelectedCell.Equals(originalCell))
             {

@@ -7,12 +7,11 @@ namespace Game.Hexes
     {
         public GameData(int x, int y)
         {
-            Size.x = x;
-            Size.y = y;
-            Map = new Dictionary<Coordinate, int>();
+            Size = new Cell(x, y);
+            Map = new List<CellEntry>();
         }
         
-        public Coordinate Size;
-        public Dictionary<Coordinate, int> Map;
+        public Cell Size;
+        public List<CellEntry> Map;
     }
 }
