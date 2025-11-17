@@ -1,7 +1,8 @@
-using System;
 using App.Events;
 using App.Services;
 using Newtonsoft.Json;
+using System;
+using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -87,14 +88,56 @@ namespace App
             return fileInfo.LastWriteTimeUtc.ToString();
         }
 
-        public Texture2D LoadJpg(string relativePath, string fileName)
+        public Texture2D LoadPng(string relativePath, string fileName)
         {
-            if (!DoesFileExist(relativePath, fileName)) return null;
+            if (!DoesFileExist(relativePath, fileName + ".png")) return null;
             
-            byte[] bytes = File.ReadAllBytes(Path.Combine(_appDataPath, relativePath, fileName));
+            byte[] bytes = File.ReadAllBytes(Path.Combine(_appDataPath, relativePath, fileName + ".png"));
             var tex = new Texture2D(2, 2);
             tex.LoadImage(bytes);
             return tex;
+        }
+
+        public IEnumerator SavePng(string relativePath, string fileName)
+        {
+            if (DoesFileExist(relativePath, fileName + ".png"))
+            {
+                DeleteFile(relativePath, fileName + ".png");
+            }
+
+            var fullFileName = Path.Combine(Path.Combine(_appDataPath, relativePath, fileName + ".png"));
+
+            yield return new WaitForEndOfFrame();
+            
+            var renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
+            ScreenCapture.CaptureScreenshotIntoRenderTexture(renderTexture);
+            var tex = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
+            tex.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+            tex.Apply();
+            
+            tex = ResizeTexture(tex, tex.width / 4, tex.height / 4);
+            
+            var bytes = tex.EncodeToPNG();
+            File.WriteAllBytes(fullFileName, bytes);
+        }
+        
+        private static Texture2D ResizeTexture(Texture2D source, int width, int height)
+        {
+            RenderTexture rt = RenderTexture.GetTemporary(width, height);
+            RenderTexture.active = rt;
+
+            // Copy texture to RT (GPU scaling)
+            Graphics.Blit(source, rt);
+
+            // Read RT back into a new Texture2D
+            Texture2D result = new Texture2D(width, height, source.format, false);
+            result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+            result.Apply();
+
+            RenderTexture.active = null;
+            RenderTexture.ReleaseTemporary(rt);
+
+            return result;
         }
     }
 }

@@ -63,7 +63,7 @@ namespace Game.Hexes
             }
 
             gameData.Map = hexes;
-            ServiceLocator.Instance?.Get<SaveDataController>().Save(gameData);
+            ServiceLocator.Instance?.Get<SaveDataController>().Save(this, gameData);
         }
 
         private void HandleInteractEvent()

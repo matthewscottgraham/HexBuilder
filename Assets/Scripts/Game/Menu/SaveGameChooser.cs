@@ -18,14 +18,19 @@ namespace Game.Menu
             _isNewGame = isNewGame;
             
             CreateHeader();
-            
+            CreateSlots();
+        }
+
+        private void CreateSlots()
+        {
             var slotContainer = this.AddNew<VisualElement>(new VisualElement(), "save-slot-container");
             
             // TODO: the max save slots should be added to the config
             const int saveSlotCount = 3;
             for (var i = 0; i < saveSlotCount; i++)
             {
-                CreateSlotButton(slotContainer, i);
+                var index = i;
+                CreateSlotButton(slotContainer, index);
             }
         }
 
@@ -63,7 +68,7 @@ namespace Game.Menu
             
             return saveSlot;
         }
-
+        
         private void CloseWindow()
         {
             RemoveFromHierarchy();
