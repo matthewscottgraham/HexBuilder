@@ -10,7 +10,7 @@ namespace Game
     public class Game : MonoBehaviour
     {
         [SerializeField] private GridPreset gridPreset;
-        [SerializeField] private Transform water;
+        [SerializeField] private Transform ground;
 
         private void Awake()
         {
@@ -49,7 +49,7 @@ namespace Game
 
             ServiceLocator.Instance.Register(new CameraController(Camera.main));
 
-            water.transform.localScale = new Vector3(grid.WorldWidth() + 3, 1, grid.WorldHeight() + 3);
+            ground.transform.localScale = new Vector3(grid.WorldWidth() + 3, 1, grid.WorldHeight() + 3);
         }
     }
 }

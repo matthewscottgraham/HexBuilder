@@ -43,6 +43,7 @@ namespace Game.Hexes
             _cellHighlighter = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
             _cellHighlighter.SetParent(transform);
             _cellHighlighter.localPosition = Vector3.up;
+            _cellHighlighter.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/mat_highlight");
         }
 
         private static void NotifyIfNewSelection(Cell originalCell)

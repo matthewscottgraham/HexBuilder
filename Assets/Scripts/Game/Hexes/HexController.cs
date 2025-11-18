@@ -36,7 +36,6 @@ namespace Game.Hexes
             else
             {
                 var gameData = saveData.Value.Data;
-                //var gameData = Newtonsoft.Json.JsonConvert.DeserializeObject<GameData>(json);
                 _map = new GameObject[gameData.Size.X, gameData.Size.Y];
                 CreateHexes(gameData.Map);
             }

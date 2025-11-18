@@ -5,7 +5,7 @@ namespace Game.Hexes
 {
     public class HexFactory
     {
-        private Material _material;
+        private readonly Material _material = Resources.Load<Material>("Materials/mat_land");
 
         public GameObject CreateHex(Cell cell, HexGrid grid, Transform parent)
         {
@@ -15,8 +15,7 @@ namespace Game.Hexes
 
             var filter = go.AddComponent<MeshFilter>();
             filter.mesh = CreateMesh(grid);
-
-            if (_material == null) _material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            
             var renderer = go.AddComponent<MeshRenderer>();
             renderer.material = _material;
 
@@ -27,11 +26,11 @@ namespace Game.Hexes
             return go;
         }
 
-        private Mesh CreateMesh(HexGrid hexGrid)
+        private static Mesh CreateMesh(HexGrid hexGrid)
         {
             var mesh = new Mesh
             {
-                vertices = GetPrismVertices(hexGrid, 1),
+                vertices = GetPrismVertices(hexGrid, 0.5f),
                 triangles = GetPrismTriangles()
             };
 
