@@ -1,7 +1,4 @@
-using App.Events;
-using App.Services;
 using Newtonsoft.Json;
-using System;
 using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
@@ -10,21 +7,9 @@ using UnityEngine.Assertions;
 
 namespace App
 {
-    public class IOController : IDisposable
+    public class IOController
     {
         private readonly string _appDataPath = Application.persistentDataPath;
-
-        public IOController()
-        {
-            ServiceLocator.Instance.Register(new EventBus<FileSaveEvent>());
-            ServiceLocator.Instance.Register(new EventBus<FileLoadEvent>());
-        }
-
-        public void Dispose()
-        {
-            ServiceLocator.Instance.Deregister(typeof(EventBus<FileSaveEvent>));
-            ServiceLocator.Instance.Deregister(typeof(EventBus<FileLoadEvent>));
-        }
         
         public bool DoesFileExist(string relativePath, string fileName)
         {

@@ -20,8 +20,7 @@ namespace Game.Hexes
         public void Initialize()
         {
             _moveEventBinding = new EventBinding<MoveEvent>(HandleMoveEvent);
-            ServiceLocator.Instance.Get<EventBus<MoveEvent>>().Register(_moveEventBinding);
-            ServiceLocator.Instance.Register(new EventBus<CellSelectedEvent>());
+            EventBus<MoveEvent>.Register(_moveEventBinding);
             
             _camera = Camera.main;
             _cellHighlighter = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
@@ -31,8 +30,8 @@ namespace Game.Hexes
 
         private void OnDestroy()
         {
-            ServiceLocator.Instance?.Get<EventBus<MoveEvent>>().Deregister(_moveEventBinding);
-            ServiceLocator.Instance?.Deregister(typeof(EventBus<CellSelectedEvent>));
+            EventBus<MoveEvent>.Deregister(_moveEventBinding);
+            _moveEventBinding = null;
         }
 
         private void Update()
@@ -51,7 +50,7 @@ namespace Game.Hexes
         {
             if (!SelectedCell.Equals(originalCell))
             {
-                ServiceLocator.Instance.Get<EventBus<CellSelectedEvent>>().Raise(new CellSelectedEvent(SelectedCell));
+                EventBus<CellSelectedEvent>.Raise(new CellSelectedEvent(SelectedCell));
             }
         }
 

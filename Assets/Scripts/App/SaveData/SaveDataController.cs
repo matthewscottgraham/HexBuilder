@@ -40,7 +40,7 @@ namespace App.SaveData
             var ioController = ServiceLocator.Instance.Get<IOController>();
             monoBehaviour.StartCoroutine(ioController.SavePng(Path.Combine(SaveDirectoryName, saveId.ToString()), SaveImageFileName));
             await ioController.WriteJson(saveData, Path.Combine(SaveDirectoryName, saveId.ToString()), SaveDataFileName);
-            ServiceLocator.Instance.Get<EventBus<FileSaveEvent>>().Raise(new FileSaveEvent());
+            EventBus<FileSaveEvent>.Raise(new FileSaveEvent());
         }
         
         public SaveData<T>? Load<T>()

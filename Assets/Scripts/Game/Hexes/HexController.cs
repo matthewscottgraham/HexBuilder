@@ -36,7 +36,7 @@ namespace Game.Hexes
             
             
             _interactEventBinding = new EventBinding<InteractEvent>(HandleInteractEvent);
-            ServiceLocator.Instance.Get<EventBus<InteractEvent>>().Register(_interactEventBinding);
+            EventBus<InteractEvent>.Register(_interactEventBinding);
             
             InvokeRepeating(nameof(Save), AutoSaveFrequecy, AutoSaveFrequecy);
         }
@@ -45,7 +45,8 @@ namespace Game.Hexes
         {
             _hexFactory = null;
             ServiceLocator.Instance?.Deregister(this);
-            ServiceLocator.Instance?.Get<EventBus<InteractEvent>>().Deregister(_interactEventBinding);
+            EventBus<InteractEvent>.Deregister(_interactEventBinding);
+            _interactEventBinding = null;
         }
 
         public void Save()

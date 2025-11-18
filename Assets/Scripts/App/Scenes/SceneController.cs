@@ -18,16 +18,13 @@ namespace App.Scenes
         
         public SceneController()
         {
-            ServiceLocator.Instance.Register(new EventBus<SceneLoadedEvent>());
-            ServiceLocator.Instance.Register(new EventBus<SceneUnloadedEvent>());
+            
         }
 
         public void Dispose()
         {
             _loadedScenes.Clear();
             ServiceLocator.Instance.Deregister(this);
-            ServiceLocator.Instance.Deregister(typeof(EventBus<SceneLoadedEvent>));
-            ServiceLocator.Instance.Deregister(typeof(EventBus<SceneUnloadedEvent>));
         }
 
         public async void LoadGameScene()
@@ -42,7 +39,7 @@ namespace App.Scenes
             if (!isAdditive) _loadedScenes.Clear();
             _loadedScenes.Add(sceneName);
             await SceneManager.LoadSceneAsync(sceneName, isAdditive? LoadSceneMode.Additive : LoadSceneMode.Single);
-            ServiceLocator.Instance.Get<EventBus<SceneLoadedEvent>>().Raise(new SceneLoadedEvent(sceneName));
+            EventBus<SceneLoadedEvent>.Raise(new SceneLoadedEvent(sceneName));
         }
 
         public async Task UnloadSceneAsync(string sceneName)
@@ -50,7 +47,7 @@ namespace App.Scenes
             if (!_loadedScenes.Contains(sceneName)) return;
             _loadedScenes.Remove(sceneName);
             await SceneManager.UnloadSceneAsync(sceneName);
-            ServiceLocator.Instance.Get<EventBus<SceneUnloadedEvent>>().Raise(new SceneUnloadedEvent(sceneName));
+            EventBus<SceneUnloadedEvent>.Raise(new SceneUnloadedEvent(sceneName));
         }
     }
 }

@@ -25,14 +25,14 @@ namespace App.Input
             _inputSystem.Player.Move.performed += HandleMove;
             _inputSystem.Player.Interact.started += HandleInteract;
             
-            ServiceLocator.Instance?.Register(new EventBus<MoveEvent>());
-            ServiceLocator.Instance?.Register(new EventBus<InteractEvent>());
+            //ServiceLocator.Instance?.Register(new EventBus<MoveEvent>());
+            //ServiceLocator.Instance?.Register(new EventBus<InteractEvent>());
         }
 
         public void OnDestroy()
         {
-            ServiceLocator.Instance?.Deregister(typeof(MoveEvent));
-            ServiceLocator.Instance?.Deregister(typeof(InteractEvent));
+            //ServiceLocator.Instance?.Deregister(typeof(MoveEvent));
+            //ServiceLocator.Instance?.Deregister(typeof(InteractEvent));
             
             _inputSystem.Player.Move.performed -= HandleMove;
             _inputSystem.Player.Interact.performed -= HandleInteract;
@@ -58,13 +58,13 @@ namespace App.Input
 
         private static void HandleMove(InputAction.CallbackContext ctx)
         {
-            ServiceLocator.Instance.Get<EventBus<MoveEvent>>().Raise(new MoveEvent(ctx.ReadValue<Vector2>()));
+            EventBus<MoveEvent>.Raise(new MoveEvent(ctx.ReadValue<Vector2>()));
         }
 
         private void HandleInteract(InputAction.CallbackContext ctx)
         {
             if (IsPointerOverUI()) return;
-            ServiceLocator.Instance.Get<EventBus<InteractEvent>>().Raise(new InteractEvent());
+            EventBus<InteractEvent>.Raise(new InteractEvent());
         }
     }
 }

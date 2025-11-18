@@ -30,7 +30,7 @@ namespace App.Config
 
         private void LoadConfig()
         {
-            ServiceLocator.Instance.Get<EventBus<FileLoadEvent>>().Raise(new FileLoadEvent());
+            EventBus<FileLoadEvent>.Raise(new FileLoadEvent());
             var config =  ServiceLocator.Instance.Get<IOController>()
                 .ReadJson<Config>(ConfigDirectoryName, ConfigFileName);
 
@@ -61,7 +61,7 @@ namespace App.Config
 
         private static async void SaveConfig(Config config)
         {
-            ServiceLocator.Instance.Get<EventBus<FileSaveEvent>>().Raise(new FileSaveEvent());
+            EventBus<FileSaveEvent>.Raise(new FileSaveEvent());
             await ServiceLocator.Instance.Get<IOController>()
                 .WriteJson(config, ConfigDirectoryName, ConfigFileName);
         }

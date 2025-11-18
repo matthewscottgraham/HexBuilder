@@ -11,14 +11,15 @@ namespace Game.Hexes
     {
         private EventBinding<CellSelectedEvent> _cellSelectedEventBinging;
         
-        private void Awake()
+        private void OnEnable()
         {
             _cellSelectedEventBinging = new EventBinding<CellSelectedEvent>(HandleCellSelected);
-            ServiceLocator.Instance?.Get<EventBus<CellSelectedEvent>>().Register(_cellSelectedEventBinging);
+            EventBus<CellSelectedEvent>.Register(_cellSelectedEventBinging);
         }
-        private void OnDestroy()
+        private void OnDisable()
         {
-            ServiceLocator.Instance?.Get<EventBus<CellSelectedEvent>>()?.Deregister(_cellSelectedEventBinging);
+            EventBus<CellSelectedEvent>.Deregister(_cellSelectedEventBinging);
+            _cellSelectedEventBinging = null;
         }
 
         private void HandleCellSelected()
