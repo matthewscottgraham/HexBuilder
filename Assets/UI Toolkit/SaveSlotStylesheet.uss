@@ -60,7 +60,7 @@ SaveGameChooser {
 
 .save-icon {
     align-self: center;
-    background-color: rgba(1,1,1,0.5);
+    background-color: rgba(1, 1, 1, 0.5);
     height: 256px;
     width: 256px;
 }
