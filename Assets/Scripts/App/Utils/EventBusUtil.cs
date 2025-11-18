@@ -9,11 +9,11 @@ namespace App.Utils
 {
     public static class EventBusUtil
     {
-        public static IReadOnlyList<Type> EventTypes {get; set;}
-        public static IReadOnlyList<Type> EventBusTypes {get; set;}
+        private static IReadOnlyList<Type> EventTypes {get; set;}
+        private static IReadOnlyList<Type> EventBusTypes {get; set;}
         
         #if UNITY_EDITOR
-        public static PlayModeStateChange PlayModeState {get; set;}
+        private static PlayModeStateChange PlayModeState {get; set;}
         
         [InitializeOnLoadMethod]
         public static void InitializeEditor()
@@ -22,10 +22,10 @@ namespace App.Utils
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
-        public static void OnPlayModeStateChanged(PlayModeStateChange state)
+        private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             PlayModeState = state;
-            if (state == PlayModeStateChange.ExitingPlayMode)
+            if (PlayModeState == PlayModeStateChange.ExitingPlayMode)
             {
                 ClearAllBusses();
             }
@@ -39,7 +39,7 @@ namespace App.Utils
             EventBusTypes = InitializeAllBusses();
         }
 
-        static List<Type> InitializeAllBusses()
+        private static List<Type> InitializeAllBusses()
         {
             var eventBusTypes = new List<Type>();
             var typeDef = typeof(EventBus<>);
@@ -53,12 +53,11 @@ namespace App.Utils
             return eventBusTypes;
         }
 
-        public static void ClearAllBusses()
+        private static void ClearAllBusses()
         {
             Debug.Log("Clearing all busses");
-            for (var i = 0; i < EventBusTypes.Count; i++)
+            foreach (var busType in EventBusTypes)
             {
-                var busType = EventBusTypes[i];
                 var clearMethod = busType.GetMethod("Clear", BindingFlags.Static | BindingFlags.NonPublic);
                 clearMethod?.Invoke(null, null);
             }

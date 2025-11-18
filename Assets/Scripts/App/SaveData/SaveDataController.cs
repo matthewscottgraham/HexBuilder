@@ -22,7 +22,7 @@ namespace App.SaveData
         public (Texture2D, string) GetMetaData(int saveID)
         {
             var ioController = ServiceLocator.Instance.Get<IOController>();
-            Texture2D tex = ioController.LoadPng(Path.Combine(SaveDirectoryName, saveID.ToString()), SaveImageFileName);
+            var tex = ioController.LoadPng(Path.Combine(SaveDirectoryName, saveID.ToString()), SaveImageFileName);
             var saveTime = ioController.GetFileSaveTime(Path.Combine(SaveDirectoryName, saveID.ToString()), SaveDataFileName);
             return (tex, saveTime);
         }
@@ -52,12 +52,14 @@ namespace App.SaveData
         
         private static SaveData<T> CreateSaveData<T>(int saveId, T gameData)
         {
-            var saveData = new SaveData<T>();
-            saveData.SaveID = saveId;
-            saveData.AppName = Application.productName;
-            saveData.AppVersion = Application.version;
-            saveData.SaveTime = DateTime.Now;
-            saveData.Data = gameData;
+            var saveData = new SaveData<T>
+            {
+                SaveID = saveId,
+                AppName = Application.productName,
+                AppVersion = Application.version,
+                SaveTime = DateTime.Now,
+                Data = gameData
+            };
             return saveData;
         }
     }

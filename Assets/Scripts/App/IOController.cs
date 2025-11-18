@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using System.Collections;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -10,23 +11,6 @@ namespace App
     public class IOController
     {
         private readonly string _appDataPath = Application.persistentDataPath;
-        
-        public bool DoesFileExist(string relativePath, string fileName)
-        {
-            return File.Exists(Path.Combine(_appDataPath, relativePath, fileName));
-        }
-
-        public bool DoesRelativeDirectoryExist(string relativePath)
-        {
-            return Directory.Exists(Path.Combine(_appDataPath, relativePath));
-        }
-
-        public void DeleteFile(string relativePath, string fileName)
-        {
-            Assert.IsTrue(DoesRelativeDirectoryExist(relativePath));
-            Assert.IsTrue(DoesFileExist(relativePath, fileName));
-            File.Delete(Path.Combine(_appDataPath, relativePath, fileName));
-        }
 
         public void DeleteDirectory(string relativePath)
         {
@@ -34,13 +18,6 @@ namespace App
             Directory.Delete(Path.Combine(_appDataPath, relativePath), true);
         }
 
-        public void CreateDirectory(string relativePath)
-        {
-            if (DoesRelativeDirectoryExist(relativePath)) return;
-            var absolutePath = Path.Combine(_appDataPath, relativePath);
-            Directory.CreateDirectory(absolutePath);
-        }
-        
         public async Task<bool> WriteJson<T>(T obj, string relativePath, string fileName)
         {
             CreateDirectory(relativePath);
@@ -55,8 +32,8 @@ namespace App
             
             return true;
         }
-        
-        #nullable enable
+
+#nullable enable
         public T? ReadJson<T>(string relativePath, string fileName) where T : struct
         {
             if (!DoesFileExist(relativePath, fileName + ".json")) return null;
@@ -70,15 +47,15 @@ namespace App
             if (!DoesFileExist(relativePath, fileName + ".json")) return string.Empty;
             
             var fileInfo = new FileInfo(Path.Combine(_appDataPath, relativePath, fileName));
-            return fileInfo.LastWriteTimeUtc.ToString();
+            return fileInfo.LastWriteTimeUtc.ToString(CultureInfo.InvariantCulture);
         }
 
         public Texture2D LoadPng(string relativePath, string fileName)
         {
-            if (!DoesFileExist(relativePath, fileName + ".png")) return null;
-            
-            byte[] bytes = File.ReadAllBytes(Path.Combine(_appDataPath, relativePath, fileName + ".png"));
             var tex = new Texture2D(2, 2);
+            if (!DoesFileExist(relativePath, fileName + ".png")) return tex;
+            
+            var bytes = File.ReadAllBytes(Path.Combine(_appDataPath, relativePath, fileName + ".png"));
             tex.LoadImage(bytes);
             return tex;
         }
@@ -105,17 +82,17 @@ namespace App
             var bytes = tex.EncodeToPNG();
             File.WriteAllBytes(fullFileName, bytes);
         }
-        
+
         private static Texture2D ResizeTexture(Texture2D source, int width, int height)
         {
-            RenderTexture rt = RenderTexture.GetTemporary(width, height);
+            var rt = RenderTexture.GetTemporary(width, height);
             RenderTexture.active = rt;
 
             // Copy texture to RT (GPU scaling)
             Graphics.Blit(source, rt);
 
             // Read RT back into a new Texture2D
-            Texture2D result = new Texture2D(width, height, source.format, false);
+            var result = new Texture2D(width, height, source.format, false);
             result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             result.Apply();
 
@@ -123,6 +100,30 @@ namespace App
             RenderTexture.ReleaseTemporary(rt);
 
             return result;
+        }
+
+        private bool DoesRelativeDirectoryExist(string relativePath)
+        {
+            return Directory.Exists(Path.Combine(_appDataPath, relativePath));
+        }
+
+        private void CreateDirectory(string relativePath)
+        {
+            if (DoesRelativeDirectoryExist(relativePath)) return;
+            var absolutePath = Path.Combine(_appDataPath, relativePath);
+            Directory.CreateDirectory(absolutePath);
+        }
+
+        private void DeleteFile(string relativePath, string fileName)
+        {
+            Assert.IsTrue(DoesRelativeDirectoryExist(relativePath));
+            Assert.IsTrue(DoesFileExist(relativePath, fileName));
+            File.Delete(Path.Combine(_appDataPath, relativePath, fileName));
+        }
+
+        private bool DoesFileExist(string relativePath, string fileName)
+        {
+            return File.Exists(Path.Combine(_appDataPath, relativePath, fileName));
         }
     }
 }

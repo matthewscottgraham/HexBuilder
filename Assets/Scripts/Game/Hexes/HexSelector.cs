@@ -1,4 +1,3 @@
-using App;
 using App.Events;
 using App.Input;
 using App.Services;
@@ -24,7 +23,7 @@ namespace Game.Hexes
             
             _camera = Camera.main;
             _cellHighlighter = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-            _cellHighlighter.SetParent(this.transform);
+            _cellHighlighter.SetParent(transform);
             _cellHighlighter.localPosition = Vector3.up;
         }
 
@@ -76,7 +75,7 @@ namespace Game.Hexes
             NotifyIfNewSelection(originalCell);
         }
 
-        private Vector3 ClampPositionToCell(Vector3 position)
+        private static Vector3 ClampPositionToCell(Vector3 position)
         {
             SelectedCell = ServiceLocator.Instance.Get<HexGrid>().GetClosestCellToPosition(position);
             return ServiceLocator.Instance.Get<HexGrid>().GetClosestHexCenterToPosition(position);

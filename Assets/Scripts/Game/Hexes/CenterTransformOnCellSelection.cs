@@ -3,7 +3,6 @@ using App.Services;
 using Game.Events;
 using Game.Grid;
 using UnityEngine;
-using System.Collections;
 
 namespace Game.Hexes
 {
@@ -27,9 +26,9 @@ namespace Game.Hexes
             transform.position = CoordinateToPosition(HexSelector.SelectedCell);
         }
 
-        private Vector3 CoordinateToPosition(Cell cell)
+        private static Vector3 CoordinateToPosition(Cell cell)
         {
-            return ServiceLocator.Instance.Get<HexGrid>().GetHexCenter(cell.x, cell.y);
+            return ServiceLocator.Instance.Get<HexGrid>().GetHexCenter(cell.X, cell.Y);
         }
     }
 }

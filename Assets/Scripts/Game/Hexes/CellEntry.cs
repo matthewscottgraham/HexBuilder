@@ -8,7 +8,7 @@ namespace Game.Hexes
             Height = height;
         }
         
-        public Cell Cell;
-        public int Height;
+        public readonly Cell Cell;
+        public readonly int Height;
     }
 }

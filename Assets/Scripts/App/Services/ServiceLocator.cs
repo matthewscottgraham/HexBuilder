@@ -70,7 +70,7 @@ namespace App.Services
             var serviceTypes = _services.Keys.ToArray();
             foreach (var service in serviceTypes)
             {
-                for (int i = 0; i < _services.Keys.Count; i++)
+                for (var i = 0; i < _services.Keys.Count; i++)
                 {
                     Deregister(service);
                 }

@@ -5,7 +5,7 @@ namespace App.Utils
 {
     public static class PredefinedAssemblyUtils
     {
-        enum AssemblyType
+        private enum AssemblyType
         {
             AssemblyCSharp,
             AssemblyCSharpEditor,
@@ -15,7 +15,7 @@ namespace App.Utils
             App
         }
 
-        static AssemblyType? GetAssemblyType(string assemblyName)
+        private static AssemblyType? GetAssemblyType(string assemblyName)
         {
             return assemblyName switch
             {
@@ -29,13 +29,15 @@ namespace App.Utils
             };
         }
 
-        static void AddTypesFromAssembly(Type[] assembly, ICollection<Type> types, Type interfaceType)
+        private static void AddTypesFromAssembly(Type[] assembly, ICollection<Type> types, Type interfaceType)
         {
             if (assembly == null) return;
-            for (var i = 0; i < assembly.Length; i++)
+            foreach (var type in assembly)
             {
-                var type = assembly[i];
-                if (type != interfaceType && interfaceType.IsAssignableFrom(type)) {types.Add(type);}
+                if (type != interfaceType && interfaceType.IsAssignableFrom(type))
+                {
+                    types.Add(type);
+                }
             }
         }
         
@@ -44,10 +46,10 @@ namespace App.Utils
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var assemblyTypes = new Dictionary<AssemblyType, Type[]>();
             var types = new List<Type>();
-            for (var i = 0; i < assemblies.Length; i++)
+            foreach (var t in assemblies)
             {
-                var assemblyType = GetAssemblyType(assemblies[i].GetName().Name);
-                if (assemblyType != null) assemblyTypes.Add((AssemblyType)assemblyType, assemblies[i].GetTypes());
+                var assemblyType = GetAssemblyType(t.GetName().Name);
+                if (assemblyType != null) assemblyTypes.Add((AssemblyType)assemblyType, t.GetTypes());
             }
             
             AddTypesFromAssembly(assemblyTypes[AssemblyType.Game], types, interfaceType);

@@ -30,7 +30,7 @@ namespace Game.Hexes
             {
                 var gameData = saveData.Value.Data;
                 //var gameData = Newtonsoft.Json.JsonConvert.DeserializeObject<GameData>(json);
-                _map = new GameObject[gameData.Size.x, gameData.Size.y];
+                _map = new GameObject[gameData.Size.X, gameData.Size.Y];
                 CreateHexes(gameData.Map);
             }
             
@@ -56,7 +56,7 @@ namespace Game.Hexes
             var hexes = new List<CellEntry>();
             for (var x = 0; x < _map.GetLength(0); x++)
             {
-                for (int y = 0; y < _map.GetLength(1); y++)
+                for (var y = 0; y < _map.GetLength(1); y++)
                 {
                     if (_map[x, y] == null) continue;
                     hexes.Add(new CellEntry(new Cell(x, y), (int)_map[x, y].transform.localScale.y));
@@ -74,24 +74,24 @@ namespace Game.Hexes
 
         private void ExecuteCommandOnHex(Cell cell)
         {
-            if (_map[cell.x, cell.y] == null) CreateNewHex(cell);
-            ServiceLocator.Instance.Get<ToolController>()?.UseSelectedTool(_map[cell.x, cell.y]);
+            if (_map[cell.X, cell.Y] == null) CreateNewHex(cell);
+            ServiceLocator.Instance.Get<ToolController>()?.UseSelectedTool(_map[cell.X, cell.Y]);
         }
 
         private void CreateNewHex(Cell cell)
         {
             var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
-            _map[cell.x, cell.y] = _hexFactory.CreateHex(cell, hexGrid, this.transform);
+            _map[cell.X, cell.Y] = _hexFactory.CreateHex(cell, hexGrid, transform);
         }
 
         private void CreateHexes(List<CellEntry> entries)
         {
             foreach (var entry in entries)
             {
-                if (entry.Cell.x < 0 || entry.Cell.x >= _map.GetLength(0) || entry.Cell.y < 0 ||
-                    entry.Cell.y >= _map.GetLength(1)) continue;
+                if (entry.Cell.X < 0 || entry.Cell.X >= _map.GetLength(0) || entry.Cell.Y < 0 ||
+                    entry.Cell.Y >= _map.GetLength(1)) continue;
                 CreateNewHex(entry.Cell);
-                _map[entry.Cell.x, entry.Cell.y].transform.localScale = new Vector3(1, entry.Height, 1);
+                _map[entry.Cell.X, entry.Cell.Y].transform.localScale = new Vector3(1, entry.Height, 1);
             }
         }
     }

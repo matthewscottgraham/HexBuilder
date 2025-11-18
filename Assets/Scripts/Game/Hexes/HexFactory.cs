@@ -1,5 +1,4 @@
 using Game.Grid;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -10,7 +9,7 @@ namespace Game.Hexes
         public GameObject CreateHex(Cell cell, HexGrid grid, Transform parent)
         {
             var go = new GameObject(cell.ToString());
-            go.transform.position = grid.GetHexCenter(cell.x, cell.y);
+            go.transform.position = grid.GetHexCenter(cell.X, cell.Y);
             go.transform.parent = parent;
             
             var filter = go.AddComponent<MeshFilter>();
@@ -32,7 +31,7 @@ namespace Game.Hexes
             var mesh = new Mesh
             {
                 vertices = GetPrismVertices( hexGrid,1),
-                triangles = GetPrismTriangles(),
+                triangles = GetPrismTriangles()
             };
             
             mesh.RecalculateNormals();
@@ -41,24 +40,24 @@ namespace Game.Hexes
             return mesh;
         }
         
-        private Vector3[] GetPrismVertices(HexGrid hexGrid, float height)
+        private static Vector3[] GetPrismVertices(HexGrid hexGrid, float height)
         {
             var vertices = new Vector3[18];
             
             // top face vertices
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 vertices[i] = hexGrid.GetCornerPosition(Vector3.zero, i) + Vector3.up * height;
             }
             
             // top of side face vertices
-            for(int i = 6; i < 12; i++)
+            for(var i = 6; i < 12; i++)
             {
                 vertices[i] = hexGrid.GetCornerPosition(Vector3.zero, i - 6) + Vector3.up * height;
             }
             
             // bottom of side face vertices
-            for(int i = 12; i < 18; i++)
+            for(var i = 12; i < 18; i++)
             {
                 vertices[i] = hexGrid.GetCornerPosition(Vector3.zero, i - 12);
             }
@@ -66,9 +65,9 @@ namespace Game.Hexes
             return vertices;
         }
         
-        private int[] GetPrismTriangles()
+        private static int[] GetPrismTriangles()
         {
-            var triangles = new int[]
+            var triangles = new[]
             {
                 // Top:
                 0, 1, 2,

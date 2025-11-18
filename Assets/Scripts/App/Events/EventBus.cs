@@ -1,19 +1,17 @@
-using System;
-using App.Services;
 using System.Collections.Generic;
 
 namespace App.Events
 {
     public static class EventBus<T>
     {
-        static readonly HashSet<IEventBinding<T>> bindings = new();
+        private static readonly HashSet<IEventBinding<T>> Bindings = new();
         
-        public static void Register(IEventBinding<T> binding) => bindings.Add(binding);
-        public static void Deregister(IEventBinding<T> binding) => bindings.Remove(binding);
+        public static void Register(IEventBinding<T> binding) => Bindings.Add(binding);
+        public static void Deregister(IEventBinding<T> binding) => Bindings.Remove(binding);
 
         public static void Raise(T @event)
         {
-            foreach (var binding in bindings)
+            foreach (var binding in Bindings)
             {
                 binding.OnEvent.Invoke(@event);
                 binding.OnEventNoArgs.Invoke();
@@ -22,7 +20,7 @@ namespace App.Events
 
         public static void Clear()
         {
-            bindings.Clear();
+            Bindings.Clear();
         }
     }
 }

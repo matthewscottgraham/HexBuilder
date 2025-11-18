@@ -1,6 +1,5 @@
 using App.Events;
 using Game.Hexes;
-using UnityEngine;
 
 namespace Game.Events
 {

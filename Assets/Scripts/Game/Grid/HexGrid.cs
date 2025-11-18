@@ -13,11 +13,11 @@ namespace Game.Grid
             NoiseScale = noiseScale;
         }
 
-        public float Radius { get; }
+        private float Radius { get; }
         public float InnerRadius => Radius * 0.866025404f;
         public Vector2Int GridSize { get; }
-        public Texture2D Noise { get; }
-        public float NoiseScale { get; }
+        private Texture2D Noise { get; }
+        private float NoiseScale { get; }
 
         public float WorldWidth()
         {
@@ -73,12 +73,12 @@ namespace Game.Grid
         
         public Vector3 GetHexCenter(int x, int y)
         {
-            var offsetX = (y % 2 == 0) ? 0 : InnerRadius;
-            var posX = (x * InnerRadius * 2f) + offsetX;
+            var offsetX = y % 2 == 0 ? 0 : InnerRadius;
+            var posX = x * InnerRadius * 2f + offsetX;
             var posY = y * Radius * 1.5f;
 
-            var centerX = (GridSize.x * InnerRadius * 2f) / 2f - (InnerRadius / 2f);
-            var centerY = (GridSize.y * Radius * 1.5f) / 2f - (Radius / 2f);
+            var centerX = GridSize.x * InnerRadius * 2f / 2f - InnerRadius / 2f;
+            var centerY = GridSize.y * Radius * 1.5f / 2f - Radius / 2f;
 
             return new Vector3(posX - centerX, 0, posY - centerY);
         }
@@ -95,7 +95,7 @@ namespace Game.Grid
         private Vector3 Perturb (Vector3 position) {
             var sample = SampleNoise(position);
             position.x += (sample.x * 2f - 1f) * NoiseScale;
-            position.z += (sample.z * 2f - 1f) * NoiseScale;;
+            position.z += (sample.z * 2f - 1f) * NoiseScale;
             return position;
         }
 

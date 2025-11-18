@@ -15,11 +15,6 @@ namespace App.Scenes
         
         private EventBinding<SceneLoadedEvent> _sceneLoaded;
         private EventBinding<SceneUnloadedEvent> _sceneUnloaded;
-        
-        public SceneController()
-        {
-            
-        }
 
         public void Dispose()
         {
@@ -33,7 +28,7 @@ namespace App.Scenes
             await LoadSceneAsync(GameSceneName, true);
         }
 
-        public async Task LoadSceneAsync(string sceneName, bool isAdditive)
+        private async Task LoadSceneAsync(string sceneName, bool isAdditive)
         {
             if (_loadedScenes.Contains(sceneName)) return;
             if (!isAdditive) _loadedScenes.Clear();
@@ -42,7 +37,7 @@ namespace App.Scenes
             EventBus<SceneLoadedEvent>.Raise(new SceneLoadedEvent(sceneName));
         }
 
-        public async Task UnloadSceneAsync(string sceneName)
+        private async Task UnloadSceneAsync(string sceneName)
         {
             if (!_loadedScenes.Contains(sceneName)) return;
             _loadedScenes.Remove(sceneName);

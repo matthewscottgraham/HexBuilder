@@ -1,4 +1,3 @@
-using System;
 using App.Services;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -17,7 +16,7 @@ namespace Game.Tools
             _buttonGroup.RegisterValueChangedCallback(HandleToolChanged);
         }
 
-        private void HandleToolChanged(ChangeEvent<ToggleButtonGroupState> evt)
+        private static void HandleToolChanged(ChangeEvent<ToggleButtonGroupState> evt)
         {
             var toolIndex = evt.newValue.GetActiveOptions(stackalloc int[evt.newValue.length]);
             ServiceLocator.Instance.Get<ToolController>().SetActiveTool(toolIndex[0]);
