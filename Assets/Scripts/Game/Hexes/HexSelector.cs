@@ -11,20 +11,21 @@ namespace Game.Hexes
     {
         private Camera _camera;
         private Transform _cellHighlighter;
-    
+
         private EventBinding<MoveEvent> _moveEventBinding;
-        
+
         public static Cell SelectedCell { get; private set; }
 
-        public void Initialize()
+        private void Update()
         {
-            _moveEventBinding = new EventBinding<MoveEvent>(HandleMoveEvent);
-            EventBus<MoveEvent>.Register(_moveEventBinding);
-            
-            _camera = Camera.main;
-            _cellHighlighter = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-            _cellHighlighter.SetParent(transform);
-            _cellHighlighter.localPosition = Vector3.up;
+            if (!InputController.PointerHasMovedThisFrame) return;
+
+            var ray = _camera.ScreenPointToRay(InputController.PointerPosition);
+            if (!Physics.Raycast(ray, out var hit)) return;
+
+            var originalCell = SelectedCell;
+            transform.position = ClampPositionToCell(hit.point);
+            NotifyIfNewSelection(originalCell);
         }
 
         private void OnDestroy()
@@ -33,24 +34,21 @@ namespace Game.Hexes
             _moveEventBinding = null;
         }
 
-        private void Update()
+        public void Initialize()
         {
-            if (!InputController.PointerHasMovedThisFrame) return;
-        
-            var ray = _camera.ScreenPointToRay(InputController.PointerPosition);
-            if (!Physics.Raycast(ray, out var hit)) return;
-            
-            var originalCell = SelectedCell;
-            transform.position = ClampPositionToCell(hit.point);
-            NotifyIfNewSelection(originalCell);
+            _moveEventBinding = new EventBinding<MoveEvent>(HandleMoveEvent);
+            EventBus<MoveEvent>.Register(_moveEventBinding);
+
+            _camera = Camera.main;
+            _cellHighlighter = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
+            _cellHighlighter.SetParent(transform);
+            _cellHighlighter.localPosition = Vector3.up;
         }
 
         private static void NotifyIfNewSelection(Cell originalCell)
         {
             if (!SelectedCell.Equals(originalCell))
-            {
                 EventBus<CellSelectedEvent>.Raise(new CellSelectedEvent(SelectedCell));
-            }
         }
 
         private void HandleMoveEvent(MoveEvent moveEvent)
@@ -71,7 +69,7 @@ namespace Game.Hexes
                     0,
                     transform.position.z + moveEvent.Delta.y * 1.5f));
             }
-            
+
             NotifyIfNewSelection(originalCell);
         }
 

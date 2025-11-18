@@ -11,33 +11,33 @@ namespace App
     public class Bootstrapper : MonoBehaviour
     {
         private const string MainSceneName = "App";
-        
+
+        private void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
+
+            var serviceLocator = gameObject.AddComponent<ServiceLocator>();
+            serviceLocator.Initialize();
+
+            serviceLocator.Register(new SceneController());
+            serviceLocator.Register(new IOController());
+            serviceLocator.Register(new ConfigController());
+            serviceLocator.Register(new SaveDataController());
+
+            var inputController = gameObject.AddComponent<InputController>();
+            inputController.Initialize();
+            serviceLocator.Register(inputController);
+
+            ServiceLocator.Instance.Get<SceneController>().LoadGameScene();
+
+            Destroy(this);
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Main()
         {
             if (SceneManager.GetSceneByName(MainSceneName).IsValid()) return;
             SceneManager.LoadScene(MainSceneName);
         }
-
-        private void Awake()
-        {
-            DontDestroyOnLoad(gameObject);
-            
-            var serviceLocator = gameObject.AddComponent<ServiceLocator>();
-            serviceLocator.Initialize();
-            
-            serviceLocator.Register(new SceneController());
-            serviceLocator.Register(new IOController());
-            serviceLocator.Register(new ConfigController());
-            serviceLocator.Register(new SaveDataController());
-            
-            var inputController = gameObject.AddComponent<InputController>();
-            inputController.Initialize();
-            serviceLocator.Register(inputController);
-            
-            ServiceLocator.Instance.Get<SceneController>().LoadGameScene();
-            
-            Destroy(this);
-        }       
     }
 }

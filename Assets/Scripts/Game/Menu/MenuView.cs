@@ -8,13 +8,14 @@ namespace Game.Menu
         private UIDocument _document;
         private Button _loadButton;
         private Button _newGameButton;
+
         private void Start()
         {
             _document = GetComponent<UIDocument>();
-            
+
             _loadButton = _document.rootVisualElement.Q<Button>("LoadGameButton");
             _loadButton.clicked += HandleLoadButtonClicked;
-            
+
             _newGameButton = _document.rootVisualElement.Q<Button>("NewGameButton");
             _newGameButton.clicked += HandleNewGameButtonClicked;
         }

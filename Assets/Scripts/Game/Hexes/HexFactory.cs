@@ -6,65 +6,58 @@ namespace Game.Hexes
     public class HexFactory
     {
         private Material _material;
+
         public GameObject CreateHex(Cell cell, HexGrid grid, Transform parent)
         {
             var go = new GameObject(cell.ToString());
             go.transform.position = grid.GetHexCenter(cell.X, cell.Y);
             go.transform.parent = parent;
-            
+
             var filter = go.AddComponent<MeshFilter>();
             filter.mesh = CreateMesh(grid);
 
             if (_material == null) _material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
             var renderer = go.AddComponent<MeshRenderer>();
             renderer.material = _material;
-            
+
             var collider = go.AddComponent<CapsuleCollider>();
             collider.radius = grid.InnerRadius;
             collider.height = 1;
 
             return go;
         }
-        
+
         private Mesh CreateMesh(HexGrid hexGrid)
         {
             var mesh = new Mesh
             {
-                vertices = GetPrismVertices( hexGrid,1),
+                vertices = GetPrismVertices(hexGrid, 1),
                 triangles = GetPrismTriangles()
             };
-            
+
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
 
             return mesh;
         }
-        
+
         private static Vector3[] GetPrismVertices(HexGrid hexGrid, float height)
         {
             var vertices = new Vector3[18];
-            
+
             // top face vertices
-            for (var i = 0; i < 6; i++)
-            {
-                vertices[i] = hexGrid.GetCornerPosition(Vector3.zero, i) + Vector3.up * height;
-            }
-            
+            for (var i = 0; i < 6; i++) vertices[i] = hexGrid.GetCornerPosition(Vector3.zero, i) + Vector3.up * height;
+
             // top of side face vertices
-            for(var i = 6; i < 12; i++)
-            {
+            for (var i = 6; i < 12; i++)
                 vertices[i] = hexGrid.GetCornerPosition(Vector3.zero, i - 6) + Vector3.up * height;
-            }
-            
+
             // bottom of side face vertices
-            for(var i = 12; i < 18; i++)
-            {
-                vertices[i] = hexGrid.GetCornerPosition(Vector3.zero, i - 12);
-            }
-            
+            for (var i = 12; i < 18; i++) vertices[i] = hexGrid.GetCornerPosition(Vector3.zero, i - 12);
+
             return vertices;
         }
-        
+
         private static int[] GetPrismTriangles()
         {
             var triangles = new[]
@@ -88,7 +81,7 @@ namespace Game.Hexes
                 17, 6, 11,
                 12, 6, 17
             };
-            
+
             return triangles;
         }
     }

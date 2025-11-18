@@ -1,6 +1,6 @@
-using App.Services;
 using System;
 using System.Collections.Generic;
+using App.Services;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -10,6 +10,7 @@ namespace Game.Cameras
     {
         private readonly Dictionary<CameraType, CinemachineCamera> _cameras = new();
         private readonly Camera _mainCamera;
+
         public CameraController(Camera mainCamera)
         {
             _mainCamera = mainCamera;
@@ -36,10 +37,7 @@ namespace Game.Cameras
 
         private void SetCameraActive(CameraType cameraType)
         {
-            foreach (var key in _cameras.Keys)
-            {
-                _cameras[key].gameObject.SetActive(cameraType == key);
-            }
+            foreach (var key in _cameras.Keys) _cameras[key].gameObject.SetActive(cameraType == key);
         }
     }
 }

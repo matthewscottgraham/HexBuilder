@@ -9,7 +9,7 @@ namespace Game.Hexes
             Size = new Cell(x, y);
             Map = new List<CellEntry>();
         }
-        
+
         public Cell Size;
         public List<CellEntry> Map;
     }

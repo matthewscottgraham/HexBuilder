@@ -9,6 +9,7 @@ namespace Game.Events
         {
             Cell = cell;
         }
+
         public Cell Cell;
     }
 }

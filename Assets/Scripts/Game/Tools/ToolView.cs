@@ -6,8 +6,8 @@ namespace Game.Tools
 {
     public class ToolView : MonoBehaviour
     {
-        private UIDocument _document;
         private ToggleButtonGroup _buttonGroup;
+        private UIDocument _document;
 
         private void Start()
         {

@@ -11,11 +11,11 @@ namespace Game
     {
         [SerializeField] private GridPreset gridPreset;
         [SerializeField] private Transform water;
-        
+
         private void Awake()
         {
             if (ServiceLocator.Instance == null) return;
-            
+
             ServiceLocator.Instance.Register(this);
             Initialize();
         }
@@ -34,21 +34,21 @@ namespace Game
         {
             var grid = gridPreset.CreateGrid();
             ServiceLocator.Instance.Register(grid);
-            
+
             var hexController = gameObject.AddComponent<HexController>();
             hexController.Initialize();
             ServiceLocator.Instance.Register(hexController);
-            
+
             var toolController = gameObject.AddComponent<ToolController>();
             toolController.Initialize();
             ServiceLocator.Instance.Register(toolController);
-            
+
             var hexSelector = new GameObject().AddComponent<HexSelector>();
             hexSelector.Initialize();
             ServiceLocator.Instance.Register(hexSelector);
-            
+
             ServiceLocator.Instance.Register(new CameraController(Camera.main));
-            
+
             water.transform.localScale = new Vector3(grid.WorldWidth() + 3, 1, grid.WorldHeight() + 3);
         }
     }

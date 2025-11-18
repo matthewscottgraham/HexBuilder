@@ -1,6 +1,6 @@
 using Game.Hexes;
-using UnityEngine;
 using Unity.Cinemachine;
+using UnityEngine;
 
 namespace Game.Cameras
 {
@@ -16,15 +16,15 @@ namespace Game.Cameras
         public CinemachineCamera CreateCamera(Transform parent)
         {
             if (prefab == null) return null;
-            
+
             var instance = Instantiate(prefab, parent);
-            
+
             if (!useAimConstraint) return instance;
-            
+
             var aimConstraint = new GameObject($"{cameraType} Aim Constraint").transform;
             aimConstraint.SetParent(parent);
             aimConstraint.gameObject.AddComponent<CenterTransformOnCellSelection>();
-            
+
             instance.Follow = aimConstraint;
 
             return instance;

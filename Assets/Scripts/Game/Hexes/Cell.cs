@@ -6,25 +6,44 @@ namespace Game.Hexes
     {
         public Cell(int x, int y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
-        
+
         public readonly int X;
         public readonly int Y;
-        
-        public static bool operator ==(Cell left, Cell right) => left.Equals(right);
-        public static bool operator !=(Cell left, Cell right) => !left.Equals(right);
-        
-        public bool Equals(Cell other) => X == other.X && Y == other.Y;
 
-        public override bool Equals(object obj) => obj is Cell other && Equals(other);
+        public static bool operator ==(Cell left, Cell right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Cell left, Cell right)
+        {
+            return !left.Equals(right);
+        }
+
+        public bool Equals(Cell other)
+        {
+            return X == other.X && Y == other.Y;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Cell other && Equals(other);
+        }
 
         public override int GetHashCode()
         {
-            unchecked { return (X * 397) ^ Y; }
+            unchecked
+            {
+                return (X * 397) ^ Y;
+            }
         }
 
-        public override string ToString() => $"Cell({X}, {Y})";
+        public override string ToString()
+        {
+            return $"Cell({X}, {Y})";
+        }
     }
 }

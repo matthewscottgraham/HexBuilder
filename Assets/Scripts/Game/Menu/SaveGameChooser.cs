@@ -12,11 +12,11 @@ namespace Game.Menu
     public class SaveGameChooser : VisualElement
     {
         private readonly bool _isNewGame;
-        
+
         public SaveGameChooser(bool isNewGame)
         {
             _isNewGame = isNewGame;
-            
+
             CreateHeader();
             CreateSlots();
         }
@@ -24,7 +24,7 @@ namespace Game.Menu
         private void CreateSlots()
         {
             var slotContainer = this.AddNew<VisualElement>(new VisualElement(), "save-slot-container");
-            
+
             // TODO: the max save slots should be added to the config
             const int saveSlotCount = 3;
             for (var i = 0; i < saveSlotCount; i++)
@@ -62,13 +62,13 @@ namespace Game.Menu
 
             var icon = saveSlot.AddNew<Image>(new Image(), "save-icon");
             icon.image = screenshot;
-            
+
             if (string.IsNullOrEmpty(labelText)) labelText = "New Game";
             saveSlot.AddNew<Label>(new Label(labelText), "save-info-label");
-            
+
             return saveSlot;
         }
-        
+
         private void CloseWindow()
         {
             RemoveFromHierarchy();
@@ -77,10 +77,7 @@ namespace Game.Menu
         private void HandleSlotClicked(int index)
         {
             ServiceLocator.Instance.Get<HexController>().Save();
-            if (_isNewGame)
-            {
-                ServiceLocator.Instance.Get<SaveDataController>().DeleteSaveData(index);
-            }
+            if (_isNewGame) ServiceLocator.Instance.Get<SaveDataController>().DeleteSaveData(index);
             var configController = ServiceLocator.Instance.Get<ConfigController>();
             var config = configController.Config;
             config.SaveId = index;

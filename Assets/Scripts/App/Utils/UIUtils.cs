@@ -8,14 +8,15 @@ namespace App.Utils
         {
             return parentElement.AddNew<VisualElement>(new VisualElement(), "spacer");
         }
-        
+
         public static T AddNew<T>(this VisualElement parentElement, T childElement) where T : VisualElement
         {
             parentElement.Add(childElement);
             return childElement;
         }
 
-        public static T AddNew<T>(this VisualElement parentElement, VisualElement childElement, string className) where T : VisualElement
+        public static T AddNew<T>(this VisualElement parentElement, VisualElement childElement, string className)
+            where T : VisualElement
         {
             var child = parentElement.AddNew(childElement);
             child.AddToClassList(className);

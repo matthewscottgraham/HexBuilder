@@ -9,12 +9,13 @@ namespace Game.Hexes
     public class CenterTransformOnCellSelection : MonoBehaviour
     {
         private EventBinding<CellSelectedEvent> _cellSelectedEventBinging;
-        
+
         private void OnEnable()
         {
             _cellSelectedEventBinging = new EventBinding<CellSelectedEvent>(HandleCellSelected);
             EventBus<CellSelectedEvent>.Register(_cellSelectedEventBinging);
         }
+
         private void OnDisable()
         {
             EventBus<CellSelectedEvent>.Deregister(_cellSelectedEventBinging);

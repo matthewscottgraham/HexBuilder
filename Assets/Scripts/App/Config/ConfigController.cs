@@ -9,13 +9,13 @@ namespace App.Config
     {
         private const string ConfigFileName = "config";
         private const string ConfigDirectoryName = "UserData";
-        
-        public Config Config { get; private set; }
 
         public ConfigController()
         {
             LoadConfig();
         }
+
+        public Config Config { get; private set; }
 
         public void Dispose()
         {
@@ -31,7 +31,7 @@ namespace App.Config
         private void LoadConfig()
         {
             EventBus<FileLoadEvent>.Raise(new FileLoadEvent());
-            var config =  ServiceLocator.Instance.Get<IOController>()
+            var config = ServiceLocator.Instance.Get<IOController>()
                 .ReadJson<Config>(ConfigDirectoryName, ConfigFileName);
 
             if (!config.HasValue)

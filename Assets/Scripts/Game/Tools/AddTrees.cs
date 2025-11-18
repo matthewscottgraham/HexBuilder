@@ -6,7 +6,6 @@ namespace Game.Tools
     {
         public void Use(GameObject hex)
         {
-            
         }
     }
 }

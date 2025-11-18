@@ -8,15 +8,23 @@ namespace App.Services
     public class ServiceLocator : MonoBehaviour
     {
         private readonly Dictionary<Type, object> _services = new();
-        
+
         public static ServiceLocator Instance { get; private set; }
-        
+
+        public void OnDestroy()
+        {
+            Instance = null;
+            var serviceTypes = _services.Keys.ToArray();
+            foreach (var service in serviceTypes)
+                for (var i = 0; i < _services.Keys.Count; i++)
+                    Deregister(service);
+            _services.Clear();
+        }
+
         public void Register<T>(T service)
         {
             if (!_services.TryAdd(service.GetType(), service))
-            {
                 Debug.LogError($"Service type already registered: {service.GetType().Name}");
-            }
         }
 
         public void Deregister<T>(T service)
@@ -34,11 +42,8 @@ namespace App.Services
 
         public T Get<T>() where T : class
         {
-            if (_services.TryGetValue(typeof(T), out var service))
-            {
-                return service as T;
-            }
-            
+            if (_services.TryGetValue(typeof(T), out var service)) return service as T;
+
             throw new Exception($"Service not registered: {typeof(T).Name}");
         }
 
@@ -61,21 +66,8 @@ namespace App.Services
                 Destroy(this);
                 return;
             }
+
             Instance = this;
-        }
-        
-        public void OnDestroy()
-        {
-            Instance = null;
-            var serviceTypes = _services.Keys.ToArray();
-            foreach (var service in serviceTypes)
-            {
-                for (var i = 0; i < _services.Keys.Count; i++)
-                {
-                    Deregister(service);
-                }
-            }
-            _services.Clear();
         }
     }
 }

@@ -1,8 +1,8 @@
-using Newtonsoft.Json;
 using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -21,23 +21,20 @@ namespace App
         public async Task<bool> WriteJson<T>(T obj, string relativePath, string fileName)
         {
             CreateDirectory(relativePath);
-            
-            if (DoesFileExist(relativePath, fileName))
-            {
-                DeleteFile(relativePath, fileName);
-            }
-            
+
+            if (DoesFileExist(relativePath, fileName)) DeleteFile(relativePath, fileName);
+
             var serializedObject = JsonConvert.SerializeObject(obj, Formatting.Indented);
-            await File.WriteAllTextAsync(Path.Combine(_appDataPath, relativePath, fileName + ".json"), serializedObject);
-            
+            await File.WriteAllTextAsync(Path.Combine(_appDataPath, relativePath, fileName + ".json"),
+                serializedObject);
+
             return true;
         }
-
 #nullable enable
         public T? ReadJson<T>(string relativePath, string fileName) where T : struct
         {
             if (!DoesFileExist(relativePath, fileName + ".json")) return null;
-            
+
             var json = File.ReadAllText(Path.Combine(_appDataPath, relativePath, fileName + ".json"));
             return JsonConvert.DeserializeObject<T>(json);
         }
@@ -45,7 +42,7 @@ namespace App
         public string GetFileSaveTime(string relativePath, string fileName)
         {
             if (!DoesFileExist(relativePath, fileName + ".json")) return string.Empty;
-            
+
             var fileInfo = new FileInfo(Path.Combine(_appDataPath, relativePath, fileName));
             return fileInfo.LastWriteTimeUtc.ToString(CultureInfo.InvariantCulture);
         }
@@ -54,7 +51,7 @@ namespace App
         {
             var tex = new Texture2D(2, 2);
             if (!DoesFileExist(relativePath, fileName + ".png")) return tex;
-            
+
             var bytes = File.ReadAllBytes(Path.Combine(_appDataPath, relativePath, fileName + ".png"));
             tex.LoadImage(bytes);
             return tex;
@@ -62,23 +59,20 @@ namespace App
 
         public IEnumerator SavePng(string relativePath, string fileName)
         {
-            if (DoesFileExist(relativePath, fileName + ".png"))
-            {
-                DeleteFile(relativePath, fileName + ".png");
-            }
+            if (DoesFileExist(relativePath, fileName + ".png")) DeleteFile(relativePath, fileName + ".png");
 
             var fullFileName = Path.Combine(Path.Combine(_appDataPath, relativePath, fileName + ".png"));
 
             yield return new WaitForEndOfFrame();
-            
+
             var renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
             ScreenCapture.CaptureScreenshotIntoRenderTexture(renderTexture);
             var tex = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
             tex.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
             tex.Apply();
-            
+
             tex = ResizeTexture(tex, tex.width / 4, tex.height / 4);
-            
+
             var bytes = tex.EncodeToPNG();
             File.WriteAllBytes(fullFileName, bytes);
         }

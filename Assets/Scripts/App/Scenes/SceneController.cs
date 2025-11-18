@@ -1,8 +1,8 @@
 using System;
-using App.Events;
-using App.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using App.Events;
+using App.Services;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,7 +12,7 @@ namespace App.Scenes
     {
         private const string GameSceneName = "Game";
         private readonly HashSet<string> _loadedScenes = new();
-        
+
         private EventBinding<SceneLoadedEvent> _sceneLoaded;
         private EventBinding<SceneUnloadedEvent> _sceneUnloaded;
 
@@ -33,7 +33,7 @@ namespace App.Scenes
             if (_loadedScenes.Contains(sceneName)) return;
             if (!isAdditive) _loadedScenes.Clear();
             _loadedScenes.Add(sceneName);
-            await SceneManager.LoadSceneAsync(sceneName, isAdditive? LoadSceneMode.Additive : LoadSceneMode.Single);
+            await SceneManager.LoadSceneAsync(sceneName, isAdditive ? LoadSceneMode.Additive : LoadSceneMode.Single);
             EventBus<SceneLoadedEvent>.Raise(new SceneLoadedEvent(sceneName));
         }
 

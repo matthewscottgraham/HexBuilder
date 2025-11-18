@@ -6,12 +6,17 @@ namespace Game.Tools
 {
     public class ToolController : MonoBehaviour
     {
-        private ITool[] _tools;
         private ITool _currentTool;
+        private ITool[] _tools;
+
+        private void OnDestroy()
+        {
+            ServiceLocator.Instance?.Deregister(this);
+        }
 
         public void Initialize()
         {
-            _tools = new []
+            _tools = new[]
             {
                 new RaiseTerrain() as ITool,
                 new LowerTerrain(),
@@ -26,17 +31,12 @@ namespace Game.Tools
             Assert.IsTrue(toolIndex >= 0 && toolIndex < _tools.Length);
             _currentTool = _tools[toolIndex];
         }
-        
+
         public void UseSelectedTool(GameObject hex)
         {
             Assert.IsNotNull(_currentTool);
             Assert.IsNotNull(hex);
             _currentTool.Use(hex);
-        }
-
-        private void OnDestroy()
-        {
-            ServiceLocator.Instance?.Deregister(this);
         }
     }
 }

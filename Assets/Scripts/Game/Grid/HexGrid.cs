@@ -21,7 +21,7 @@ namespace Game.Grid
 
         public float WorldWidth()
         {
-            return GridSize.x * InnerRadius * 2;   
+            return GridSize.x * InnerRadius * 2;
         }
 
         public float WorldHeight()
@@ -33,44 +33,40 @@ namespace Game.Grid
         {
             var closestDistanceSquared = Mathf.Infinity;
             var closestCenter = Vector3.zero;
-    
-            for (var x = 0; x < GridSize.x; x++)
-            {
-                for (var y = 0; y < GridSize.y; y++)
-                {
-                    var center = GetHexCenter(x, y);
-                    var distanceSquared = (position - center).sqrMagnitude;
 
-                    if (!(distanceSquared < closestDistanceSquared)) continue;
-                    closestDistanceSquared = distanceSquared;
-                    closestCenter = center;
-                }
+            for (var x = 0; x < GridSize.x; x++)
+            for (var y = 0; y < GridSize.y; y++)
+            {
+                var center = GetHexCenter(x, y);
+                var distanceSquared = (position - center).sqrMagnitude;
+
+                if (!(distanceSquared < closestDistanceSquared)) continue;
+                closestDistanceSquared = distanceSquared;
+                closestCenter = center;
             }
 
             return closestCenter;
         }
-        
+
         public Cell GetClosestCellToPosition(Vector3 position)
         {
             var closestDistanceSquared = Mathf.Infinity;
             var closestCell = new Cell(0, 0);
-    
-            for (var x = 0; x < GridSize.x; x++)
-            {
-                for (var y = 0; y < GridSize.y; y++)
-                {
-                    var center = GetHexCenter(x, y);
-                    var distanceSquared = (position - center).sqrMagnitude;
 
-                    if (!(distanceSquared < closestDistanceSquared)) continue;
-                    closestDistanceSquared = distanceSquared;
-                    closestCell = new Cell(x, y);
-                }
+            for (var x = 0; x < GridSize.x; x++)
+            for (var y = 0; y < GridSize.y; y++)
+            {
+                var center = GetHexCenter(x, y);
+                var distanceSquared = (position - center).sqrMagnitude;
+
+                if (!(distanceSquared < closestDistanceSquared)) continue;
+                closestDistanceSquared = distanceSquared;
+                closestCell = new Cell(x, y);
             }
 
             return closestCell;
         }
-        
+
         public Vector3 GetHexCenter(int x, int y)
         {
             var offsetX = y % 2 == 0 ? 0 : InnerRadius;
@@ -82,7 +78,7 @@ namespace Game.Grid
 
             return new Vector3(posX - centerX, 0, posY - centerY);
         }
-        
+
         public Vector3 GetCornerPosition(Vector3 center, int cornerIndex)
         {
             var angleDeg = 60f * cornerIndex;
@@ -91,8 +87,9 @@ namespace Game.Grid
             corner = Perturb(corner);
             return corner;
         }
-        
-        private Vector3 Perturb (Vector3 position) {
+
+        private Vector3 Perturb(Vector3 position)
+        {
             var sample = SampleNoise(position);
             position.x += (sample.x * 2f - 1f) * NoiseScale;
             position.z += (sample.z * 2f - 1f) * NoiseScale;

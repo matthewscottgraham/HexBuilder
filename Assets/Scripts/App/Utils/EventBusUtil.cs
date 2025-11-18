@@ -1,7 +1,7 @@
-using App.Events;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using App.Events;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,28 +9,8 @@ namespace App.Utils
 {
     public static class EventBusUtil
     {
-        private static IReadOnlyList<Type> EventTypes {get; set;}
-        private static IReadOnlyList<Type> EventBusTypes {get; set;}
-        
-        #if UNITY_EDITOR
-        private static PlayModeStateChange PlayModeState {get; set;}
-        
-        [InitializeOnLoadMethod]
-        public static void InitializeEditor()
-        {
-            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-        }
-
-        private static void OnPlayModeStateChanged(PlayModeStateChange state)
-        {
-            PlayModeState = state;
-            if (PlayModeState == PlayModeStateChange.ExitingPlayMode)
-            {
-                ClearAllBusses();
-            }
-        }
-        #endif
+        private static IReadOnlyList<Type> EventTypes { get; set; }
+        private static IReadOnlyList<Type> EventBusTypes { get; set; }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Initialize()
@@ -49,7 +29,7 @@ namespace App.Utils
                 eventBusTypes.Add(eventBusType);
                 Debug.Log($"Initializing {eventType.Name}");
             }
-            
+
             return eventBusTypes;
         }
 
@@ -62,5 +42,22 @@ namespace App.Utils
                 clearMethod?.Invoke(null, null);
             }
         }
+
+#if UNITY_EDITOR
+        private static PlayModeStateChange PlayModeState { get; set; }
+
+        [InitializeOnLoadMethod]
+        public static void InitializeEditor()
+        {
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+
+        private static void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            PlayModeState = state;
+            if (PlayModeState == PlayModeStateChange.ExitingPlayMode) ClearAllBusses();
+        }
+#endif
     }
 }

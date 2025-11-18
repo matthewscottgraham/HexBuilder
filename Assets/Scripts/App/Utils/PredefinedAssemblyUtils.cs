@@ -5,16 +5,6 @@ namespace App.Utils
 {
     public static class PredefinedAssemblyUtils
     {
-        private enum AssemblyType
-        {
-            AssemblyCSharp,
-            AssemblyCSharpEditor,
-            AssemblyCSharpEditorFirstPass,
-            AssemblyCSharpFirstPass,
-            Game,
-            App
-        }
-
         private static AssemblyType? GetAssemblyType(string assemblyName)
         {
             return assemblyName switch
@@ -33,14 +23,10 @@ namespace App.Utils
         {
             if (assembly == null) return;
             foreach (var type in assembly)
-            {
                 if (type != interfaceType && interfaceType.IsAssignableFrom(type))
-                {
                     types.Add(type);
-                }
-            }
         }
-        
+
         public static List<Type> GetTypes(Type interfaceType)
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -51,13 +37,23 @@ namespace App.Utils
                 var assemblyType = GetAssemblyType(t.GetName().Name);
                 if (assemblyType != null) assemblyTypes.Add((AssemblyType)assemblyType, t.GetTypes());
             }
-            
+
             AddTypesFromAssembly(assemblyTypes[AssemblyType.Game], types, interfaceType);
             AddTypesFromAssembly(assemblyTypes[AssemblyType.App], types, interfaceType);
             //AddTypesFromAssembly(assemblyTypes[AssemblyType.AssemblyCSharp], types, interfaceType);
             //AddTypesFromAssembly(assemblyTypes[AssemblyType.AssemblyCSharpFirstPass], types, interfaceType);
-            
+
             return types;
+        }
+
+        private enum AssemblyType
+        {
+            AssemblyCSharp,
+            AssemblyCSharpEditor,
+            AssemblyCSharpEditorFirstPass,
+            AssemblyCSharpFirstPass,
+            Game,
+            App
         }
     }
 }
