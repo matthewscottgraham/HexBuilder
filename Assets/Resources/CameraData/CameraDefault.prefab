@@ -89,21 +89,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachinePositionComposer
   CameraDistance: 20
-  DeadZoneDepth: 0
+  DeadZoneDepth: 50
   Composition:
     ScreenPosition: {x: 0, y: 0}
     DeadZone:
       Enabled: 1
-      Size: {x: 0.8, y: 0.8}
+      Size: {x: 1.3, y: 1}
     HardLimits:
       Enabled: 0
-      Size: {x: 0.8, y: 0.8}
+      Size: {x: 1.5, y: 1.2}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 10, z: -10}
-  Damping: {x: 10, y: 10, z: 10}
+  Damping: {x: 5, y: 5, z: 5}
   Lookahead:
-    Enabled: 1
+    Enabled: 0
     Time: 0.5
     Smoothing: 14.7
     IgnoreY: 1

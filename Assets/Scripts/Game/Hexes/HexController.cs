@@ -63,6 +63,12 @@ namespace Game.Hexes
             ServiceLocator.Instance?.Get<SaveDataController>().Save(this, gameData);
         }
 
+        public float GetCellHeight(Cell cell)
+        {
+            if (_map == null || !_map[cell.X, cell.Y]) return 1;
+            return _map[cell.X, cell.Y].transform.localScale.y;
+        }
+
         private void HandleInteractEvent()
         {
             ExecuteCommandOnHex(HexSelector.SelectedCell);
@@ -70,7 +76,11 @@ namespace Game.Hexes
 
         private void ExecuteCommandOnHex(Cell cell)
         {
-            if (_map[cell.X, cell.Y] == null) CreateNewHex(cell);
+            if (_map[cell.X, cell.Y] == null)
+            {
+                CreateNewHex(cell);
+                return;
+            }
             ServiceLocator.Instance.Get<ToolController>()?.UseSelectedTool(_map[cell.X, cell.Y]);
         }
 

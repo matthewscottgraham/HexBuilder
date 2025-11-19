@@ -30,7 +30,7 @@ namespace Game.Hexes
         {
             var mesh = new Mesh
             {
-                vertices = GetPrismVertices(hexGrid, 0.5f),
+                vertices = GetPrismVertices(hexGrid, 1),
                 triangles = GetPrismTriangles()
             };
 

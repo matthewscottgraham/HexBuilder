@@ -6,7 +6,7 @@
             <ui:Button text="Exit" name="ExitGameButton" class="exit-button" />
         </ui:VisualElement>
         <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
-        <ui:ToggleButtonGroup value="1">
+        <ui:ToggleButtonGroup value="000010">
             <ui:Button text="Level Terrain" />
             <ui:Button text="Raise Terrain" />
             <ui:Button text="Lower Terrain" />

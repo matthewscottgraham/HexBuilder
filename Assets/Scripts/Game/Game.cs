@@ -43,7 +43,7 @@ namespace Game
             toolController.Initialize();
             ServiceLocator.Instance.Register(toolController);
 
-            var hexSelector = new GameObject().AddComponent<HexSelector>();
+            var hexSelector = new GameObject("Selector").AddComponent<HexSelector>();
             hexSelector.Initialize();
             ServiceLocator.Instance.Register(hexSelector);
 
