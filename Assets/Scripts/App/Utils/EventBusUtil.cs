@@ -27,7 +27,6 @@ namespace App.Utils
             {
                 var eventBusType = typeDef.MakeGenericType(eventType);
                 eventBusTypes.Add(eventBusType);
-                Debug.Log($"Initializing {eventType.Name}");
             }
 
             return eventBusTypes;

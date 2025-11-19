@@ -69,6 +69,28 @@ namespace Game.Hexes
             return _map[cell.X, cell.Y].transform.localScale.y;
         }
 
+        public GameObject GetHex(Cell cell)
+        {
+            if (_map == null || !InBounds(cell) || !_map[cell.X, cell.Y]) return null;
+            return _map[cell.X, cell.Y];
+        }
+
+        public GameObject CreateNewHex(Cell cell)
+        {
+            if (!InBounds(cell)) return null;
+            if (_map[cell.X, cell.Y] == null)
+            {
+                var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
+                _map[cell.X, cell.Y] = _hexFactory.CreateHex(cell, hexGrid, transform);
+            }
+            return _map[cell.X, cell.Y];
+        }
+
+        public bool InBounds(Cell cell)
+        {
+            return cell.X >= 0 && cell.X < _map.GetLength(0) && cell.Y >= 0 && cell.Y < _map.GetLength(1);
+        }
+
         private void HandleInteractEvent()
         {
             ExecuteCommandOnHex(HexSelector.SelectedCell);
@@ -76,18 +98,7 @@ namespace Game.Hexes
 
         private void ExecuteCommandOnHex(Cell cell)
         {
-            if (_map[cell.X, cell.Y] == null)
-            {
-                CreateNewHex(cell);
-                return;
-            }
-            ServiceLocator.Instance.Get<ToolController>()?.UseSelectedTool(_map[cell.X, cell.Y]);
-        }
-
-        private void CreateNewHex(Cell cell)
-        {
-            var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
-            _map[cell.X, cell.Y] = _hexFactory.CreateHex(cell, hexGrid, transform);
+            ServiceLocator.Instance.Get<ToolController>().UseSelectedTool(cell);
         }
 
         private void CreateHexes(List<CellEntry> entries)
