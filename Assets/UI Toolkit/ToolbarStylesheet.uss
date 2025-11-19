@@ -1,0 +1,28 @@
+.tool-panel {
+    background-color: darkslategrey;
+    border-color: rgba(0,0,0,0.5);
+    border-right-width: 6px;
+    border-bottom-width: 6px;
+    border-radius: 12px;
+    flex-direction: column;
+    flex-grow: 1;
+    margin: 12px;
+    padding: 12px;
+    position: absolute;
+    right: 0;
+    width: 20%;
+}
+
+.game-panel {
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.game-panel Button {
+    flex-grow: 1;
+    margin: 2px;
+}
+
+#AOESlider:focus > .unity-base-field__label {
+    color: white;
+}

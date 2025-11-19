@@ -1,15 +1,20 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
-         editor-extension-mode="False">
-    <ui:VisualElement picking-mode="Ignore" style="flex-grow: 0; flex-direction: row;">
-        <ui:VisualElement style="flex-grow: 0; flex-direction: row;">
-            <ui:Button text="New" name="NewGameButton"/>
-            <ui:Button text="Load" name="LoadGameButton"/>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement picking-mode="Ignore" name="ToolPanel" class="tool-panel">
+        <ui:VisualElement name="GamePanel" class="game-panel">
+            <ui:Button text="New" name="NewGameButton" />
+            <ui:Button text="Load" name="LoadGameButton" />
+            <ui:Button text="Exit" name="ExitGameButton" class="exit-button" />
         </ui:VisualElement>
-        <ui:ToggleButtonGroup label="Tools" value="1">
-            <ui:Button text="Up"/>
-            <ui:Button text="Down"/>
-            <ui:Button text="Water"/>
-            <ui:Button text="Trees"/>
+        <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
+        <ui:ToggleButtonGroup value="1">
+            <ui:Button text="Level Terrain" />
+            <ui:Button text="Raise Terrain" />
+            <ui:Button text="Lower Terrain" />
+            <ui:Button text="Add Water" />
+            <ui:Button text="Plant Trees" />
+            <ui:Button text="Add Farm" name="Button" />
         </ui:ToggleButtonGroup>
+        <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
+        <ui:SliderInt label="AOE" value="1" high-value="3" low-value="1" name="AOESlider" />
     </ui:VisualElement>
 </ui:UXML>

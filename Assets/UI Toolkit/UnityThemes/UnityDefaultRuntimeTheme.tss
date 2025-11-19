@@ -2,4 +2,6 @@
 
 @import url("/Assets/UI Toolkit/DefaultStylesheet.uss");
 @import url("/Assets/UI Toolkit/SaveSlotStylesheet.uss");
+@import url("/Assets/UI Toolkit/ToolbarStylesheet.uss");
+
 

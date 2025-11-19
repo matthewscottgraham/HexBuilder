@@ -43,7 +43,7 @@ namespace Game.Menu
 
             header.AddSpacer();
 
-            var cancelButton = header.AddNew<Button>(new Button(CloseWindow), "cancel-button");
+            var cancelButton = header.AddNew<Button>(new Button(CloseWindow), "exit-button");
             cancelButton.text = "X";
         }
 

@@ -1,7 +1,70 @@
 Label {
+    color: white;
     font-size: 20px;
 }
 
 Button {
     font-size: 20px;
+}
+
+.spacer {
+    min-height: 12px;
+    min-width: 12px;
+}
+
+.unity-button {
+    background-color: cadetblue;
+    border-radius: 12px;
+    border-width: 0;
+    color: white;
+}
+
+Button.unity-button:hover:enabled {
+    background-color: goldenrod;
+}
+
+Button.unity-button:focus:enabled {
+    border-color: goldenrod;
+}
+
+Button.unity-button:checked {
+    background-color: darkslategrey;
+    -unity-font-style: bold;
+    border-color: goldenrod;
+    border-width: 2px;
+}
+
+.exit-button {
+    background-color: coral;
+    color: black;
+}
+
+.unity-toggle-button-group {
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.unity-button-group {
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.unity-button-group Button {
+    flex-grow: 1;
+}
+
+.unity-slider-int__label {
+    min-width: 50px;
+}
+
+#unity-dragger {
+    background-color: cadetblue;
+    border-radius: 12px;
+    height: 24px;
+    width: 24px;
+}
+
+#unity-tracker {
+    background-color: black;
 }

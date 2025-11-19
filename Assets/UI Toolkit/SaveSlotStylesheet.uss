@@ -1,5 +1,5 @@
 SaveGameChooser {
-    background-color: black;
+    background-color: darkslategrey;
     border-width: 1px;
     border-color: white;
     border-radius: 12px;

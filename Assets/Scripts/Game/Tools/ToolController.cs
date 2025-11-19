@@ -16,14 +16,16 @@ namespace Game.Tools
 
         public void Initialize()
         {
-            _tools = new[]
+            _tools = new ITool[]
             {
-                new RaiseTerrain() as ITool,
+                new LevelTerrain(),
+                new RaiseTerrain(),
                 new LowerTerrain(),
                 new AddWater(),
-                new AddTrees()
+                new AddTrees(),
+                new AddFarm()
             };
-            _currentTool = _tools[0];
+            _currentTool = _tools[1];
         }
 
         public void SetActiveTool(int toolIndex)
