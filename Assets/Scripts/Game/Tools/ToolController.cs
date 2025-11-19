@@ -26,7 +26,8 @@ namespace Game.Tools
                 new LowerTerrain(),
                 new AddWater(),
                 new AddTrees(),
-                new AddFarm()
+                new AddFarm(),
+                new AddPath()
             };
             _currentTool = _tools[1];
         }
@@ -58,10 +59,11 @@ namespace Game.Tools
             }
         }
 
-        private static Dictionary<Cell, GameObject> GetHexesWithinAreaOfEffect(Cell center, int radius)
+        // TODO: move to HexGrid
+        private static Dictionary<Cell, HexObject> GetHexesWithinAreaOfEffect(Cell center, int radius)
         {
             var hexController = ServiceLocator.Instance.Get<HexController>();
-            var hexes = new Dictionary<Cell, GameObject>();
+            var hexes = new Dictionary<Cell, HexObject>();
 
             int centerQ = center.X - (center.Y - (center.Y & 1)) / 2;
             int centerR = center.Y;

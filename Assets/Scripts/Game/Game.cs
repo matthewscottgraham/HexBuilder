@@ -1,5 +1,6 @@
 using App.Services;
 using Game.Cameras;
+using Game.Features;
 using Game.Grid;
 using Game.Hexes;
 using Game.Tools;
@@ -34,6 +35,9 @@ namespace Game
         {
             var grid = gridPreset.CreateGrid();
             ServiceLocator.Instance.Register(grid);
+
+            var featureFactory = new FeatureFactory();
+            ServiceLocator.Instance.Register(featureFactory);
 
             var hexController = gameObject.AddComponent<HexController>();
             hexController.Initialize();

@@ -8,16 +8,17 @@ namespace Game.Tools
     {
         public float Level { get; set; }
         
-        public void Use(Cell cell, GameObject hex)
+        public void Use(Cell cell, HexObject hex)
         {
             var hexController = ServiceLocator.Instance.Get<HexController>();
             
             if (!hexController.InBounds(cell)) return;
 
             if (hex == null) hex = hexController.CreateNewHex(cell);
-
-            var currentScale = hex.transform.localScale;
-            hex.transform.localScale = new Vector3(currentScale.x, Level, currentScale.z);
+            
+            hex.RemoveFeature();
+            
+            hex.SetHeight(Level);
         }
     }
 }

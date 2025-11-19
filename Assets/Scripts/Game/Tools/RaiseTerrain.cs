@@ -6,7 +6,7 @@ namespace Game.Tools
 {
     public class RaiseTerrain : ITool
     {
-        public void Use(Cell cell, GameObject hex)
+        public void Use(Cell cell, HexObject hex)
         {
             var hexController = ServiceLocator.Instance.Get<HexController>();
             
@@ -18,8 +18,7 @@ namespace Game.Tools
                 return;
             }
             
-            var currentScale = hex.transform.localScale;
-            hex.transform.localScale = new Vector3(currentScale.x, currentScale.y + 1, currentScale.z);
+            hex.SetHeight(hex.Height + 1);
         }
     }
 }

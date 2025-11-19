@@ -7,23 +7,28 @@ namespace Game.Hexes
     {
         private readonly Material _material = Resources.Load<Material>("Materials/mat_land");
 
-        public GameObject CreateHex(Cell cell, HexGrid grid, Transform parent)
+        public HexObject CreateHex(Cell cell, HexGrid grid, Transform parent)
         {
             var go = new GameObject(cell.ToString());
             go.transform.position = grid.GetHexCenter(cell.X, cell.Y);
             go.transform.parent = parent;
-
-            var filter = go.AddComponent<MeshFilter>();
-            filter.mesh = CreateMesh(grid);
             
-            var renderer = go.AddComponent<MeshRenderer>();
-            renderer.material = _material;
-
             var collider = go.AddComponent<CapsuleCollider>();
             collider.radius = grid.InnerRadius;
             collider.height = 1;
+            
+            var hexMesh = new GameObject("HexMesh");
+            
+            var hexObject = go.AddComponent<HexObject>();
+            hexObject.Initialize(cell, collider, hexMesh.transform);
+            
+            var filter = hexMesh.AddComponent<MeshFilter>();
+            filter.mesh = CreateMesh(grid);
+            
+            var renderer = hexMesh.AddComponent<MeshRenderer>();
+            renderer.material = _material;
 
-            return go;
+            return hexObject;
         }
 
         private static Mesh CreateMesh(HexGrid hexGrid)

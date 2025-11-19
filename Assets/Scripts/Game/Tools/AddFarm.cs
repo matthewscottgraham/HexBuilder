@@ -1,13 +1,16 @@
+using App.Services;
+using Game.Features;
 using Game.Hexes;
-using UnityEngine;
 
 namespace Game.Tools
 {
     public class AddFarm : ITool
     {
-        public void Use(Cell cell, GameObject hex)
+        public void Use(Cell cell, HexObject hex)
         {
-            
+            if (hex == null) return;
+            var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(FeatureType.Settlement);
+            hex.AddFeature(feature);
         }
     }
 }

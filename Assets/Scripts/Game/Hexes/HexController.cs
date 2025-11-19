@@ -13,7 +13,7 @@ namespace Game.Hexes
         private const int AutoSaveFrequecy = 60;
         private HexFactory _hexFactory;
         private EventBinding<InteractEvent> _interactEventBinding;
-        private GameObject[,] _map;
+        private HexObject[,] _map;
 
         public void OnDestroy()
         {
@@ -31,12 +31,12 @@ namespace Game.Hexes
             if (saveData == null)
             {
                 var gridSize = ServiceLocator.Instance.Get<HexGrid>().GridSize;
-                _map = new GameObject[gridSize.x, gridSize.y];
+                _map = new HexObject[gridSize.x, gridSize.y];
             }
             else
             {
                 var gameData = saveData.Value.Data;
-                _map = new GameObject[gameData.Size.X, gameData.Size.Y];
+                _map = new HexObject[gameData.Size.X, gameData.Size.Y];
                 CreateHexes(gameData.Map);
             }
 
@@ -66,16 +66,16 @@ namespace Game.Hexes
         public float GetCellHeight(Cell cell)
         {
             if (_map == null || !_map[cell.X, cell.Y]) return 1;
-            return _map[cell.X, cell.Y].transform.localScale.y;
+            return _map[cell.X, cell.Y].Height;
         }
 
-        public GameObject GetHex(Cell cell)
+        public HexObject GetHex(Cell cell)
         {
             if (_map == null || !InBounds(cell) || !_map[cell.X, cell.Y]) return null;
             return _map[cell.X, cell.Y];
         }
 
-        public GameObject CreateNewHex(Cell cell)
+        public HexObject CreateNewHex(Cell cell)
         {
             if (!InBounds(cell)) return null;
             if (_map[cell.X, cell.Y] == null)
@@ -108,7 +108,7 @@ namespace Game.Hexes
                 if (entry.Cell.X < 0 || entry.Cell.X >= _map.GetLength(0) || entry.Cell.Y < 0 ||
                     entry.Cell.Y >= _map.GetLength(1)) continue;
                 CreateNewHex(entry.Cell);
-                _map[entry.Cell.X, entry.Cell.Y].transform.localScale = new Vector3(1, entry.Height, 1);
+                _map[entry.Cell.X, entry.Cell.Y].SetHeight(entry.Height);
             }
         }
     }
