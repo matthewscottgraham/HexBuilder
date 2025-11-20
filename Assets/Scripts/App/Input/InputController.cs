@@ -1,19 +1,20 @@
-using System.Collections.Generic;
 using App.Events;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace App.Input
 {
-    public class InputController : MonoBehaviour
+    public class InputController : MonoBehaviour, IDisposable
     {
         private EventSystem _eventSystem;
         private InputSystem_Actions _inputSystem;
 
         public static bool PointerHasMovedThisFrame { get; private set; }
         public static Vector2 PointerPosition => Mouse.current.position.ReadValue();
-        public static Vector2 LastMousePosition { get; private set; }
+        private static Vector2 LastMousePosition { get; set; }
 
         private void Update()
         {
@@ -21,11 +22,8 @@ namespace App.Input
             LastMousePosition = PointerPosition;
         }
 
-        public void OnDestroy()
+        public void Dispose()
         {
-            //ServiceLocator.Instance?.Deregister(typeof(MoveEvent));
-            //ServiceLocator.Instance?.Deregister(typeof(InteractEvent));
-
             _inputSystem.Player.Move.performed -= HandleMove;
             _inputSystem.Player.Interact.performed -= HandleInteract;
             _inputSystem?.Dispose();
@@ -39,9 +37,6 @@ namespace App.Input
 
             _inputSystem.Player.Move.performed += HandleMove;
             _inputSystem.Player.Interact.started += HandleInteract;
-
-            //ServiceLocator.Instance?.Register(new EventBus<MoveEvent>());
-            //ServiceLocator.Instance?.Register(new EventBus<InteractEvent>());
         }
 
         private bool IsPointerOverUI()

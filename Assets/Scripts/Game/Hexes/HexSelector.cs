@@ -1,14 +1,15 @@
-using System.Collections;
 using App.Events;
 using App.Input;
 using App.Services;
 using Game.Events;
 using Game.Grid;
+using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Game.Hexes
 {
-    public class HexSelector : MonoBehaviour
+    public class HexSelector : MonoBehaviour, IDisposable
     {
         private Camera _camera;
         private Transform _cellHighlighter;
@@ -32,7 +33,7 @@ namespace Game.Hexes
             _cellHighlighter.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/mat_highlight");
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
             EventBus<MoveEvent>.Deregister(_moveEventBinding);
             EventBus<InteractEvent>.Deregister(_interactEventBinding);

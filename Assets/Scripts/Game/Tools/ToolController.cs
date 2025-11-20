@@ -1,21 +1,17 @@
-using System.Collections.Generic;
 using App.Services;
 using Game.Hexes;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Game.Tools
 {
-    public class ToolController : MonoBehaviour
+    public class ToolController : MonoBehaviour, IDisposable
     {
         private ITool _currentTool;
         private int _areaOfEffect = 0;
         private ITool[] _tools;
-
-        private void OnDestroy()
-        {
-            ServiceLocator.Instance?.Deregister(this);
-        }
 
         public void Initialize()
         {
@@ -30,6 +26,13 @@ namespace Game.Tools
                 new AddPath()
             };
             _currentTool = _tools[1];
+        }
+
+        public void Dispose()
+        {
+            _tools = null;
+            _currentTool = null;
+            ServiceLocator.Instance.Deregister(this);
         }
 
         public void SetActiveTool(int toolIndex)

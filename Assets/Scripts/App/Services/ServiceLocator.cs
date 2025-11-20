@@ -5,15 +5,26 @@ using UnityEngine;
 
 namespace App.Services
 {
-    public class ServiceLocator : MonoBehaviour
+    public class ServiceLocator : IDisposable
     {
         private readonly Dictionary<Type, object> _services = new();
 
         public static ServiceLocator Instance { get; private set; }
 
-        public void OnDestroy()
+        public ServiceLocator()
         {
-            Instance = null;
+            if (Instance != null)
+            {
+                Dispose();
+                return;
+            }
+
+            Instance = this;
+        }
+
+        public void Dispose()
+        {
+            if (Instance == this) Instance = null;
             var serviceTypes = _services.Keys.ToArray();
             foreach (var service in serviceTypes)
                 for (var i = 0; i < _services.Keys.Count; i++)
@@ -57,17 +68,6 @@ namespace App.Services
 
             service = null;
             return false;
-        }
-
-        public void Initialize()
-        {
-            if (Instance != null)
-            {
-                Destroy(this);
-                return;
-            }
-
-            Instance = this;
         }
     }
 }

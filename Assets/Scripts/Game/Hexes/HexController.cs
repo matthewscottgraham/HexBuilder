@@ -1,27 +1,20 @@
-using System.Collections.Generic;
 using App.Events;
 using App.SaveData;
 using App.Services;
 using Game.Grid;
 using Game.Tools;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Hexes
 {
-    public class HexController : MonoBehaviour
+    public class HexController : MonoBehaviour, IDisposable
     {
-        private const int AutoSaveFrequecy = 60;
+        private const int AutoSaveFrequency = 60;
         private HexFactory _hexFactory;
         private EventBinding<InteractEvent> _interactEventBinding;
         private HexObject[,] _map;
-
-        public void OnDestroy()
-        {
-            _hexFactory = null;
-            ServiceLocator.Instance?.Deregister(this);
-            EventBus<InteractEvent>.Deregister(_interactEventBinding);
-            _interactEventBinding = null;
-        }
 
         public void Initialize()
         {
@@ -44,7 +37,16 @@ namespace Game.Hexes
             _interactEventBinding = new EventBinding<InteractEvent>(HandleInteractEvent);
             EventBus<InteractEvent>.Register(_interactEventBinding);
 
-            InvokeRepeating(nameof(Save), AutoSaveFrequecy, AutoSaveFrequecy);
+            InvokeRepeating(nameof(Save), AutoSaveFrequency, AutoSaveFrequency);
+        }
+
+        public void Dispose()
+        {
+            _hexFactory = null;
+            ServiceLocator.Instance.Deregister(this);
+            EventBus<InteractEvent>.Deregister(_interactEventBinding);
+            _interactEventBinding = null;
+            _map = null;
         }
 
         public void Save()

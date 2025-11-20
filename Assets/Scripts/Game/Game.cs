@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using App.Events;
 using App.Services;
 using Game.Cameras;
 using Game.Features;
@@ -12,27 +15,23 @@ namespace Game
     {
         [SerializeField] private GridPreset gridPreset;
         [SerializeField] private Transform ground;
-
+        
+        private EventBinding<GameExitEvent> _gameExitEventBinding;
+        private IDisposable[] _resources;
+        
         private void Awake()
         {
             if (ServiceLocator.Instance == null) return;
-
-            ServiceLocator.Instance.Register(this);
             Initialize();
-        }
-
-        private void OnDestroy()
-        {
-            ServiceLocator.Instance?.Deregister(typeof(HexGrid));
-            ServiceLocator.Instance?.Deregister(typeof(HexController));
-            ServiceLocator.Instance?.Deregister(typeof(ToolController));
-            ServiceLocator.Instance?.Deregister(typeof(HexSelector));
-            ServiceLocator.Instance?.Deregister(typeof(CameraController));
-            ServiceLocator.Instance?.Deregister(this);
         }
 
         private void Initialize()
         {
+            _gameExitEventBinding = new EventBinding<GameExitEvent>(HandleGameExit);
+            EventBus<GameExitEvent>.Register(_gameExitEventBinding);
+            
+            ServiceLocator.Instance.Register(this);
+            
             var grid = gridPreset.CreateGrid();
             ServiceLocator.Instance.Register(grid);
 
@@ -40,20 +39,53 @@ namespace Game
             ServiceLocator.Instance.Register(featureFactory);
 
             var hexController = gameObject.AddComponent<HexController>();
-            hexController.Initialize();
-            ServiceLocator.Instance.Register(hexController);
-
             var toolController = gameObject.AddComponent<ToolController>();
-            toolController.Initialize();
-            ServiceLocator.Instance.Register(toolController);
-
             var hexSelector = new GameObject("Selector").AddComponent<HexSelector>();
-            hexSelector.Initialize();
-            ServiceLocator.Instance.Register(hexSelector);
+            
+            _resources = new IDisposable[]
+            {
+                hexSelector, 
+                hexController, 
+                toolController, 
+                new CameraController(Camera.main)
+            };
 
-            ServiceLocator.Instance.Register(new CameraController(Camera.main));
+            foreach (var resource in _resources)
+            {
+                ServiceLocator.Instance.Register(resource);    
+            }
+            
+            hexController.Initialize();
+            toolController.Initialize();
+            hexSelector.Initialize();
 
             ground.transform.localScale = new Vector3(grid.WorldWidth() + 3, 1, grid.WorldHeight() + 3);
+        }
+
+        private void HandleGameExit(GameExitEvent gameExitEvent)
+        {
+            StartCoroutine(ExitGame());
+        }
+
+        private IEnumerator ExitGame()
+        {
+            Debug.Log("Exiting Game");
+            yield return new WaitForEndOfFrame();
+            
+            EventBus<GameExitEvent>.Register(_gameExitEventBinding);
+            
+            ServiceLocator.Instance.Deregister(typeof(HexGrid));
+            ServiceLocator.Instance.Deregister(typeof(FeatureFactory));
+
+            for (var i = 0; i < _resources.Length; i++)
+            {
+                ServiceLocator.Instance.Deregister(_resources[i]);
+                _resources[i].Dispose();
+            }
+
+            ServiceLocator.Instance.Deregister(this);
+            
+            EventBus<AppExitEvent>.Raise(new AppExitEvent());
         }
     }
 }

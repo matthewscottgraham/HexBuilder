@@ -1,3 +1,4 @@
+using App.Events;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -8,6 +9,7 @@ namespace Game.Menu
         private UIDocument _document;
         private Button _loadButton;
         private Button _newGameButton;
+        private Button _exitButton;
 
         private void Start()
         {
@@ -18,6 +20,9 @@ namespace Game.Menu
 
             _newGameButton = _document.rootVisualElement.Q<Button>("NewGameButton");
             _newGameButton.clicked += HandleNewGameButtonClicked;
+            
+            _exitButton = _document.rootVisualElement.Q<Button>("ExitGameButton");
+            _exitButton.clicked += HandleExitButtonClicked;
         }
 
         private void OnDestroy()
@@ -25,6 +30,7 @@ namespace Game.Menu
             if (_loadButton == null) return;
             _loadButton.clicked -= HandleLoadButtonClicked;
             _newGameButton.clicked -= HandleNewGameButtonClicked;
+            _exitButton.clicked -= HandleExitButtonClicked;
         }
 
         private void HandleNewGameButtonClicked()
@@ -35,6 +41,11 @@ namespace Game.Menu
         private void HandleLoadButtonClicked()
         {
             _document.rootVisualElement.Add(new SaveGameChooser(false));
+        }
+
+        private void HandleExitButtonClicked()
+        {
+            EventBus<GameExitEvent>.Raise(new GameExitEvent());
         }
     }
 }
