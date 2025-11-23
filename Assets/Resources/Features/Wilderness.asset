@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e5ba13c7c8214c6882d06080d4fd65e, type: 3}
+  m_Name: Wilderness
+  m_EditorClassIdentifier: Game::Game.Features.FeatureCategory
+  featureType: 1
+  prefabs:
+  - {fileID: 2282985851861879569, guid: 7ed9b2287703244cc8ee6675b52467c7, type: 3}
+  - {fileID: 2282985851861879569, guid: 004723f5d05f544e4803a9bbb57d0884, type: 3}
+  - {fileID: 2282985851861879569, guid: d4aeb9a876f524c47aa1e358602c24c2, type: 3}
+  - {fileID: 2282985851861879569, guid: ac0ac918da81d41cb903ba8f17900279, type: 3}

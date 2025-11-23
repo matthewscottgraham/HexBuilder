@@ -1,11 +1,23 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Game.Features
 {
-    public class FeatureFactory
+    public class FeatureFactory : IDisposable
     {
+        private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues;
+
+        public FeatureFactory()
+        {
+            _catalogues = GetCatalogues();
+        }
+
+        public void Dispose()
+        {
+            _catalogues.Clear();
+        }
+
         public GameObject CreateFeature(FeatureType featureType)
         {
             return featureType switch
@@ -19,39 +31,61 @@ namespace Game.Features
             };
         }
 
+        private Dictionary<FeatureType, FeatureModelCatalogues> GetCatalogues()
+        {
+            var modelCatalogues = Resources.LoadAll<FeatureModelCatalogues>("Features");
+            var dict = new Dictionary<FeatureType, FeatureModelCatalogues>();
+            foreach (var modelCatalogue in modelCatalogues)
+            {
+                if(!dict.TryAdd(modelCatalogue.FeatureType, modelCatalogue))
+                {
+                    Debug.LogError($"A catalogue of models for: {modelCatalogue.name} already exists");
+                }
+            }
+            return dict;
+        }
+
+        private static GameObject InstantiatePrefab(GameObject prefab)
+        {
+            var feature = UnityEngine.Object.Instantiate(prefab);
+            AddRandomRotation(feature.transform);
+            return feature;   
+        }
+
+        private static void AddRandomRotation(Transform feature)
+        {
+            var randomRotation = UnityEngine.Random.Range(0f, 360f);
+            feature.localEulerAngles = new Vector3(0f, randomRotation, 0f);
+        }
+
         private GameObject CreatePath()
         {
-            var feature = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            Object.Destroy(feature.GetComponent<Collider>());
-            return feature;
+            var prefab = _catalogues[FeatureType.Path].GetRandomPrefab();
+            return InstantiatePrefab(prefab);
         }
 
         private GameObject CreateWater()
         {
-            var feature = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            Object.Destroy(feature.GetComponent<Collider>());
-            return feature;
+            var prefab = _catalogues[FeatureType.Water].GetRandomPrefab();
+            return InstantiatePrefab(prefab);
         }
 
         private GameObject CreateSettlement()
         {
-            var feature = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            Object.Destroy(feature.GetComponent<Collider>());
-            return feature;
+            var prefab = _catalogues[FeatureType.Settlement].GetRandomPrefab();
+            return InstantiatePrefab(prefab);
         }
 
         private GameObject CreateWilderness()
         {
-            var feature = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Object.Destroy(feature.GetComponent<Collider>());
-            return feature;
+            var prefab = _catalogues[FeatureType.Wilderness].GetRandomPrefab();
+            return InstantiatePrefab(prefab);
         }
 
         private GameObject CreateMountain()
         {
-            var feature = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            Object.Destroy(feature.GetComponent<Collider>());
-            return feature;
+            var prefab = _catalogues[FeatureType.Mountain].GetRandomPrefab();
+            return InstantiatePrefab(prefab);
         }
     }
 }

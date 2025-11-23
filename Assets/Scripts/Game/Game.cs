@@ -36,7 +36,6 @@ namespace Game
             ServiceLocator.Instance.Register(grid);
 
             var featureFactory = new FeatureFactory();
-            ServiceLocator.Instance.Register(featureFactory);
 
             var hexController = gameObject.AddComponent<HexController>();
             var toolController = gameObject.AddComponent<ToolController>();
@@ -44,6 +43,7 @@ namespace Game
             
             _resources = new IDisposable[]
             {
+                featureFactory,
                 hexSelector, 
                 hexController, 
                 toolController, 
