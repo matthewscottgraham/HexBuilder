@@ -11,7 +11,7 @@ namespace Game.Features
     public class FeatureFactory : IDisposable
     {
         private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues;
-        private Dictionary<FeatureType, IObjectPool<GameObject>> _pools;
+        private Dictionary<FeatureType, IObjectPool<Feature>> _pools;
 
         public FeatureFactory()
         {
@@ -28,10 +28,11 @@ namespace Game.Features
             }
         }
 
-        public GameObject CreateFeature(FeatureType featureType)
+        public Feature CreateFeature(FeatureType featureType)
         {
             return featureType switch
             {
+                FeatureType.None => null,
                 FeatureType.Mountain => _pools[FeatureType.Mountain].Get(),
                 FeatureType.Wilderness => _pools[FeatureType.Wilderness].Get(),
                 FeatureType.Settlement => _pools[FeatureType.Settlement].Get(),
@@ -39,6 +40,14 @@ namespace Game.Features
                 FeatureType.Path => CreatePath(),
                 _ => null
             };
+        }
+
+        public Feature CreateFeature(FeatureType featureType, int variation, float rotation)
+        {
+            if (featureType == FeatureType.None) return null;
+            var feature = CreateNewFeature(featureType, false, variation);
+            feature.transform.localEulerAngles = new Vector3(0f, rotation, 0f);
+            return feature;
         }
 
         private static Dictionary<FeatureType, FeatureModelCatalogues> GetCatalogues()
@@ -53,55 +62,50 @@ namespace Game.Features
 
         private void CreatePools()
         {
-            _pools = new Dictionary<FeatureType, IObjectPool<GameObject>>
+            _pools = new Dictionary<FeatureType, IObjectPool<Feature>>
             {
-                { FeatureType.Mountain, new ObjectPool<GameObject>(CreateMountain, AddRandomRotation) },
-                { FeatureType.Wilderness, new ObjectPool<GameObject>(CreateWilderness, AddRandomRotation) },
-                { FeatureType.Settlement, new ObjectPool<GameObject>(CreateSettlement, AddRandomRotation) }
+                { FeatureType.Mountain, new ObjectPool<Feature>(() => CreateNewFeature(FeatureType.Mountain), AddRandomRotation) },
+                { FeatureType.Wilderness, new ObjectPool<Feature>(() => CreateNewFeature(FeatureType.Wilderness), AddRandomRotation) },
+                { FeatureType.Settlement, new ObjectPool<Feature>(() => CreateNewFeature(FeatureType.Settlement), AddRandomRotation) }
             };
         }
 
-        private static GameObject InstantiatePrefab(GameObject prefab)
+        private Feature CreateNewFeature(FeatureType featureType, bool getRandomPrefab = true, int prefabVariation = 0)
         {
-            var feature = Object.Instantiate(prefab);
+            var (prefab, variation) = _catalogues[featureType].GetPrefab(getRandomPrefab, prefabVariation);
+            var feature = InstantiatePrefab(prefab);
+            feature.Initialize(featureType, variation);
+            return feature;
+        }
+
+        private static Feature InstantiatePrefab(GameObject prefab)
+        {
+            var go = Object.Instantiate(prefab);
+            var feature = go.AddComponent<Feature>();
             AddRandomRotation(feature);
             return feature;
         }
 
-        private static void AddRandomRotation(GameObject feature)
+        private static void AddRandomRotation(Feature feature)
         {
             var randomRotation = Random.Range(0f, 360f);
             feature.transform.localEulerAngles = new Vector3(0f, randomRotation, 0f);
         }
 
-        private GameObject CreatePath()
+        private Feature CreatePath()
         {
-            var prefab = _catalogues[FeatureType.Path].GetRandomPrefab();
-            return InstantiatePrefab(prefab);
+            var (prefab, variation) = _catalogues[FeatureType.Path].GetPrefab();
+            var feature = InstantiatePrefab(prefab);
+            feature.Initialize(FeatureType.Path, variation);
+            return feature;
         }
 
-        private GameObject CreateWater()
+        private Feature CreateWater()
         {
-            var prefab = _catalogues[FeatureType.Water].GetRandomPrefab();
-            return InstantiatePrefab(prefab);
-        }
-
-        private GameObject CreateSettlement()
-        {
-            var prefab = _catalogues[FeatureType.Settlement].GetRandomPrefab();
-            return InstantiatePrefab(prefab);
-        }
-
-        private GameObject CreateWilderness()
-        {
-            var prefab = _catalogues[FeatureType.Wilderness].GetRandomPrefab();
-            return InstantiatePrefab(prefab);
-        }
-
-        private GameObject CreateMountain()
-        {
-            var prefab = _catalogues[FeatureType.Mountain].GetRandomPrefab();
-            return InstantiatePrefab(prefab);
+            var (prefab, variation) = _catalogues[FeatureType.Path].GetPrefab();
+            var feature = InstantiatePrefab(prefab);
+            feature.Initialize(FeatureType.Path, variation);
+            return feature;
         }
     }
 }

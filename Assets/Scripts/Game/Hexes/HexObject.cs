@@ -9,12 +9,13 @@ namespace Game.Hexes
         private const float AnimationDuration = 0.3f;
         private const EaseType AnimationEaseType = EaseType.BounceOut;
         private CapsuleCollider _collider;
-        private GameObject _feature;
+        private Feature _feature;
         private Transform _hexMesh;
 
         public Cell Cell { get; private set; }
-        public bool HasFeature => _feature != null;
-        public  FeatureType? FeatureType {get; private set;}
+        public  FeatureType FeatureType => _feature?.FeatureType ?? FeatureType.None;
+        public int FeatureVariation => _feature?.Variation ?? 0;
+        public float FeatureRotation => _feature?.transform.localRotation.eulerAngles.y ?? 0;
         public float Height { get; private set; } = 1;
 
         public void Initialize(Cell cell, CapsuleCollider capsuleCollider, Transform hexMesh)
@@ -38,14 +39,12 @@ namespace Game.Hexes
                 .SetEase(AnimationEaseType);
         }
 
-        public void AddFeature(FeatureType featureType, GameObject feature)
+        public void AddFeature(Feature feature)
         {
             RemoveFeature();
             _feature = feature;
-            FeatureType = null;
 
             if (_feature == null) return;
-            FeatureType = featureType;
             _feature.transform.SetParent(transform, false);
             _feature.transform.localPosition = new Vector3(0, Height, 0);
         }
@@ -53,7 +52,7 @@ namespace Game.Hexes
         public void RemoveFeature()
         {
             if (_feature == null) return;
-            Destroy(_feature);
+            Destroy(_feature.gameObject);
         }
     }
 }

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e5ba13c7c8214c6882d06080d4fd65e, type: 3}
   m_Name: Mountain
   m_EditorClassIdentifier: Game::Game.Features.FeatureCategory
-  featureType: 0
+  featureType: 1
   prefabs:
   - {fileID: 9198803512547416858, guid: fb2c0c36a2c994ac2ace3880c0c1d2b2, type: 3}

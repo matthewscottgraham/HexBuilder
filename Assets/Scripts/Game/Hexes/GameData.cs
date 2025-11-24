@@ -8,12 +8,12 @@ namespace Game.Hexes
         public GameData(int x, int y)
         {
             Size = new Cell(x, y);
-            Map = new List<CellEntry>();
+            Map = new List<HexInfo>();
             Features = new Dictionary<int, FeatureType>();
         }
 
         public Cell Size;
-        public List<CellEntry> Map;
+        public List<HexInfo> Map;
         public Dictionary<int, FeatureType> Features;
     }
 }

@@ -76,7 +76,7 @@ namespace Game.Menu
 
         private void HandleSlotClicked(int index)
         {
-            ServiceLocator.Instance.Get<HexController>().Save();
+            ServiceLocator.Instance.Get<HexController>().SaveData();
             if (_isNewGame) ServiceLocator.Instance.Get<SaveDataController>().DeleteSaveData(index);
             ConfigController.CurrentSaveSlot = index;
             ServiceLocator.Instance.Get<SceneController>().LoadGameScene();

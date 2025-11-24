@@ -29,6 +29,7 @@ namespace Game.Tools
                 new LevelTerrain(),
                 new RaiseTerrain(),
                 new LowerTerrain(),
+                new AddMountain(),
                 new AddWater(),
                 new AddTrees(),
                 new AddFarm(),

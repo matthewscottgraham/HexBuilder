@@ -12,10 +12,17 @@ namespace Game.Features
 
         public FeatureType FeatureType => featureType;
 
-        public GameObject GetRandomPrefab()
+        public (GameObject, int) GetPrefab(bool useRandom = true, int variation = -1)
+        {
+            if (useRandom) return GetRandomPrefab();
+            
+            variation = Mathf.Clamp(variation, 0, prefabs.Length);
+            return (prefabs[variation], variation);
+        }
+        private (GameObject, int) GetRandomPrefab()
         {
             var index = Random.Range(0, prefabs.Length);
-            return prefabs[index];
+            return (prefabs[index], index);
         }
     }
 }

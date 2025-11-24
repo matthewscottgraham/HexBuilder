@@ -16,7 +16,7 @@ void depth_based_outlines_float(float2 screen_uv, float2 px, out float outlines)
 {
     outlines = 0;
     #if defined(UNITY_DECLARE_DEPTH_TEXTURE_INCLUDED)
-	ScharrOperators kernals = GetEdgeDetectionKernals();
+	scharr_operators kernals = GetEdgeDetectionKernals();
 	float gx = 0;
 	float gy = 0;
 	for (int i = -1; i <= 1; i++) {
@@ -37,7 +37,7 @@ void normal_based_outlines_float(float2 screen_uv, float2 px, out float outlines
 {
     outlines = 0;
     #if defined(UNITY_DECLARE_NORMALS_TEXTURE_INCLUDED)
-	ScharrOperators kernels = GetEdgeDetectionKernals();
+	scharr_operators kernels = GetEdgeDetectionKernals();
 	float gx = 0;
 	float gy = 0;
 	float3 cn = SampleSceneNormals(screenUV);

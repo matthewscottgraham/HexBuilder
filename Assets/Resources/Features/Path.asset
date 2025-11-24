@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e5ba13c7c8214c6882d06080d4fd65e, type: 3}
   m_Name: Path
   m_EditorClassIdentifier: Game::Game.Features.FeatureCategory
-  featureType: 4
+  featureType: 5
   prefabs:
   - {fileID: 3100076592846043313, guid: 764b49fd5a86541248e50831127e81e1, type: 3}

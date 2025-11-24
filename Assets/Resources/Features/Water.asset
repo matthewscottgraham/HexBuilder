@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e5ba13c7c8214c6882d06080d4fd65e, type: 3}
   m_Name: Water
   m_EditorClassIdentifier: Game::Game.Features.FeatureCategory
-  featureType: 3
+  featureType: 4
   prefabs:
   - {fileID: 8345709953554697544, guid: 9059cc5abcf7544a1bbf7e72394e964d, type: 3}

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e5ba13c7c8214c6882d06080d4fd65e, type: 3}
   m_Name: Wilderness
   m_EditorClassIdentifier: Game::Game.Features.FeatureCategory
-  featureType: 1
+  featureType: 2
   prefabs:
   - {fileID: 2282985851861879569, guid: 7ed9b2287703244cc8ee6675b52467c7, type: 3}
   - {fileID: 2282985851861879569, guid: 004723f5d05f544e4803a9bbb57d0884, type: 3}

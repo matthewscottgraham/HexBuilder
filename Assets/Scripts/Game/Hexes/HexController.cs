@@ -23,23 +23,12 @@ namespace Game.Hexes
             var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
             _hexFactory = new HexFactory(hexGrid);
             
-            var saveData = ServiceLocator.Instance.Get<SaveDataController>().LoadSaveSlot<GameData>(ConfigController.CurrentSaveSlot);
-            if (saveData == null)
-            {
-                var gridSize = ServiceLocator.Instance.Get<HexGrid>().GridSize;
-                _map = new HexObject[gridSize.x, gridSize.y];
-            }
-            else
-            {
-                var gameData = saveData.Value.Data;
-                _map = new HexObject[gameData.Size.X, gameData.Size.Y];
-                CreateHexes(gameData.Map);
-            }
-            
+            LoadData();
+
             _interactEventBinding = new EventBinding<InteractEvent>(HandleInteractEvent);
             EventBus<InteractEvent>.Register(_interactEventBinding);
 
-            InvokeRepeating(nameof(Save), AutoSaveFrequency, AutoSaveFrequency);
+            InvokeRepeating(nameof(SaveData), AutoSaveFrequency, AutoSaveFrequency);
         }
 
         public void Dispose()
@@ -53,17 +42,34 @@ namespace Game.Hexes
             _map = null;
         }
 
-        public void Save()
+        private void LoadData()
+        {
+            var saveData = ServiceLocator.Instance.Get<SaveDataController>().LoadSaveSlot<GameData>(ConfigController.CurrentSaveSlot);
+            if (saveData == null)
+            {
+                var gridSize = ServiceLocator.Instance.Get<HexGrid>().GridSize;
+                _map = new HexObject[gridSize.x, gridSize.y];
+            }
+            else
+            {
+                var gameData = saveData.Value.Data;
+                _map = new HexObject[gameData.Size.X, gameData.Size.Y];
+                CreateHexes(gameData.Map);
+            }
+        }
+
+        public void SaveData()
         {
             var gameData = new GameData(_map.GetLength(0), _map.GetLength(1));
 
-            var hexes = new List<CellEntry>();
+            var hexes = new List<HexInfo>();
             for (var x = 0; x < _map.GetLength(0); x++)
             {
                 for (var y = 0; y < _map.GetLength(1); y++)
                 {
                     if (_map[x, y] == null) continue;
-                    hexes.Add(new CellEntry(new Cell(x, y), (int)_map[x, y].Height, _map[x, y].FeatureType));
+                    hexes.Add(new HexInfo(new Cell(x, y), (int)_map[x, y].Height, _map[x, y].FeatureType,
+                        _map[x, y].FeatureVariation, _map[x ,y].FeatureRotation));
                 }
             }
 
@@ -108,14 +114,17 @@ namespace Game.Hexes
             ServiceLocator.Instance.Get<ToolController>().UseSelectedTool(cell);
         }
 
-        private void CreateHexes(List<CellEntry> entries)
+        private void CreateHexes(List<HexInfo> hexInfos)
         {
-            foreach (var entry in entries)
+            var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
+            foreach (var hexInfo in hexInfos)
             {
-                if (entry.Cell.X < 0 || entry.Cell.X >= _map.GetLength(0) || entry.Cell.Y < 0 ||
-                    entry.Cell.Y >= _map.GetLength(1)) continue;
-                CreateNewHex(entry.Cell);
-                _map[entry.Cell.X, entry.Cell.Y].SetHeight(entry.Height);
+                if (!InBounds(hexInfo.Cell)) continue;
+                var hexObject = CreateNewHex(hexInfo.Cell);
+                hexObject.SetHeight(hexInfo.Height);
+                var feature = featureFactory.CreateFeature(hexInfo.FeatureType, hexInfo.FeatureVariation,
+                    hexInfo.FeatureRotation);
+                hexObject.AddFeature(feature);
             }
         }
     }

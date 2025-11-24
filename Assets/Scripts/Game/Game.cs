@@ -70,7 +70,7 @@ namespace Game
             Debug.Log("Exiting Game");
             yield return new WaitForEndOfFrame();
             
-            ServiceLocator.Instance.Get<HexController>().Save();
+            ServiceLocator.Instance.Get<HexController>().SaveData();
             
             EventBus<GameExitEvent>.Deregister(_gameExitEventBinding);
 

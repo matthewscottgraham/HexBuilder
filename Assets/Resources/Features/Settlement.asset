@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e5ba13c7c8214c6882d06080d4fd65e, type: 3}
   m_Name: Settlement
   m_EditorClassIdentifier: Game::Game.Features.FeatureCategory
-  featureType: 2
+  featureType: 3
   prefabs:
   - {fileID: 3413371715897598706, guid: d14a9e2b77ae24091956be1343292c48, type: 3}
   - {fileID: 3413371715897598706, guid: 89ce6136992814c839a46d29f30d818b, type: 3}
