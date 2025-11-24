@@ -1,69 +1,42 @@
 using System;
+using System.IO;
 using App.Events;
+using App.SaveData;
 using App.Services;
 using UnityEngine;
 
 namespace App.Config
 {
-    public class ConfigController : IDisposable
+    public class ConfigController : FileDataController
     {
-        private const string ConfigFileName = "config";
-        private const string ConfigDirectoryName = "UserData";
-
         public ConfigController()
         {
-            LoadConfig();
-        }
-
-        public Config Config { get; private set; }
-
-        public void Dispose()
-        {
-            ServiceLocator.Instance.Deregister(this);
-        }
-
-        public void SetModifiedConfig(Config config)
-        {
-            Config = config;
-            SaveConfig(Config);
-        }
-
-        private void LoadConfig()
-        {
-            EventBus<FileLoadEvent>.Raise(new FileLoadEvent());
-            var config = ServiceLocator.Instance.Get<IOController>()
-                .ReadJson<Config>(ConfigDirectoryName, ConfigFileName);
-
-            if (!config.HasValue)
+            var saveData = Load<ConfigData>(Path.Combine(SaveDirectoryName));
+            
+            if (saveData != null)
             {
-                Config = CreateNewConfig();
-                SaveConfig(Config);
+                CurrentSaveSlot = saveData.Value.SaveID;
+                Config = saveData.Value.Data;
             }
             else
             {
-                Config = config.Value;
+                Config = CreateNewConfig();
+                Save(SaveDirectoryName, Config, CurrentSaveSlot);
             }
         }
 
-        private static Config CreateNewConfig()
+        public static int CurrentSaveSlot { get; set; }
+        public ConfigData Config { get; private set; }
+
+        private ConfigData CreateNewConfig()
         {
-            var config = new Config
+            return new ConfigData()
             {
-                AppName = Application.productName,
-                AppVersion = Application.version,
                 IsFullScreen = Screen.fullScreen,
                 ScreenWidth = Screen.width,
-                ScreenHeight = Screen.height,
-                SaveId = 0
+                ScreenHeight = Screen.height
             };
-            return config;
         }
-
-        private static async void SaveConfig(Config config)
-        {
-            EventBus<FileSaveEvent>.Raise(new FileSaveEvent());
-            await ServiceLocator.Instance.Get<IOController>()
-                .WriteJson(config, ConfigDirectoryName, ConfigFileName);
-        }
+        
     }
 }

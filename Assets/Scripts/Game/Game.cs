@@ -69,8 +69,10 @@ namespace Game
         {
             Debug.Log("Exiting Game");
             yield return new WaitForEndOfFrame();
-
-            EventBus<GameExitEvent>.Register(_gameExitEventBinding);
+            
+            ServiceLocator.Instance.Get<HexController>().Save();
+            
+            EventBus<GameExitEvent>.Deregister(_gameExitEventBinding);
 
             ServiceLocator.Instance.Deregister(typeof(HexGrid));
             ServiceLocator.Instance.Deregister(typeof(FeatureFactory));

@@ -78,10 +78,7 @@ namespace Game.Menu
         {
             ServiceLocator.Instance.Get<HexController>().Save();
             if (_isNewGame) ServiceLocator.Instance.Get<SaveDataController>().DeleteSaveData(index);
-            var configController = ServiceLocator.Instance.Get<ConfigController>();
-            var config = configController.Config;
-            config.SaveId = index;
-            configController.SetModifiedConfig(config);
+            ConfigController.CurrentSaveSlot = index;
             ServiceLocator.Instance.Get<SceneController>().LoadGameScene();
             CloseWindow();
         }

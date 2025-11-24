@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using App.Config;
 using App.Events;
 using App.SaveData;
 using App.Services;
+using Game.Features;
 using Game.Grid;
 using Game.Tools;
 using UnityEngine;
@@ -20,8 +22,8 @@ namespace Game.Hexes
         {
             var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
             _hexFactory = new HexFactory(hexGrid);
-
-            var saveData = ServiceLocator.Instance.Get<SaveDataController>().Load<GameData>();
+            
+            var saveData = ServiceLocator.Instance.Get<SaveDataController>().LoadSaveSlot<GameData>(ConfigController.CurrentSaveSlot);
             if (saveData == null)
             {
                 var gridSize = ServiceLocator.Instance.Get<HexGrid>().GridSize;
@@ -33,8 +35,7 @@ namespace Game.Hexes
                 _map = new HexObject[gameData.Size.X, gameData.Size.Y];
                 CreateHexes(gameData.Map);
             }
-
-
+            
             _interactEventBinding = new EventBinding<InteractEvent>(HandleInteractEvent);
             EventBus<InteractEvent>.Register(_interactEventBinding);
 
@@ -58,14 +59,16 @@ namespace Game.Hexes
 
             var hexes = new List<CellEntry>();
             for (var x = 0; x < _map.GetLength(0); x++)
-            for (var y = 0; y < _map.GetLength(1); y++)
             {
-                if (_map[x, y] == null) continue;
-                hexes.Add(new CellEntry(new Cell(x, y), (int)_map[x, y].Height));
+                for (var y = 0; y < _map.GetLength(1); y++)
+                {
+                    if (_map[x, y] == null) continue;
+                    hexes.Add(new CellEntry(new Cell(x, y), (int)_map[x, y].Height, _map[x, y].FeatureType));
+                }
             }
 
             gameData.Map = hexes;
-            ServiceLocator.Instance?.Get<SaveDataController>().Save(this, gameData);
+            ServiceLocator.Instance?.Get<SaveDataController>().SaveWithScreenshot(this, gameData);
         }
 
         public float GetCellHeight(Cell cell)

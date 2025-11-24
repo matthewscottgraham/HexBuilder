@@ -1,4 +1,5 @@
 using App.Tweens;
+using Game.Features;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -13,6 +14,7 @@ namespace Game.Hexes
 
         public Cell Cell { get; private set; }
         public bool HasFeature => _feature != null;
+        public  FeatureType? FeatureType {get; private set;}
         public float Height { get; private set; } = 1;
 
         public void Initialize(Cell cell, CapsuleCollider capsuleCollider, Transform hexMesh)
@@ -36,13 +38,14 @@ namespace Game.Hexes
                 .SetEase(AnimationEaseType);
         }
 
-        public void AddFeature(GameObject feature)
+        public void AddFeature(FeatureType featureType, GameObject feature)
         {
             RemoveFeature();
             _feature = feature;
+            FeatureType = null;
 
             if (_feature == null) return;
-
+            FeatureType = featureType;
             _feature.transform.SetParent(transform, false);
             _feature.transform.localPosition = new Vector3(0, Height, 0);
         }

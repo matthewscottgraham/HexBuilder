@@ -10,7 +10,7 @@ namespace Game.Tools
         {
             if (hex == null) return;
             var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(FeatureType.Wilderness);
-            hex.AddFeature(feature);
+            hex.AddFeature(FeatureType.Wilderness, feature);
         }
     }
 }
