@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace Game.Features
 {
@@ -31,30 +33,26 @@ namespace Game.Features
             };
         }
 
-        private Dictionary<FeatureType, FeatureModelCatalogues> GetCatalogues()
+        private static Dictionary<FeatureType, FeatureModelCatalogues> GetCatalogues()
         {
             var modelCatalogues = Resources.LoadAll<FeatureModelCatalogues>("Features");
             var dict = new Dictionary<FeatureType, FeatureModelCatalogues>();
             foreach (var modelCatalogue in modelCatalogues)
-            {
-                if(!dict.TryAdd(modelCatalogue.FeatureType, modelCatalogue))
-                {
+                if (!dict.TryAdd(modelCatalogue.FeatureType, modelCatalogue))
                     Debug.LogError($"A catalogue of models for: {modelCatalogue.name} already exists");
-                }
-            }
             return dict;
         }
 
         private static GameObject InstantiatePrefab(GameObject prefab)
         {
-            var feature = UnityEngine.Object.Instantiate(prefab);
+            var feature = Object.Instantiate(prefab);
             AddRandomRotation(feature.transform);
-            return feature;   
+            return feature;
         }
 
         private static void AddRandomRotation(Transform feature)
         {
-            var randomRotation = UnityEngine.Random.Range(0f, 360f);
+            var randomRotation = Random.Range(0f, 360f);
             feature.localEulerAngles = new Vector3(0f, randomRotation, 0f);
         }
 

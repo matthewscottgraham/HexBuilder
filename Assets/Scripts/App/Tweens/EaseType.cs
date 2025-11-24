@@ -20,6 +20,6 @@ namespace App.Tweens
         BounceInOut,
         BackIn,
         BackOut,
-        BackInOut,
+        BackInOut
     }
 }

@@ -24,12 +24,10 @@ namespace App.Events
 
     public struct AppExitEvent : IEvent
     {
-        
     }
 
     public struct GameExitEvent : IEvent
     {
-        
     }
 
     public struct FileSaveEvent : IEvent

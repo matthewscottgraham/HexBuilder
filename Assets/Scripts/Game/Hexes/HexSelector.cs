@@ -1,10 +1,10 @@
+using System;
+using System.Collections;
 using App.Events;
 using App.Input;
 using App.Services;
 using Game.Events;
 using Game.Grid;
-using System;
-using System.Collections;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -13,24 +13,16 @@ namespace Game.Hexes
     {
         private Camera _camera;
         private Transform _cellHighlighter;
+        private EventBinding<InteractEvent> _interactEventBinding;
 
         private EventBinding<MoveEvent> _moveEventBinding;
-        private EventBinding<InteractEvent> _interactEventBinding;
 
         public static Cell SelectedCell { get; private set; }
 
-        public void Initialize()
+        private void Update()
         {
-            _moveEventBinding = new EventBinding<MoveEvent>(HandleMoveEvent);
-            _interactEventBinding = new EventBinding<InteractEvent>(HandleInteractEvent);
-            EventBus<MoveEvent>.Register(_moveEventBinding);
-            EventBus<InteractEvent>.Register(_interactEventBinding);
-            
-            _camera = Camera.main;
-            _cellHighlighter = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-            _cellHighlighter.SetParent(transform);
-            _cellHighlighter.localPosition = new Vector3(0, 0.5f, 0);
-            _cellHighlighter.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/mat_highlight");
+            if (!InputController.PointerHasMovedThisFrame) return;
+            SelectCellUnderMouse();
         }
 
         public void Dispose()
@@ -41,10 +33,18 @@ namespace Game.Hexes
             _interactEventBinding = null;
         }
 
-        private void Update()
+        public void Initialize()
         {
-            if (!InputController.PointerHasMovedThisFrame) return;
-            SelectCellUnderMouse();
+            _moveEventBinding = new EventBinding<MoveEvent>(HandleMoveEvent);
+            _interactEventBinding = new EventBinding<InteractEvent>(HandleInteractEvent);
+            EventBus<MoveEvent>.Register(_moveEventBinding);
+            EventBus<InteractEvent>.Register(_interactEventBinding);
+
+            _camera = Camera.main;
+            _cellHighlighter = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
+            _cellHighlighter.SetParent(transform);
+            _cellHighlighter.localPosition = new Vector3(0, 0.5f, 0);
+            _cellHighlighter.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/mat_highlight");
         }
 
         private IEnumerator SelectCellUnderMouseNextFrame()
@@ -52,7 +52,7 @@ namespace Game.Hexes
             yield return new WaitForEndOfFrame();
             SelectCellUnderMouse();
         }
-        
+
         private void SelectCellUnderMouse()
         {
             var ray = _camera.ScreenPointToRay(InputController.PointerPosition);
@@ -73,7 +73,7 @@ namespace Game.Hexes
         {
             StartCoroutine(SelectCellUnderMouseNextFrame());
         }
-        
+
         private void HandleMoveEvent(MoveEvent moveEvent)
         {
             var originalCell = SelectedCell;

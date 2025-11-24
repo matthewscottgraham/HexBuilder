@@ -660,15 +660,15 @@
     "m_Group": {
         "m_Id": ""
     },
-    "m_Name": "NormalBasedOutlines (Custom Function)",
+    "m_Name": "normal_based_outlines (Custom Function)",
     "m_DrawState": {
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -482.4999694824219,
-            "y": 13.499999046325684,
-            "width": 270.5,
-            "height": 118.0
+            "x": -482.4999084472656,
+            "y": 23.999990463256837,
+            "width": 276.99993896484377,
+            "height": 117.99999237060547
         }
     },
     "m_Slots": [
@@ -694,7 +694,7 @@
         "m_SerializableColors": []
     },
     "m_SourceType": 0,
-    "m_FunctionName": "NormalBasedOutlines",
+    "m_FunctionName": "normal_based_outlines",
     "m_FunctionSource": "3d0b31de2624c4c189dc3242b740e664",
     "m_FunctionSourceUsePragmas": true,
     "m_FunctionBody": "Enter function body here..."
@@ -827,15 +827,15 @@
     "m_Group": {
         "m_Id": ""
     },
-    "m_Name": "DepthBasedOutlines (Custom Function)",
+    "m_Name": "depth_based_outlines (Custom Function)",
     "m_DrawState": {
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -482.5,
-            "y": 188.5,
-            "width": 270.5,
-            "height": 118.0
+            "x": -482.4999084472656,
+            "y": 183.99996948242188,
+            "width": 277.9999694824219,
+            "height": 302.0
         }
     },
     "m_Slots": [
@@ -861,7 +861,7 @@
         "m_SerializableColors": []
     },
     "m_SourceType": 0,
-    "m_FunctionName": "DepthBasedOutlines",
+    "m_FunctionName": "depth_based_outlines",
     "m_FunctionSource": "3d0b31de2624c4c189dc3242b740e664",
     "m_FunctionSourceUsePragmas": true,
     "m_FunctionBody": "Enter function body here..."

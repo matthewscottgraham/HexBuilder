@@ -6,22 +6,22 @@ namespace Game.Tools
 {
     public class ToolView : MonoBehaviour
     {
-        private ToggleButtonGroup _buttonGroup;
         private SliderInt _aoeSlider;
+        private ToggleButtonGroup _buttonGroup;
         private UIDocument _document;
 
         private void Start()
         {
             _document = GetComponent<UIDocument>();
-            
+
             _buttonGroup = _document.rootVisualElement.Q<ToggleButtonGroup>();
             _buttonGroup.RegisterValueChangedCallback(HandleToolChanged);
-            
+
             _aoeSlider = _document.rootVisualElement.Q<SliderInt>();
             _aoeSlider.RegisterValueChangedCallback(HandleAreaOfEffectChanged);
         }
 
-        private void HandleAreaOfEffectChanged(ChangeEvent<int> evt)
+        private static void HandleAreaOfEffectChanged(ChangeEvent<int> evt)
         {
             ServiceLocator.Instance.Get<ToolController>().SetAreaOfEffect(evt.newValue);
         }

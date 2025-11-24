@@ -1,10 +1,10 @@
+using System;
+using System.Collections.Generic;
 using App.Events;
 using App.SaveData;
 using App.Services;
 using Game.Grid;
 using Game.Tools;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -15,6 +15,15 @@ namespace Game.Hexes
         private HexFactory _hexFactory;
         private EventBinding<InteractEvent> _interactEventBinding;
         private HexObject[,] _map;
+
+        public void Dispose()
+        {
+            _hexFactory = null;
+            ServiceLocator.Instance.Deregister(this);
+            EventBus<InteractEvent>.Deregister(_interactEventBinding);
+            _interactEventBinding = null;
+            _map = null;
+        }
 
         public void Initialize()
         {
@@ -40,15 +49,6 @@ namespace Game.Hexes
             InvokeRepeating(nameof(Save), AutoSaveFrequency, AutoSaveFrequency);
         }
 
-        public void Dispose()
-        {
-            _hexFactory = null;
-            ServiceLocator.Instance.Deregister(this);
-            EventBus<InteractEvent>.Deregister(_interactEventBinding);
-            _interactEventBinding = null;
-            _map = null;
-        }
-
         public void Save()
         {
             var gameData = new GameData(_map.GetLength(0), _map.GetLength(1));
@@ -58,7 +58,7 @@ namespace Game.Hexes
             for (var y = 0; y < _map.GetLength(1); y++)
             {
                 if (_map[x, y] == null) continue;
-                hexes.Add(new CellEntry(new Cell(x, y), (int)_map[x, y].transform.localScale.y));
+                hexes.Add(new CellEntry(new Cell(x, y), (int)_map[x, y].Height));
             }
 
             gameData.Map = hexes;
@@ -80,11 +80,11 @@ namespace Game.Hexes
         public HexObject CreateNewHex(Cell cell)
         {
             if (!InBounds(cell)) return null;
-            if (_map[cell.X, cell.Y] == null)
-            {
-                var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
-                _map[cell.X, cell.Y] = _hexFactory.CreateHex(cell, hexGrid, transform);
-            }
+            if (_map[cell.X, cell.Y] != null) return _map[cell.X, cell.Y];
+
+            var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
+            _map[cell.X, cell.Y] = _hexFactory.CreateHex(cell, hexGrid, transform);
+
             return _map[cell.X, cell.Y];
         }
 
@@ -98,7 +98,7 @@ namespace Game.Hexes
             ExecuteCommandOnHex(HexSelector.SelectedCell);
         }
 
-        private void ExecuteCommandOnHex(Cell cell)
+        private static void ExecuteCommandOnHex(Cell cell)
         {
             ServiceLocator.Instance.Get<ToolController>().UseSelectedTool(cell);
         }

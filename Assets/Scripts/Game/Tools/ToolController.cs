@@ -1,7 +1,7 @@
-using App.Services;
-using Game.Hexes;
 using System;
 using System.Collections.Generic;
+using App.Services;
+using Game.Hexes;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -9,9 +9,16 @@ namespace Game.Tools
 {
     public class ToolController : MonoBehaviour, IDisposable
     {
+        private int _areaOfEffect;
         private ITool _currentTool;
-        private int _areaOfEffect = 0;
         private ITool[] _tools;
+
+        public void Dispose()
+        {
+            _tools = null;
+            _currentTool = null;
+            ServiceLocator.Instance.Deregister(this);
+        }
 
         public void Initialize()
         {
@@ -26,13 +33,6 @@ namespace Game.Tools
                 new AddPath()
             };
             _currentTool = _tools[1];
-        }
-
-        public void Dispose()
-        {
-            _tools = null;
-            _currentTool = null;
-            ServiceLocator.Instance.Deregister(this);
         }
 
         public void SetActiveTool(int toolIndex)
@@ -56,10 +56,7 @@ namespace Game.Tools
         {
             SetLevel(cell);
             var hexes = GetHexesWithinAreaOfEffect(cell, areaOfEffect);
-            foreach (var hexCell in hexes.Keys)
-            {
-                tool.Use(hexCell, hexes[hexCell]);
-            }
+            foreach (var hexCell in hexes.Keys) tool.Use(hexCell, hexes[hexCell]);
         }
 
         // TODO: move to HexGrid
@@ -68,28 +65,24 @@ namespace Game.Tools
             var hexController = ServiceLocator.Instance.Get<HexController>();
             var hexes = new Dictionary<Cell, HexObject>();
 
-            int centerQ = center.X - (center.Y - (center.Y & 1)) / 2;
-            int centerR = center.Y;
+            var centerQ = center.X - (center.Y - (center.Y & 1)) / 2;
+            var centerR = center.Y;
 
-            for (int y = center.Y - radius; y <= center.Y + radius; y++)
+            for (var y = center.Y - radius; y <= center.Y + radius; y++)
+            for (var x = center.X - radius; x <= center.X + radius; x++)
             {
-                for (int x = center.X - radius; x <= center.X + radius; x++)
-                {
-                    int q = x - (y - (y & 1)) / 2;
-                    int r = y;
+                var q = x - (y - (y & 1)) / 2;
 
-                    int dq = q - centerQ;
-                    int dr = r - centerR;
-                    int dz = -dq - dr;
+                var dq = q - centerQ;
+                var dr = y - centerR;
+                var dz = -dq - dr;
 
-                    int hexDistance = Mathf.Max(Mathf.Abs(dq), Mathf.Abs(dr), Mathf.Abs(dz));
+                var hexDistance = Mathf.Max(Mathf.Abs(dq), Mathf.Abs(dr), Mathf.Abs(dz));
 
-                    if (hexDistance <= radius)
-                    {
-                        var worldCell = new Cell(x, y);
-                        hexes[worldCell] = hexController.GetHex(worldCell); // allow null
-                    }
-                }
+                if (hexDistance > radius) continue;
+
+                var worldCell = new Cell(x, y);
+                hexes[worldCell] = hexController.GetHex(worldCell); // allow null
             }
 
             return hexes;
@@ -100,11 +93,10 @@ namespace Game.Tools
             var height = ServiceLocator.Instance.Get<HexController>().GetCellHeight(cell);
             foreach (var tool in _tools)
             {
-                if (tool.GetType() == typeof(LevelTerrain))
-                {
-                    var levelTerrainTool = (LevelTerrain)tool;
-                    levelTerrainTool.Level = height;
-                }
+                if (tool.GetType() != typeof(LevelTerrain)) continue;
+
+                var levelTerrainTool = (LevelTerrain)tool;
+                levelTerrainTool.Level = height;
             }
         }
     }

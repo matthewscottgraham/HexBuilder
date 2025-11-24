@@ -9,8 +9,6 @@ namespace App.Services
     {
         private readonly Dictionary<Type, object> _services = new();
 
-        public static ServiceLocator Instance { get; private set; }
-
         public ServiceLocator()
         {
             if (Instance != null)
@@ -21,6 +19,8 @@ namespace App.Services
 
             Instance = this;
         }
+
+        public static ServiceLocator Instance { get; private set; }
 
         public void Dispose()
         {

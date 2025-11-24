@@ -12,19 +12,19 @@ namespace Game.Hexes
             var go = new GameObject(cell.ToString());
             go.transform.position = grid.GetHexCenter(cell.X, cell.Y);
             go.transform.parent = parent;
-            
+
             var collider = go.AddComponent<CapsuleCollider>();
             collider.radius = grid.InnerRadius;
             collider.height = 1;
-            
+
             var hexMesh = new GameObject("HexMesh");
-            
+
             var hexObject = go.AddComponent<HexObject>();
             hexObject.Initialize(cell, collider, hexMesh.transform);
-            
+
             var filter = hexMesh.AddComponent<MeshFilter>();
             filter.mesh = CreateMesh(grid);
-            
+
             var renderer = hexMesh.AddComponent<MeshRenderer>();
             renderer.material = _material;
 

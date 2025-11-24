@@ -7,9 +7,9 @@ namespace Game.Menu
     public class MenuView : MonoBehaviour
     {
         private UIDocument _document;
+        private Button _exitButton;
         private Button _loadButton;
         private Button _newGameButton;
-        private Button _exitButton;
 
         private void Start()
         {
@@ -20,7 +20,7 @@ namespace Game.Menu
 
             _newGameButton = _document.rootVisualElement.Q<Button>("NewGameButton");
             _newGameButton.clicked += HandleNewGameButtonClicked;
-            
+
             _exitButton = _document.rootVisualElement.Q<Button>("ExitGameButton");
             _exitButton.clicked += HandleExitButtonClicked;
         }
@@ -43,7 +43,7 @@ namespace Game.Menu
             _document.rootVisualElement.Add(new SaveGameChooser(false));
         }
 
-        private void HandleExitButtonClicked()
+        private static void HandleExitButtonClicked()
         {
             EventBus<GameExitEvent>.Raise(new GameExitEvent());
         }

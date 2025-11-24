@@ -1,18 +1,21 @@
-struct ScharrOperators {
-	float3x3 x;
-	float3x3 y;
+struct scharr_operators
+{
+    float3x3 x;
+    float3x3 y;
 };
 
-ScharrOperators GetEdgeDetectionKernals() {
-	ScharrOperators kernals;
-	kernals.x = float3x3(-3, -10, -3, 0, 0, 0, 3, 10, 3);
-	kernals.y = float3x3(-3, 0, 3, -10, 0, 10, -3, 0, 3);
-	return kernals;
+scharr_operators get_edge_detection_kernals()
+{
+    scharr_operators kernels;
+    kernels.x = float3x3(-3, -10, -3, 0, 0, 0, 3, 10, 3);
+    kernels.y = float3x3(-3, 0, 3, -10, 0, 10, -3, 0, 3);
+    return kernels;
 }
 
-void DepthBasedOutlines_float(float2 screenUV, float2 px, out float outlines) {
-	outlines = 0;
-	#if defined(UNITY_DECLARE_DEPTH_TEXTURE_INCLUDED)
+void depth_based_outlines_float(float2 screen_uv, float2 px, out float outlines)
+{
+    outlines = 0;
+    #if defined(UNITY_DECLARE_DEPTH_TEXTURE_INCLUDED)
 	ScharrOperators kernals = GetEdgeDetectionKernals();
 	float gx = 0;
 	float gy = 0;
@@ -27,12 +30,13 @@ void DepthBasedOutlines_float(float2 screenUV, float2 px, out float outlines) {
 	}
 	float g = sqrt(gx * gx + gy * gy);
 	outlines = step(0.02, g);
-	#endif
+    #endif
 }
 
-void NormalBasedOutlines_float(float2 screenUV, float2 px, out float outlines) {
-	outlines = 0;
-	#if defined(UNITY_DECLARE_NORMALS_TEXTURE_INCLUDED)
+void normal_based_outlines_float(float2 screen_uv, float2 px, out float outlines)
+{
+    outlines = 0;
+    #if defined(UNITY_DECLARE_NORMALS_TEXTURE_INCLUDED)
 	ScharrOperators kernels = GetEdgeDetectionKernals();
 	float gx = 0;
 	float gy = 0;
@@ -49,5 +53,5 @@ void NormalBasedOutlines_float(float2 screenUV, float2 px, out float outlines) {
 	}
 	float g = sqrt(gx * gx + gy * gy);
 	outlines = step(2, g);
-	#endif
+    #endif
 }

@@ -1,6 +1,5 @@
 using App.Services;
 using Game.Hexes;
-using UnityEngine;
 
 namespace Game.Tools
 {
@@ -9,7 +8,7 @@ namespace Game.Tools
         public void Use(Cell cell, HexObject hex)
         {
             var hexController = ServiceLocator.Instance.Get<HexController>();
-            
+
             if (!hexController.InBounds(cell)) return;
 
             if (hex == null)
@@ -17,7 +16,7 @@ namespace Game.Tools
                 hexController.CreateNewHex(cell);
                 return;
             }
-            
+
             hex.SetHeight(hex.Height + 1);
         }
     }

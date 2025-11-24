@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game.Features
 {
@@ -10,10 +11,10 @@ namespace Game.Features
         [SerializeField] private GameObject[] prefabs = Array.Empty<GameObject>();
 
         public FeatureType FeatureType => featureType;
-        
+
         public GameObject GetRandomPrefab()
         {
-            var index = UnityEngine.Random.Range(0, prefabs.Length);
+            var index = Random.Range(0, prefabs.Length);
             return prefabs[index];
         }
     }
