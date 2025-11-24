@@ -6,6 +6,8 @@ namespace Game.Tools
 {
     public class AddWater : ITool
     {
+        bool ITool.AllowAreaOfEffect => false;
+        
         public void Use(Cell cell, HexObject hex)
         {
             if (hex == null) return;

@@ -26,10 +26,13 @@ namespace Game.Tools
             ServiceLocator.Instance.Get<ToolController>().SetAreaOfEffect(evt.newValue);
         }
 
-        private static void HandleToolChanged(ChangeEvent<ToggleButtonGroupState> evt)
+        private void HandleToolChanged(ChangeEvent<ToggleButtonGroupState> evt)
         {
             var toolIndex = evt.newValue.GetActiveOptions(stackalloc int[evt.newValue.length]);
-            ServiceLocator.Instance.Get<ToolController>().SetActiveTool(toolIndex[0]);
+            var toolController = ServiceLocator.Instance.Get<ToolController>();
+            toolController.SetActiveTool(toolIndex[0]);
+
+            _aoeSlider.visible = toolController.CurrentTool.AllowAreaOfEffect;
         }
     }
 }

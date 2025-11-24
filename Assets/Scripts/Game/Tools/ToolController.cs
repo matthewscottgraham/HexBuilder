@@ -12,7 +12,9 @@ namespace Game.Tools
         private int _areaOfEffect;
         private ITool _currentTool;
         private ITool[] _tools;
-
+        
+        public ITool CurrentTool => _currentTool;
+        
         public void Dispose()
         {
             _tools = null;
