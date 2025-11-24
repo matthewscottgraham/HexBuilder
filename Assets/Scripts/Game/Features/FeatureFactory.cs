@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -9,24 +11,30 @@ namespace Game.Features
     public class FeatureFactory : IDisposable
     {
         private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues;
+        private Dictionary<FeatureType, IObjectPool<GameObject>> _pools;
 
         public FeatureFactory()
         {
             _catalogues = GetCatalogues();
+            CreatePools();
         }
 
         public void Dispose()
         {
             _catalogues.Clear();
+            foreach (var pool in _pools.Values.ToArray())
+            {
+                pool.Clear();
+            }
         }
 
         public GameObject CreateFeature(FeatureType featureType)
         {
             return featureType switch
             {
-                FeatureType.Mountain => CreateMountain(),
-                FeatureType.Wilderness => CreateWilderness(),
-                FeatureType.Settlement => CreateSettlement(),
+                FeatureType.Mountain => _pools[FeatureType.Mountain].Get(),
+                FeatureType.Wilderness => _pools[FeatureType.Wilderness].Get(),
+                FeatureType.Settlement => _pools[FeatureType.Settlement].Get(),
                 FeatureType.Water => CreateWater(),
                 FeatureType.Path => CreatePath(),
                 _ => null
@@ -43,17 +51,27 @@ namespace Game.Features
             return dict;
         }
 
+        private void CreatePools()
+        {
+            _pools = new Dictionary<FeatureType, IObjectPool<GameObject>>
+            {
+                { FeatureType.Mountain, new ObjectPool<GameObject>(CreateMountain, AddRandomRotation) },
+                { FeatureType.Wilderness, new ObjectPool<GameObject>(CreateWilderness, AddRandomRotation) },
+                { FeatureType.Settlement, new ObjectPool<GameObject>(CreateSettlement, AddRandomRotation) }
+            };
+        }
+
         private static GameObject InstantiatePrefab(GameObject prefab)
         {
             var feature = Object.Instantiate(prefab);
-            AddRandomRotation(feature.transform);
+            AddRandomRotation(feature);
             return feature;
         }
 
-        private static void AddRandomRotation(Transform feature)
+        private static void AddRandomRotation(GameObject feature)
         {
             var randomRotation = Random.Range(0f, 360f);
-            feature.localEulerAngles = new Vector3(0f, randomRotation, 0f);
+            feature.transform.localEulerAngles = new Vector3(0f, randomRotation, 0f);
         }
 
         private GameObject CreatePath()

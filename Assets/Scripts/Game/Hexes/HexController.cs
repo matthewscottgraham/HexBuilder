@@ -16,18 +16,10 @@ namespace Game.Hexes
         private EventBinding<InteractEvent> _interactEventBinding;
         private HexObject[,] _map;
 
-        public void Dispose()
-        {
-            _hexFactory = null;
-            ServiceLocator.Instance.Deregister(this);
-            EventBus<InteractEvent>.Deregister(_interactEventBinding);
-            _interactEventBinding = null;
-            _map = null;
-        }
-
         public void Initialize()
         {
-            _hexFactory = new HexFactory();
+            var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
+            _hexFactory = new HexFactory(hexGrid);
 
             var saveData = ServiceLocator.Instance.Get<SaveDataController>().Load<GameData>();
             if (saveData == null)
@@ -47,6 +39,17 @@ namespace Game.Hexes
             EventBus<InteractEvent>.Register(_interactEventBinding);
 
             InvokeRepeating(nameof(Save), AutoSaveFrequency, AutoSaveFrequency);
+        }
+
+        public void Dispose()
+        {
+            _hexFactory.Dispose();
+            _hexFactory = null;
+            
+            ServiceLocator.Instance.Deregister(this);
+            EventBus<InteractEvent>.Deregister(_interactEventBinding);
+            _interactEventBinding = null;
+            _map = null;
         }
 
         public void Save()
@@ -81,9 +84,8 @@ namespace Game.Hexes
         {
             if (!InBounds(cell)) return null;
             if (_map[cell.X, cell.Y] != null) return _map[cell.X, cell.Y];
-
-            var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
-            _map[cell.X, cell.Y] = _hexFactory.CreateHex(cell, hexGrid, transform);
+            
+            _map[cell.X, cell.Y] = _hexFactory.CreateHex(cell, transform);
 
             return _map[cell.X, cell.Y];
         }
