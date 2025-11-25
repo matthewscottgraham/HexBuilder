@@ -40,12 +40,10 @@ namespace Game
 
             var hexController = gameObject.AddComponent<HexController>();
             var toolController = gameObject.AddComponent<ToolController>();
-            var hexSelector = new GameObject("Selector").AddComponent<HexSelector>();
 
             _resources = new IDisposable[]
             {
                 featureFactory,
-                hexSelector,
                 hexController,
                 toolController,
                 new CameraController(Camera.main)
@@ -55,7 +53,6 @@ namespace Game
 
             hexController.Initialize();
             toolController.Initialize();
-            hexSelector.Initialize();
 
             ground.transform.localScale = new Vector3(grid.WorldWidth() + 3, 1, grid.WorldHeight() + 3);
         }

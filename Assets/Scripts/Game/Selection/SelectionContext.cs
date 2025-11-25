@@ -1,6 +1,5 @@
 using System;
 using Game.Hexes;
-using Game.Tools;
 using UnityEngine;
 
 namespace Game.Selection

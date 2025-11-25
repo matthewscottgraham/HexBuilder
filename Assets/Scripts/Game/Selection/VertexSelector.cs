@@ -1,13 +1,14 @@
 using App.Services;
 using Game.Grid;
 using Game.Hexes;
-using Game.Tools;
 using UnityEngine;
 
 namespace Game.Selection
 {
     public class VertexSelector : Selector
     {
+        public override SelectionType SelectionType => SelectionType.Vertex;
+        
         protected override Transform CreateHighlighter()
         {
             var highlighter = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;

@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using App.Config;
-using App.Events;
 using App.SaveData;
 using App.Services;
 using Game.Features;
 using Game.Grid;
-using Game.Tools;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -15,7 +13,6 @@ namespace Game.Hexes
     {
         private const int AutoSaveFrequency = 60;
         private HexFactory _hexFactory;
-        private EventBinding<InteractEvent> _interactEventBinding;
         private HexObject[,] _map;
 
         public void Initialize()
@@ -24,10 +21,6 @@ namespace Game.Hexes
             _hexFactory = new HexFactory(hexGrid);
             
             LoadData();
-
-            _interactEventBinding = new EventBinding<InteractEvent>(HandleInteractEvent);
-            EventBus<InteractEvent>.Register(_interactEventBinding);
-
             InvokeRepeating(nameof(SaveData), AutoSaveFrequency, AutoSaveFrequency);
         }
 
@@ -37,8 +30,6 @@ namespace Game.Hexes
             _hexFactory = null;
             
             ServiceLocator.Instance.Deregister(this);
-            EventBus<InteractEvent>.Deregister(_interactEventBinding);
-            _interactEventBinding = null;
             _map = null;
         }
 
@@ -67,7 +58,7 @@ namespace Game.Hexes
             {
                 for (var y = 0; y < _map.GetLength(1); y++)
                 {
-                    if (_map[x, y] == null) continue;
+                    if (!_map[x, y]) continue;
                     hexes.Add(new HexInfo(new Cell(x, y), (int)_map[x, y].Height, _map[x, y].FeatureType,
                         _map[x, y].FeatureVariation, _map[x ,y].FeatureRotation));
                 }
@@ -102,16 +93,6 @@ namespace Game.Hexes
         public bool InBounds(Cell cell)
         {
             return cell.X >= 0 && cell.X < _map.GetLength(0) && cell.Y >= 0 && cell.Y < _map.GetLength(1);
-        }
-
-        private void HandleInteractEvent()
-        {
-            ExecuteCommandOnHex(HexSelector.SelectedCell);
-        }
-
-        private static void ExecuteCommandOnHex(Cell cell)
-        {
-            ServiceLocator.Instance.Get<ToolController>().UseSelectedTool(cell);
         }
 
         private void CreateHexes(List<HexInfo> hexInfos)

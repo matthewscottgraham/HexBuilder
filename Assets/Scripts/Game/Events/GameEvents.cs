@@ -4,16 +4,6 @@ using Game.Selection;
 
 namespace Game.Events
 {
-    public struct CellSelectedEvent : IEvent
-    {
-        public CellSelectedEvent(Cell cell)
-        {
-            Cell = cell;
-        }
-
-        public Cell Cell;
-    }
-
     public struct SelectionEvent : IEvent
     {
         public SelectionEvent(SelectionContext selection)

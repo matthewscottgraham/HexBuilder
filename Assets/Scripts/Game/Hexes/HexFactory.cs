@@ -8,8 +8,8 @@ namespace Game.Hexes
     public class HexFactory : IDisposable
     {
         private readonly Material _material = Resources.Load<Material>("Materials/mat_land");
-        private HexGrid _hexGrid;
-        private IObjectPool<GameObject> _pool;
+        private readonly HexGrid _hexGrid;
+        private readonly IObjectPool<GameObject> _pool;
 
         public HexFactory(HexGrid hexGrid)
         {
