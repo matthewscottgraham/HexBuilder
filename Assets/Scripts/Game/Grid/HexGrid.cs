@@ -29,7 +29,7 @@ namespace Game.Grid
             return GridSize.y * Radius * 1.5f;
         }
 
-        public Vector3 GetClosestHexCenterToPosition(Vector3 position)
+        public Vector3 GetClosestFacePosition(Vector3 position)
         {
             var closestDistanceSquared = Mathf.Infinity;
             var closestCenter = Vector3.zero;
@@ -67,6 +67,58 @@ namespace Game.Grid
             return closestCell;
         }
 
+        public (Vector3, int) GetClosestEdgePosition(Vector3 position)
+        {
+            var corners = new Vector3[6];
+            var edges = new Vector3[6];
+            
+            for (var i = 0; i < 6; i++)
+            {
+                corners[i] = GetCornerPosition(position, i);
+            }
+
+            for (var i = 0; i < corners.Length; i++)
+            {
+                var j = i + 1;
+                j %= corners.Length;
+                edges[i] = (corners[i] + corners[j]) * 0.5f;
+            }
+
+            var closestEdgeIndex = 0;
+            var closestDistance = float.MaxValue;
+            for (var i = 0; i < edges.Length; i++)
+            {
+                var distance = Vector3.Distance(position, edges[i]);
+                if (distance >= closestDistance) continue;
+                
+                closestDistance = distance;
+                closestEdgeIndex = i;
+            }
+            return (edges[closestEdgeIndex], closestEdgeIndex);
+        }
+        
+        public (Vector3, int) GetClosestVertexPosition(Vector3 position)
+        {
+            var corners = new Vector3[6];
+            
+            for (var i = 0; i < 6; i++)
+            {
+                corners[i] = GetCornerPosition(position, i);
+            }
+
+            var closestCornerIndex = 0;
+            var closestDistance = float.MaxValue;
+            for (var i = 0; i < corners.Length; i++)
+            {
+                var distance = Vector3.Distance(position, corners[i]);
+                if (distance >= closestDistance) continue;
+                
+                closestDistance = distance;
+                closestCornerIndex = i;
+            }
+            return (corners[closestCornerIndex], closestCornerIndex);
+        }
+
         public Vector3 GetHexCenter(int x, int y)
         {
             var offsetX = y % 2 == 0 ? 0 : InnerRadius;
@@ -78,6 +130,7 @@ namespace Game.Grid
 
             return new Vector3(posX - centerX, 0, posY - centerY);
         }
+        
 
         public Vector3 GetCornerPosition(Vector3 center, int cornerIndex)
         {

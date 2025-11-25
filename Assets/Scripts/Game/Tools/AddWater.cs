@@ -1,12 +1,14 @@
 using App.Services;
 using Game.Features;
 using Game.Hexes;
+using Game.Selection;
 
 namespace Game.Tools
 {
     public class AddWater : ITool
     {
         bool ITool.AllowAreaOfEffect => false;
+        SelectionType ITool.SelectionType => SelectionType.Edge;
         
         public void Use(Cell cell, HexObject hex)
         {

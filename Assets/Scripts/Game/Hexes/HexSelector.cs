@@ -99,7 +99,7 @@ namespace Game.Hexes
         private static Vector3 ClampPositionToCell(Vector3 position)
         {
             SelectedCell = ServiceLocator.Instance.Get<HexGrid>().GetClosestCellToPosition(position);
-            var center = ServiceLocator.Instance.Get<HexGrid>().GetClosestHexCenterToPosition(position);
+            var center = ServiceLocator.Instance.Get<HexGrid>().GetClosestFacePosition(position);
             center.y = ServiceLocator.Instance.Get<HexController>().GetCellHeight(SelectedCell);
             return center;
         }
