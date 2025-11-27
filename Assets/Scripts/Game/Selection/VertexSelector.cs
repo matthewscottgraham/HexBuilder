@@ -21,9 +21,9 @@ namespace Game.Selection
         
         protected override SelectionContext GetClampedSelection(Vector3 worldPosition)
         {
-            var cell = ServiceLocator.Instance.Get<HexGrid>().GetClosestCellToPosition(worldPosition);
-            var (position, vertexIndex) = ServiceLocator.Instance.Get<HexGrid>().GetClosestVertexPosition(worldPosition);
-            position.y = ServiceLocator.Instance.Get<HexController>().GetCellHeight(cell);
+            var cell = HexGrid.GetClosestCellToPosition(worldPosition);
+            var (position, vertexIndex) = HexGrid.ClampWorldPositionToVertex(worldPosition);
+            position.y = HexController.GetCellHeight(cell);
             return new SelectionContext(SelectionType.Face, position, cell, null, vertexIndex);
         }
     }

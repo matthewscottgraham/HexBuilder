@@ -4,6 +4,7 @@ using System.Linq;
 using App.Events;
 using App.Services;
 using Game.Events;
+using Game.Grid;
 using Game.Hexes;
 using Game.Selection;
 using UnityEngine;
@@ -45,9 +46,12 @@ namespace Game.Tools
                 { SelectionType.Face, gameObject.AddComponent<FaceSelector>() }
             };
 
+            var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
+            var hexController = ServiceLocator.Instance.Get<HexController>();
+            
             foreach (var selector in _selectors.Values)
             {
-                selector.Initialize();
+                selector.Initialize(hexGrid, hexController);
             }
             
             SetActiveTool(1);
@@ -96,41 +100,17 @@ namespace Game.Tools
             }
         }
 
-        private void UseToolWithinAreaOfEffect(Cell cell, int areaOfEffect, ITool tool)
+        private void UseToolWithinAreaOfEffect(Cell center, int areaOfEffect, ITool tool)
         {
-            SetLevel(cell);
-            var hexes = GetHexesWithinAreaOfEffect(cell, areaOfEffect);
-            foreach (var hexCell in hexes.Keys) tool.Use(hexCell, hexes[hexCell]);
-        }
-
-        // TODO: move to HexGrid
-        private static Dictionary<Cell, HexObject> GetHexesWithinAreaOfEffect(Cell center, int radius)
-        {
+            SetLevel(center);
             var hexController = ServiceLocator.Instance.Get<HexController>();
-            var hexes = new Dictionary<Cell, HexObject>();
-
-            var centerQ = center.X - (center.Y - (center.Y & 1)) / 2;
-            var centerR = center.Y;
-
-            for (var y = center.Y - radius; y <= center.Y + radius; y++)
-            for (var x = center.X - radius; x <= center.X + radius; x++)
+            var cells = ServiceLocator.Instance.Get<HexGrid>().GetCellsWithinRadius(center, areaOfEffect);
+            foreach (var cell in cells)
             {
-                var q = x - (y - (y & 1)) / 2;
-
-                var dq = q - centerQ;
-                var dr = y - centerR;
-                var dz = -dq - dr;
-
-                var hexDistance = Mathf.Max(Mathf.Abs(dq), Mathf.Abs(dr), Mathf.Abs(dz));
-
-                if (hexDistance > radius) continue;
-
-                var worldCell = new Cell(x, y);
-                hexes[worldCell] = hexController.GetHex(worldCell); // allow null
+                tool.Use(cell, hexController.GetHex(cell));
             }
-
-            return hexes;
         }
+        
 
         private void SetLevel(Cell cell)
         {

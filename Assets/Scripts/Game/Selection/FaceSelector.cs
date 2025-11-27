@@ -1,6 +1,3 @@
-using App.Services;
-using Game.Grid;
-using Game.Hexes;
 using UnityEngine;
 
 namespace Game.Selection
@@ -20,9 +17,9 @@ namespace Game.Selection
         
         protected override SelectionContext GetClampedSelection(Vector3 position)
         {
-            var cell = ServiceLocator.Instance.Get<HexGrid>().GetClosestCellToPosition(position);
-            var center = ServiceLocator.Instance.Get<HexGrid>().GetClosestFacePosition(position);
-            center.y = ServiceLocator.Instance.Get<HexController>().GetCellHeight(cell);
+            var cell = HexGrid.GetClosestCellToPosition(position);
+            var center = HexGrid.ClampWorldPositionToHexCenter(position);
+            center.y = HexController.GetCellHeight(cell);
             return new SelectionContext(SelectionType.Face, center, cell, null, null);
         }
     }

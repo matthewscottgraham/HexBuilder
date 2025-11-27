@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using App.Services;
 using Game.Hexes;
 using UnityEngine;
 
@@ -28,117 +30,158 @@ namespace Game.Grid
         {
             return GridSize.y * Radius * 1.5f;
         }
-
-        public Vector3 GetClosestFacePosition(Vector3 position)
+        
+        public List<Cell> GetCellsWithinRadius(Cell center, int radius)
         {
-            var closestDistanceSquared = Mathf.Infinity;
-            var closestCenter = Vector3.zero;
+            var hexes = new List<Cell>();
 
-            for (var x = 0; x < GridSize.x; x++)
-            for (var y = 0; y < GridSize.y; y++)
+            var centerQ = center.X - (center.Y - (center.Y & 1)) / 2;
+            var centerR = center.Y;
+
+            for (var y = center.Y - radius; y <= center.Y + radius; y++)
             {
-                var center = GetHexCenter(x, y);
-                var distanceSquared = (position - center).sqrMagnitude;
+                for (var x = center.X - radius; x <= center.X + radius; x++)
+                {
+                    var q = x - (y - (y & 1)) / 2;
 
-                if (!(distanceSquared < closestDistanceSquared)) continue;
-                closestDistanceSquared = distanceSquared;
-                closestCenter = center;
+                    var dq = q - centerQ;
+                    var dr = y - centerR;
+                    var dz = -dq - dr;
+
+                    var hexDistance = Mathf.Max(Mathf.Abs(dq), Mathf.Abs(dr), Mathf.Abs(dz));
+
+                    if (hexDistance > radius) continue;
+
+                    hexes.Add(new Cell(x, y));
+                }
             }
 
-            return closestCenter;
+            return hexes;
         }
 
-        public Cell GetClosestCellToPosition(Vector3 position)
+        public Cell GetClosestCellToPosition(Vector3 worldPosition)
         {
             var closestDistanceSquared = Mathf.Infinity;
             var closestCell = new Cell(0, 0);
 
             for (var x = 0; x < GridSize.x; x++)
-            for (var y = 0; y < GridSize.y; y++)
             {
-                var center = GetHexCenter(x, y);
-                var distanceSquared = (position - center).sqrMagnitude;
+                for (var y = 0; y < GridSize.y; y++)
+                {
+                    var center = GetHexWorldPosition(x, y);
+                    var distanceSquared = (worldPosition - center).sqrMagnitude;
 
-                if (!(distanceSquared < closestDistanceSquared)) continue;
-                closestDistanceSquared = distanceSquared;
-                closestCell = new Cell(x, y);
+                    if (!(distanceSquared < closestDistanceSquared)) continue;
+                    closestDistanceSquared = distanceSquared;
+                    closestCell = new Cell(x, y);
+                }
             }
 
             return closestCell;
         }
 
-        public (Vector3, int) GetClosestEdgePosition(Vector3 position)
+
+        public Vector3 ClampWorldPositionToHexCenter(Vector3 worldPosition)
         {
-            var corners = new Vector3[6];
-            var edges = new Vector3[6];
-            
-            for (var i = 0; i < 6; i++)
+            var closestHexDistanceSquared = Mathf.Infinity;
+            var closestCenter = Vector3.zero;
+
+            for (var x = 0; x < GridSize.x; x++)
             {
-                corners[i] = GetCornerPosition(position, i);
+                for (var y = 0; y < GridSize.y; y++)
+                {
+                    var center = GetHexWorldPosition(x, y);
+                    var distanceSquared = (worldPosition - center).sqrMagnitude;
+
+                    if (!(distanceSquared < closestHexDistanceSquared)) continue;
+                    closestHexDistanceSquared = distanceSquared;
+                    closestCenter = center;
+                }
             }
 
-            for (var i = 0; i < corners.Length; i++)
-            {
-                var j = i + 1;
-                j %= corners.Length;
-                edges[i] = (corners[i] + corners[j]) * 0.5f;
-            }
-
-            var closestEdgeIndex = 0;
-            var closestDistance = float.MaxValue;
-            for (var i = 0; i < edges.Length; i++)
-            {
-                var distance = Vector3.Distance(position, edges[i]);
-                if (distance >= closestDistance) continue;
-                
-                closestDistance = distance;
-                closestEdgeIndex = i;
-            }
-            return (edges[closestEdgeIndex], closestEdgeIndex);
-        }
-        
-        public (Vector3, int) GetClosestVertexPosition(Vector3 position)
-        {
-            var corners = new Vector3[6];
-            
-            for (var i = 0; i < 6; i++)
-            {
-                corners[i] = GetCornerPosition(position, i);
-            }
-
-            var closestCornerIndex = 0;
-            var closestDistance = float.MaxValue;
-            for (var i = 0; i < corners.Length; i++)
-            {
-                var distance = Vector3.Distance(position, corners[i]);
-                if (distance >= closestDistance) continue;
-                
-                closestDistance = distance;
-                closestCornerIndex = i;
-            }
-            return (corners[closestCornerIndex], closestCornerIndex);
+            return closestCenter;
         }
 
-        public Vector3 GetHexCenter(int x, int y)
+        public (Vector3, int) ClampWorldPositionToEdge(Vector3 worldPosition)
         {
-            var offsetX = y % 2 == 0 ? 0 : InnerRadius;
-            var posX = x * InnerRadius * 2f + offsetX;
-            var posY = y * Radius * 1.5f;
+            var hexCenter = ClampWorldPositionToHexCenter(worldPosition);
+
+            var nearestEdgeIndex = 0;
+            var bestDist = float.MaxValue;
+
+            for (var i = 0; i < 6; i++)
+            {
+                var a = GetHexRelativeCornerPosition(i);
+                var b = GetHexRelativeCornerPosition((i + 1) % 6);
+
+                var edgeWorld = hexCenter + (a + b) * 0.5f;
+                var dist = (worldPosition - edgeWorld).sqrMagnitude;
+
+                if (!(dist < bestDist)) continue;
+                
+                bestDist = dist;
+                nearestEdgeIndex = i;
+            }
+
+            var bestEdgeWorld =
+                hexCenter + (GetHexRelativeCornerPosition(nearestEdgeIndex)
+                             + GetHexRelativeCornerPosition((nearestEdgeIndex + 1) % 6)) * 0.5f;
+
+            return (bestEdgeWorld, nearestEdgeIndex);
+        }
+
+        public (Vector3, int) ClampWorldPositionToVertex(Vector3 worldPosition)
+        {
+            var hexCenter = ClampWorldPositionToHexCenter(worldPosition);
+
+            var nearestCornerIndex = 0;
+            var bestDist = float.MaxValue;
+
+            for (var i = 0; i < 6; i++)
+            {
+                var cornerWorld = hexCenter + GetHexRelativeCornerPosition(i);
+                var dist = (worldPosition - cornerWorld).sqrMagnitude;
+
+                if (!(dist < bestDist)) continue;
+                
+                bestDist = dist;
+                nearestCornerIndex = i;
+            }
+
+            var bestCornerWorld = hexCenter + GetHexRelativeCornerPosition(nearestCornerIndex);
+            return (bestCornerWorld, nearestCornerIndex);
+        }
+
+        public Vector3 GetHexWorldPosition(int x, int y)
+        {
+            return GetHexWorldPosition(new Cell(x, y));
+        }
+
+        public Vector3 GetHexWorldPosition(Cell cell)
+        {
+            var offsetX = cell.Y % 2 == 0 ? 0 : InnerRadius;
+            var posX = cell.X * InnerRadius * 2f + offsetX;
+            var posY = cell.Y * Radius * 1.5f;
 
             var centerX = GridSize.x * InnerRadius * 2f / 2f - InnerRadius / 2f;
             var centerY = GridSize.y * Radius * 1.5f / 2f - Radius / 2f;
 
-            return new Vector3(posX - centerX, 0, posY - centerY);
+            return Perturb(new Vector3(posX - centerX, 0, posY - centerY));
         }
-        
 
-        public Vector3 GetCornerPosition(Vector3 center, int cornerIndex)
+        public Vector3 GetHexRelativeCornerPosition(int cornerIndex)
         {
             var angleDeg = 60f * cornerIndex;
             var angleRad = Mathf.Deg2Rad * angleDeg;
-            var corner = center + new Vector3(Mathf.Sin(angleRad) * Radius, 0, Mathf.Cos(angleRad) * Radius);
-            corner = Perturb(corner);
+            var corner =  Perturb(new Vector3(Mathf.Sin(angleRad) * Radius, 0, Mathf.Cos(angleRad) * Radius));
             return corner;
+        }
+
+        private Vector3 GetHexRelativeEdgeCenterPosition(int edgeIndex)
+        {
+            var posA = GetHexRelativeCornerPosition(edgeIndex);
+            var posB = GetHexRelativeCornerPosition(6 % (edgeIndex + 1));
+            return Vector3.Lerp(posA, posB, 0.5f);
         }
 
         private Vector3 Perturb(Vector3 position)
@@ -148,7 +191,7 @@ namespace Game.Grid
             position.z += (sample.z * 2f - 1f) * NoiseScale;
             return position;
         }
-
+        
         private Vector4 SampleNoise(Vector3 position)
         {
             return Noise.GetPixelBilinear(position.x, position.z);

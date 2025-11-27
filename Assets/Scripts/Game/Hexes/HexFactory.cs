@@ -25,7 +25,7 @@ namespace Game.Hexes
         public HexObject CreateHex(Cell cell, Transform parent)
         {
             var go = new GameObject(cell.ToString());
-            go.transform.position = _hexGrid.GetHexCenter(cell.X, cell.Y);
+            go.transform.position = _hexGrid.GetHexWorldPosition(cell.X, cell.Y);
             go.transform.parent = parent;
 
             var collider = go.AddComponent<CapsuleCollider>();
@@ -68,14 +68,14 @@ namespace Game.Hexes
             var vertices = new Vector3[18];
 
             // top face vertices
-            for (var i = 0; i < 6; i++) vertices[i] = _hexGrid.GetCornerPosition(Vector3.zero, i) + Vector3.up * height;
+            for (var i = 0; i < 6; i++) vertices[i] = _hexGrid.GetHexRelativeCornerPosition(i) + Vector3.up * height;
 
             // top of side face vertices
             for (var i = 6; i < 12; i++)
-                vertices[i] = _hexGrid.GetCornerPosition(Vector3.zero, i - 6) + Vector3.up * height;
+                vertices[i] = _hexGrid.GetHexRelativeCornerPosition(i - 6) + Vector3.up * height;
 
             // bottom of side face vertices
-            for (var i = 12; i < 18; i++) vertices[i] = _hexGrid.GetCornerPosition(Vector3.zero, i - 12);
+            for (var i = 12; i < 18; i++) vertices[i] = _hexGrid.GetHexRelativeCornerPosition(i - 12);
 
             return vertices;
         }
