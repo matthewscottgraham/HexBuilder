@@ -7,6 +7,6 @@ namespace Game.Tools
     {
         public bool AllowAreaOfEffect => true;
         public SelectionType SelectionType => SelectionType.Face;
-        public void Use(Cell cell, HexObject hex);
+        public void Use(SelectionContext selection, HexObject hex);
     }
 }

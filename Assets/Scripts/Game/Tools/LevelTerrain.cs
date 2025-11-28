@@ -1,5 +1,6 @@
 using App.Services;
 using Game.Hexes;
+using Game.Selection;
 
 namespace Game.Tools
 {
@@ -7,13 +8,13 @@ namespace Game.Tools
     {
         public float Level { get; set; }
 
-        public void Use(Cell cell, HexObject hex)
+        public void Use(SelectionContext selection, HexObject hex)
         {
             var hexController = ServiceLocator.Instance.Get<HexController>();
 
-            if (!hexController.InBounds(cell)) return;
+            if (!hexController.InBounds(selection.Cell)) return;
 
-            if (hex == null) hex = hexController.CreateNewHex(cell);
+            if (hex == null) hex = hexController.CreateNewHex(selection.Cell);
 
             hex.RemoveFeature();
 

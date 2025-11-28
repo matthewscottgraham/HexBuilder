@@ -7,6 +7,7 @@ using Game.Events;
 using Game.Grid;
 using Game.Hexes;
 using Game.Selection;
+using Game.Tools.Paths;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -107,7 +108,7 @@ namespace Game.Tools
             var cells = ServiceLocator.Instance.Get<HexGrid>().GetCellsWithinRadius(center, areaOfEffect);
             foreach (var cell in cells)
             {
-                tool.Use(cell, hexController.GetHex(cell));
+                tool.Use(Selector.Hovered, hexController.GetHex(cell));
             }
         }
         

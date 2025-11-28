@@ -8,6 +8,7 @@ using Game.Features;
 using Game.Grid;
 using Game.Hexes;
 using Game.Tools;
+using Game.Tools.Paths;
 using UnityEngine;
 
 namespace Game
@@ -40,17 +41,20 @@ namespace Game
 
             var hexController = gameObject.AddComponent<HexController>();
             var toolController = gameObject.AddComponent<ToolController>();
+            var pathController = gameObject.AddComponent<PathController>();
 
             _resources = new IDisposable[]
             {
                 featureFactory,
                 hexController,
                 toolController,
+                pathController,
                 new CameraController(Camera.main)
             };
 
             foreach (var resource in _resources) ServiceLocator.Instance.Register(resource);
-
+            
+            pathController.Initialize();
             hexController.Initialize();
             toolController.Initialize();
 

@@ -10,7 +10,7 @@ namespace Game.Tools
         bool ITool.AllowAreaOfEffect => false;
         SelectionType ITool.SelectionType => SelectionType.Edge;
         
-        public void Use(Cell cell, HexObject hex)
+        public void Use(SelectionContext selection, HexObject hex)
         {
             if (hex == null) return;
             var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(FeatureType.Water);

@@ -1,15 +1,16 @@
 using App.Services;
 using Game.Hexes;
+using Game.Selection;
 
 namespace Game.Tools
 {
     public class LowerTerrain : ITool
     {
-        public void Use(Cell cell, HexObject hex)
+        public void Use(SelectionContext selection, HexObject hex)
         {
             var hexController = ServiceLocator.Instance.Get<HexController>();
 
-            if (!hexController.InBounds(cell) || hex == null) return;
+            if (!hexController.InBounds(selection.Cell) || hex == null) return;
 
             hex.SetHeight(hex.Height - 1);
         }
