@@ -10,6 +10,7 @@ namespace Game.Tools.Paths
 {
     public class PathController : MonoBehaviour, IDisposable
     {
+        private Material _material;
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
 
@@ -22,6 +23,8 @@ namespace Game.Tools.Paths
         {
             _hexGrid = ServiceLocator.Instance.Get<HexGrid>();
             _vertexPositions = GetVertexPositions();
+            
+            _material = Resources.Load<Material>("Materials/mat_path");
             
             _meshFilter = gameObject.AddComponent<MeshFilter>();
             _meshRenderer = gameObject.AddComponent<MeshRenderer>();
@@ -85,6 +88,7 @@ namespace Game.Tools.Paths
             var worldPosition = _vertexPositions[vertexCoordinate];
             var vertexMesh = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             vertexMesh.name = "VertexMesh";
+            vertexMesh.GetComponent<MeshRenderer>().material = _material;
             vertexMesh.transform.SetParent(transform);
             vertexMesh.transform.localScale = new Vector3(0.5f, 3f, 0.5f);
             vertexMesh.transform.position = worldPosition;
