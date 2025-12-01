@@ -14,8 +14,19 @@ namespace Game.Hexes
 
         public Cell Cell { get; private set; }
         public  FeatureType FeatureType => _feature?.FeatureType ?? FeatureType.None;
-        public int FeatureVariation => _feature?.Variation ?? 0;
-        public float FeatureRotation => _feature?.transform.localRotation.eulerAngles.y ?? 0;
+
+        public int FeatureVariation => _feature ? _feature.Variation : 0;
+
+        public float FeatureRotation
+        {
+            get
+            {
+                if (_feature) return transform.localRotation.eulerAngles.y;
+                return 0;
+            }
+        }
+
+        
         public float Height { get; private set; } = 1;
 
         public void Initialize(Cell cell, CapsuleCollider capsuleCollider, Transform hexMesh)

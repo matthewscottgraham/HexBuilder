@@ -22,7 +22,7 @@ namespace App.Tweens
         {
             var id = $"{transform.gameObject.GetInstanceID()}_Position";
             return new Tween<Vector3>(transform, id, startPos, endPos, duration,
-                value => { transform.position = value; });
+                value => { if (transform) transform.position = value; });
         }
 
         public static Tween<Vector3> TweenLocalPosition(this Transform transform, Vector3 startPos, Vector3 endPos,
@@ -30,7 +30,7 @@ namespace App.Tweens
         {
             var id = $"{transform.gameObject.GetInstanceID()}_Position";
             return new Tween<Vector3>(transform, id, startPos, endPos, duration,
-                value => { transform.localPosition = value; });
+                value => { if (transform) transform.localPosition = value; });
         }
 
         public static Tween<Vector3> TweenScale(this Transform transform, Vector3 startScale, Vector3 endScale,
@@ -38,7 +38,7 @@ namespace App.Tweens
         {
             var id = $"{transform.gameObject.GetInstanceID()}_Scale";
             return new Tween<Vector3>(transform, id, startScale, endScale, duration,
-                value => { transform.localScale = value; });
+                value => { if (transform) transform.localScale = value; });
         }
 
         public static Tween<float> TweenFloat(Func<float> getFloatToTween, Action<float> setFloatToTween,

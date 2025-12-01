@@ -15,7 +15,7 @@ namespace Game.Grid
             NoiseScale = noiseScale;
         }
 
-        private float Radius { get; }
+        public float Radius { get; }
         public float InnerRadius => Radius * 0.866025404f;
         public Vector2Int GridSize { get; }
         private Texture2D Noise { get; }
