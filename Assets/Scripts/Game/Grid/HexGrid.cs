@@ -21,6 +21,15 @@ namespace Game.Grid
         private Texture2D Noise { get; }
         private float NoiseScale { get; }
 
+        private static readonly Vector2Int[] CornerOwnerOffset = {
+            new(0,0),  // corner 0 owned by (x,y)
+            new(0,0),
+            new(0,1),  // corner 2 owned by (x,y+1)
+            new(-1,1), // corner 3 owned by (x-1,y+1)
+            new(-1,0), // corner 4 owned by (x-1,y)
+            new(0,0)
+        };
+
         public float WorldWidth()
         {
             return GridSize.x * InnerRadius * 2;
@@ -30,7 +39,7 @@ namespace Game.Grid
         {
             return GridSize.y * Radius * 1.5f;
         }
-        
+
         public List<Cell> GetCellsWithinRadius(Cell center, int radius)
         {
             var hexes = new List<Cell>();
@@ -175,6 +184,38 @@ namespace Game.Grid
             var angleRad = Mathf.Deg2Rad * angleDeg;
             var corner =  Perturb(new Vector3(Mathf.Sin(angleRad) * Radius, 0, Mathf.Cos(angleRad) * Radius));
             return corner;
+        }
+
+        public Dictionary<Vector3Int, Vector3> GetVertexPositions()
+        {
+            var vertices = new Dictionary<Vector3Int, Vector3>();
+
+            for (var x = 0; x < GridSize.x; x++)
+            {
+                for (var y = 0; y < GridSize.y; y++)
+                {
+                    var worldPos = GetHexWorldPosition(x, y);
+
+                    for (var corner = 0; corner < 6; corner++)
+                    {
+                        var offset = CornerOwnerOffset[corner];
+                        var v = new Vector3Int(x + offset.x, y + offset.y, corner
+                        );
+                        
+                        var pos = worldPos + GetHexRelativeCornerPosition(corner);
+                        
+                        vertices.TryAdd(v, pos);
+                    }
+                }
+            }
+
+            return vertices;
+        }
+
+        public static Vector3Int GetVertexCoordinate(Cell cell, int vertexIndex)
+        {
+            var offset = CornerOwnerOffset[vertexIndex];
+            return new Vector3Int(cell.X + offset.x, cell.Y + offset.y, vertexIndex);
         }
 
         private Vector3 GetHexRelativeEdgeCenterPosition(int edgeIndex)

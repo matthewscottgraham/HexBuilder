@@ -22,7 +22,7 @@ namespace Game.Tools.Paths
         public void Initialize()
         {
             _hexGrid = ServiceLocator.Instance.Get<HexGrid>();
-            _vertexPositions = GetVertexPositions();
+            _vertexPositions = _hexGrid.GetVertexPositions();
             
             _material = Resources.Load<Material>("Materials/mat_path");
             
@@ -40,14 +40,14 @@ namespace Game.Tools.Paths
 
         public void AddVertex(Cell cell, int vertexIndex)
         {
-            var vertexCoordinate = GetVertexCoordinate(cell, vertexIndex);
+            var vertexCoordinate = HexGrid.GetVertexCoordinate(cell, vertexIndex);
             if (!_pathVertices.TryAdd(vertexCoordinate, null)) return;
             UpdateMesh();
         }
 
         public void RemoveVertex(Cell cell, int vertexIndex)
         {
-            var vertexCoordinate = GetVertexCoordinate(cell, vertexIndex);
+            var vertexCoordinate = HexGrid.GetVertexCoordinate(cell, vertexIndex);
             if (!_pathVertices.ContainsKey(vertexCoordinate)) return;
             _pathVertices.Remove(vertexCoordinate);
             UpdateMesh();
@@ -67,20 +67,7 @@ namespace Game.Tools.Paths
             // for each edge between vertices create bridge
         }
 
-        private static readonly Vector2Int[] CornerOwnerOffset = {
-            new(0,0),  // corner 0 owned by (x,y)
-            new(0,0),
-            new(0,1),  // corner 2 owned by (x,y+1)
-            new(-1,1), // corner 3 owned by (x-1,y+1)
-            new(-1,0), // corner 4 owned by (x-1,y)
-            new(0,0)
-        };
-
-        private Vector3Int GetVertexCoordinate(Cell cell, int vertexIndex)
-        {
-            var offset = CornerOwnerOffset[vertexIndex];
-            return new Vector3Int(cell.X + offset.x, cell.Y + offset.y, vertexIndex);
-        }
+        
 
 
         private GameObject CreateVertexMesh(Vector3Int vertexCoordinate)
@@ -99,7 +86,7 @@ namespace Game.Tools.Paths
         {
             if (_vertexPositions is null)
             {
-                _vertexPositions = GetVertexPositions();
+                _vertexPositions = _hexGrid.GetVertexPositions();
                 return;
             }
             Gizmos.color = Color.green;
@@ -109,32 +96,6 @@ namespace Game.Tools.Paths
             }
         }
 
-        private Dictionary<Vector3Int, Vector3> GetVertexPositions()
-        {
-            if (_hexGrid == null) return null;
-
-            var vertices = new Dictionary<Vector3Int, Vector3>();
-
-            for (var x = 0; x < _hexGrid.GridSize.x; x++)
-            {
-                for (var y = 0; y < _hexGrid.GridSize.y; y++)
-                {
-                    var worldPos = _hexGrid.GetHexWorldPosition(x, y);
-
-                    for (var corner = 0; corner < 6; corner++)
-                    {
-                        var offset = CornerOwnerOffset[corner];
-                        var v = new Vector3Int(x + offset.x, y + offset.y, corner
-                        );
-                        
-                        var pos = worldPos + _hexGrid.GetHexRelativeCornerPosition(corner);
-                        
-                        vertices.TryAdd(v, pos);
-                    }
-                }
-            }
-
-            return vertices;
-        }
+        
     }
 }
