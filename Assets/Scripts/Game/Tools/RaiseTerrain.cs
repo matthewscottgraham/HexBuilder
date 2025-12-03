@@ -6,6 +6,8 @@ namespace Game.Tools
 {
     public class RaiseTerrain : ITool
     {
+        public bool CreateHexesAsNeeded => true;
+        
         public void Use(SelectionContext selection, HexObject hex)
         {
             var hexController = ServiceLocator.Instance.Get<HexController>();

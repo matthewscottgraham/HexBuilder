@@ -74,9 +74,13 @@ namespace Game.Hexes
             return _map[coordinate.X, coordinate.Y].Height;
         }
 
-        public HexObject GetHex(Coordinate2 coordinate)
+        public HexObject GetHex(Coordinate2 coordinate, bool createIfMissing = false)
         {
-            if (_map == null || !InBounds(coordinate) || !_map[coordinate.X, coordinate.Y]) return null;
+            if (_map == null || !InBounds(coordinate)) return null;
+            if (!_map[coordinate.X, coordinate.Y] && createIfMissing)
+            {
+                CreateNewHex(coordinate);
+            }
             return _map[coordinate.X, coordinate.Y];
         }
 

@@ -108,7 +108,7 @@ namespace Game.Tools
             var cells = ServiceLocator.Instance.Get<HexGrid>().GetHexCoordinatesWithinRadius(center, areaOfEffect);
             foreach (var cell in cells)
             {
-                tool.Use(Selector.Hovered, hexController.GetHex(cell));
+                tool.Use(Selector.Hovered, hexController.GetHex(cell, tool.CreateHexesAsNeeded));
             }
         }
         
