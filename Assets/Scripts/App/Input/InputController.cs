@@ -11,6 +11,8 @@ namespace App.Input
     {
         private EventSystem _eventSystem;
         private InputSystem_Actions _inputSystem;
+        
+        private bool _dragging;
 
         public static bool PointerHasMovedThisFrame { get; private set; }
         public static Vector2 PointerPosition => Mouse.current.position.ReadValue();
@@ -18,15 +20,14 @@ namespace App.Input
 
         private void Update()
         {
+            if (_dragging)
+            {
+                var delta = LastMousePosition - PointerPosition;
+                EventBus<DragEvent>.Raise(new DragEvent(delta.normalized));
+            }
+
             PointerHasMovedThisFrame = Vector2.Distance(LastMousePosition, PointerPosition) > Mathf.Epsilon;
             LastMousePosition = PointerPosition;
-        }
-
-        public void Dispose()
-        {
-            _inputSystem.Player.Move.performed -= HandleMove;
-            _inputSystem.Player.Interact.performed -= HandleInteract;
-            _inputSystem?.Dispose();
         }
 
         public void Initialize()
@@ -37,6 +38,17 @@ namespace App.Input
 
             _inputSystem.Player.Move.performed += HandleMove;
             _inputSystem.Player.Interact.started += HandleInteract;
+            _inputSystem.Player.Interact.started += HandleDragStart;
+            _inputSystem.Player.Interact.canceled += HandleDragEnd;
+        }
+
+        public void Dispose()
+        {
+            _inputSystem.Player.Move.performed -= HandleMove;
+            _inputSystem.Player.Interact.started -= HandleInteract;
+            _inputSystem.Player.Interact.started -= HandleDragStart;
+            _inputSystem.Player.Interact.canceled -= HandleDragEnd;
+            _inputSystem?.Dispose();
         }
 
         private bool IsPointerOverUI()
@@ -57,8 +69,20 @@ namespace App.Input
 
         private void HandleInteract(InputAction.CallbackContext ctx)
         {
+            if (_dragging) return;
             if (IsPointerOverUI()) return;
             EventBus<InteractEvent>.Raise(new InteractEvent());
+        }
+
+        private void HandleDragStart(InputAction.CallbackContext ctx)
+        {
+            if (IsPointerOverUI()) return;
+            _dragging = true;
+        }
+
+        private void HandleDragEnd(InputAction.CallbackContext ctx)
+        {
+            _dragging = false;
         }
     }
 }

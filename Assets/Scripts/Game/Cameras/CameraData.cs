@@ -23,7 +23,7 @@ namespace Game.Cameras
 
             var aimConstraint = new GameObject($"{cameraType} Aim Constraint").transform;
             aimConstraint.SetParent(parent);
-            aimConstraint.gameObject.AddComponent<CenterTransformOnHover>();
+            aimConstraint.gameObject.AddComponent<CameraAimController>();
 
             instance.Follow = aimConstraint;
 

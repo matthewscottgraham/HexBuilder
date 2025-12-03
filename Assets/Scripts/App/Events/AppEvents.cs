@@ -51,4 +51,14 @@ namespace App.Events
 
         public Vector2 Delta;
     }
+
+    public struct DragEvent : IEvent
+    {
+        public DragEvent(Vector2 delta)
+        {
+            Delta = delta;
+        }
+
+        public Vector2 Delta;
+    }
 }
