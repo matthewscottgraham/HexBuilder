@@ -7,12 +7,19 @@ namespace Game.Grid
     public class GridVisualizer : MonoBehaviour
     {
         private HexGrid _hexGrid;
+        private HexController _hexController;
 
+        private void Initialise()
+        {
+            if (ServiceLocator.Instance == null) return;
+            _hexGrid = ServiceLocator.Instance.Get<HexGrid>();
+            _hexController = ServiceLocator.Instance.Get<HexController>();
+        }
         private void OnDrawGizmos()
         {
-            if (_hexGrid == null)
+            if (_hexGrid == null || _hexController == null)
             {
-                if (ServiceLocator.Instance != null) _hexGrid = ServiceLocator.Instance.Get<HexGrid>();
+                 Initialise();
                 return;
             }
 
@@ -22,14 +29,16 @@ namespace Game.Grid
             {
                 for (var x = 0; x < _hexGrid.GridSize.x; x++)
                 {
-                    var center = _hexGrid.GetFacePosition(new Coordinate2(x, y));
+                    var coordinate = new Coordinate2(x, y);
+                    var height = new Vector3(0, _hexController.GetHexHeight(coordinate), 0);
+                    var center = _hexGrid.GetFacePosition(coordinate) + height;
                     Gizmos.DrawSphere(center, 0.05f);
 
                     for (var i = 0; i < 6; i++)
                     {
                         Gizmos.DrawLine(
-                            _hexGrid.GetVertexPosition(new Coordinate3(x, y, i)),
-                            _hexGrid.GetVertexPosition(new Coordinate3(x, y, i + 1))
+                            _hexGrid.GetVertexPosition(new Coordinate3(x, y, i)) + height,
+                            _hexGrid.GetVertexPosition(new Coordinate3(x, y, i + 1)) + height
                             );
                     }
                 }

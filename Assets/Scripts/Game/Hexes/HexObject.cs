@@ -44,6 +44,7 @@ namespace Game.Hexes
             Height = height;
             _hexMesh.TweenScale(Vector3.zero, new Vector3(1, height, 1), AnimationDuration).SetEase(AnimationEaseType);
             _collider.height = Height;
+            _collider.center = new Vector3(0, Height / 2f, 0);
 
             if (_feature == null) return;
             _feature.transform

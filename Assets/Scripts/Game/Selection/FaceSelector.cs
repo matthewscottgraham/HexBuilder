@@ -20,7 +20,7 @@ namespace Game.Selection
             var hexCoordinate = HexGrid.GetClosestFaceCoordinateToPosition(position);
             var facePosition = HexGrid.GetFacePosition(hexCoordinate);
             facePosition.y = HexController.GetHexHeight(hexCoordinate);
-            return new SelectionContext(SelectionType.Face, facePosition, hexCoordinate, null, null);
+            return new SelectionContext(SelectionType.Face, facePosition, hexCoordinate, null);
         }
     }
 }

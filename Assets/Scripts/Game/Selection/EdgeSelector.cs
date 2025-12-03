@@ -23,7 +23,7 @@ namespace Game.Selection
             var position = HexGrid.GetEdgePosition(edge);
             position.y = HexController.GetHexHeight(edge.GetGridCoordinate);
             CellHighlighter.localRotation = Quaternion.Euler(90, (60 * edge.Z) + 30, 0);
-            return new SelectionContext(SelectionType.Face, position, edge.GetGridCoordinate, edge.Z, null);
+            return new SelectionContext(SelectionType.Face, position, edge.GetGridCoordinate, edge.Z);
         }
     }
 }

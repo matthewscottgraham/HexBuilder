@@ -26,7 +26,7 @@ namespace Game.Selection
             var gridCoordinate = vertexCoordinate.GetGridCoordinate;
             vertexPosition.y = HexController.GetHexHeight(gridCoordinate);
             
-            return new SelectionContext(SelectionType.Vertex, vertexPosition, gridCoordinate, null, vertexCoordinate.Z);
+            return new SelectionContext(SelectionType.Vertex, vertexPosition, gridCoordinate, vertexCoordinate.Z);
         }
     }
 }

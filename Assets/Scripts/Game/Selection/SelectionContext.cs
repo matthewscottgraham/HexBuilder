@@ -10,21 +10,19 @@ namespace Game.Selection
         public SelectionType SelectionType;
         public Vector3 Position;
         public Coordinate2 Coordinate;
-        public int Edge;
-        public int Vertex;
+        public int ComponentIndex;
 
-        public SelectionContext(SelectionType selectionType, Vector3? position, Coordinate2? cell, int? edge, int? vertex)
+        public SelectionContext(SelectionType selectionType, Vector3? position, Coordinate2? cell, int? componentIndex)
         {
             SelectionType = selectionType;
             Position = position ?? Vector3.zero;
             Coordinate = cell ?? new Coordinate2();
-            Edge = edge ?? 0;
-            Vertex = vertex ?? 0;
+            ComponentIndex = componentIndex ?? 0;
         }
         
         public bool Equals(SelectionContext other)
         {
-            return SelectionType == other.SelectionType && Coordinate.Equals(other.Coordinate) && Edge == other.Edge && Vertex == other.Vertex;
+            return SelectionType == other.SelectionType && Coordinate.Equals(other.Coordinate) && ComponentIndex == other.ComponentIndex;
         }
 
         public override bool Equals(object obj)
@@ -38,8 +36,7 @@ namespace Game.Selection
             {
                 var hashCode = (int)SelectionType;
                 hashCode = (hashCode * 397) ^ Coordinate.GetHashCode();
-                hashCode = (hashCode * 397) ^ Edge;
-                hashCode = (hashCode * 397) ^ Vertex;
+                hashCode = (hashCode * 397) ^ ComponentIndex;
                 return hashCode;
             }
         }
