@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.Features;
+using Game.Grid;
 
 namespace Game.Hexes
 {
@@ -7,12 +8,12 @@ namespace Game.Hexes
     {
         public GameData(int x, int y)
         {
-            Size = new Cell(x, y);
+            Size = new Coordinate2(x, y);
             Map = new List<HexInfo>();
             Features = new Dictionary<int, FeatureType>();
         }
 
-        public Cell Size;
+        public Coordinate2 Size;
         public List<HexInfo> Map;
         public Dictionary<int, FeatureType> Features;
     }

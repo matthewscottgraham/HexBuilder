@@ -58,7 +58,7 @@ namespace Game
             hexController.Initialize();
             toolController.Initialize();
 
-            ground.transform.localScale = new Vector3(grid.WorldWidth() + 3, 1, grid.WorldHeight() + 3);
+            ground.transform.localScale = new Vector3(grid.WorldWidth + 3, 1, grid.WorldHeight + 3);
         }
 
         private void HandleGameExit(GameExitEvent gameExitEvent)

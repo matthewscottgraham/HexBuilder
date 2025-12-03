@@ -1,4 +1,5 @@
 using System;
+using Game.Grid;
 using Game.Hexes;
 using UnityEngine;
 
@@ -8,22 +9,22 @@ namespace Game.Selection
     {
         public SelectionType SelectionType;
         public Vector3 Position;
-        public Cell Cell;
+        public Coordinate2 Coordinate;
         public int Edge;
         public int Vertex;
 
-        public SelectionContext(SelectionType selectionType, Vector3? position, Cell? cell, int? edge, int? vertex)
+        public SelectionContext(SelectionType selectionType, Vector3? position, Coordinate2? cell, int? edge, int? vertex)
         {
             SelectionType = selectionType;
             Position = position ?? Vector3.zero;
-            Cell = cell ?? new Cell();
+            Coordinate = cell ?? new Coordinate2();
             Edge = edge ?? 0;
             Vertex = vertex ?? 0;
         }
         
         public bool Equals(SelectionContext other)
         {
-            return SelectionType == other.SelectionType && Cell.Equals(other.Cell) && Edge == other.Edge && Vertex == other.Vertex;
+            return SelectionType == other.SelectionType && Coordinate.Equals(other.Coordinate) && Edge == other.Edge && Vertex == other.Vertex;
         }
 
         public override bool Equals(object obj)
@@ -36,7 +37,7 @@ namespace Game.Selection
             unchecked
             {
                 var hashCode = (int)SelectionType;
-                hashCode = (hashCode * 397) ^ Cell.GetHashCode();
+                hashCode = (hashCode * 397) ^ Coordinate.GetHashCode();
                 hashCode = (hashCode * 397) ^ Edge;
                 hashCode = (hashCode * 397) ^ Vertex;
                 return hashCode;

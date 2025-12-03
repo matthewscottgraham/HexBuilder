@@ -19,11 +19,11 @@ namespace Game.Selection
         
         protected override SelectionContext GetClampedSelection(Vector3 worldPosition)
         {
-            var cell = HexGrid.GetClosestCellToPosition(worldPosition);
-            var (position, edgeIndex) = HexGrid.ClampWorldPositionToEdge(worldPosition);
-            position.y = HexController.GetCellHeight(cell);
-            CellHighlighter.localRotation = Quaternion.Euler(90, (60 * edgeIndex) + 30, 0);
-            return new SelectionContext(SelectionType.Face, position, cell, edgeIndex, null);
+            var edge = HexGrid.GetClosestEdgeCoordinateToPosition(worldPosition);
+            var position = HexGrid.GetEdgePosition(edge);
+            position.y = HexController.GetHexHeight(edge.GetGridCoordinate);
+            CellHighlighter.localRotation = Quaternion.Euler(90, (60 * edge.Z) + 30, 0);
+            return new SelectionContext(SelectionType.Face, position, edge.GetGridCoordinate, edge.Z, null);
         }
     }
 }

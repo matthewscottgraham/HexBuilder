@@ -59,7 +59,7 @@ namespace Game.Hexes
                 for (var y = 0; y < _map.GetLength(1); y++)
                 {
                     if (!_map[x, y]) continue;
-                    hexes.Add(new HexInfo(new Cell(x, y), (int)_map[x, y].Height, _map[x, y].FeatureType,
+                    hexes.Add(new HexInfo(new Coordinate2(x, y), (int)_map[x, y].Height, _map[x, y].FeatureType,
                         _map[x, y].FeatureVariation, _map[x ,y].FeatureRotation));
                 }
             }
@@ -68,31 +68,31 @@ namespace Game.Hexes
             ServiceLocator.Instance?.Get<SaveDataController>().SaveWithScreenshot(this, gameData);
         }
 
-        public float GetCellHeight(Cell cell)
+        public float GetHexHeight(Coordinate2 coordinate)
         {
-            if (_map == null || !_map[cell.X, cell.Y]) return 1;
-            return _map[cell.X, cell.Y].Height;
+            if (_map == null || !InBounds(coordinate) || !_map[coordinate.X, coordinate.Y]) return 1;
+            return _map[coordinate.X, coordinate.Y].Height;
         }
 
-        public HexObject GetHex(Cell cell)
+        public HexObject GetHex(Coordinate2 coordinate)
         {
-            if (_map == null || !InBounds(cell) || !_map[cell.X, cell.Y]) return null;
-            return _map[cell.X, cell.Y];
+            if (_map == null || !InBounds(coordinate) || !_map[coordinate.X, coordinate.Y]) return null;
+            return _map[coordinate.X, coordinate.Y];
         }
 
-        public HexObject CreateNewHex(Cell cell)
+        public HexObject CreateNewHex(Coordinate2 coordinate)
         {
-            if (!InBounds(cell)) return null;
-            if (_map[cell.X, cell.Y] != null) return _map[cell.X, cell.Y];
+            if (!InBounds(coordinate)) return null;
+            if (_map[coordinate.X, coordinate.Y] != null) return _map[coordinate.X, coordinate.Y];
             
-            _map[cell.X, cell.Y] = _hexFactory.CreateHex(cell, transform);
+            _map[coordinate.X, coordinate.Y] = _hexFactory.CreateHex(coordinate, transform);
 
-            return _map[cell.X, cell.Y];
+            return _map[coordinate.X, coordinate.Y];
         }
 
-        public bool InBounds(Cell cell)
+        public bool InBounds(Coordinate2 coordinate)
         {
-            return cell.X >= 0 && cell.X < _map.GetLength(0) && cell.Y >= 0 && cell.Y < _map.GetLength(1);
+            return coordinate.X >= 0 && coordinate.X < _map.GetLength(0) && coordinate.Y >= 0 && coordinate.Y < _map.GetLength(1);
         }
 
         private void CreateHexes(List<HexInfo> hexInfos)
@@ -100,8 +100,8 @@ namespace Game.Hexes
             var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
             foreach (var hexInfo in hexInfos)
             {
-                if (!InBounds(hexInfo.Cell)) continue;
-                var hexObject = CreateNewHex(hexInfo.Cell);
+                if (!InBounds(hexInfo.Coordinate)) continue;
+                var hexObject = CreateNewHex(hexInfo.Coordinate);
                 hexObject.SetHeight(hexInfo.Height);
                 var feature = featureFactory.CreateFeature(hexInfo.FeatureType, hexInfo.FeatureVariation,
                     hexInfo.FeatureRotation);

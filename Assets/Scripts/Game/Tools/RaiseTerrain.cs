@@ -10,11 +10,11 @@ namespace Game.Tools
         {
             var hexController = ServiceLocator.Instance.Get<HexController>();
 
-            if (!hexController.InBounds(selection.Cell)) return;
+            if (!hexController.InBounds(selection.Coordinate)) return;
 
             if (hex == null)
             {
-                hexController.CreateNewHex(selection.Cell);
+                hexController.CreateNewHex(selection.Coordinate);
                 return;
             }
 

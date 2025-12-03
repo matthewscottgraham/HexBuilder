@@ -6,11 +6,10 @@ namespace Game.Grid
     public class GridPreset : ScriptableObject
     {
         [SerializeField] private Vector2Int gridSize = new(24, 24);
-        [SerializeField] private Texture2D noise;
 
         public HexGrid CreateGrid()
         {
-            return new HexGrid(gridSize, noise);
+            return new HexGrid(gridSize);
         }
     }
 }

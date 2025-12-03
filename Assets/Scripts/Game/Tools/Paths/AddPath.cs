@@ -13,7 +13,7 @@ namespace Game.Tools.Paths
         public void Use(SelectionContext selection, HexObject hex)
         {
             if (hex == null) return;
-            ServiceLocator.Instance.Get<PathController>().AddVertex(selection.Cell, selection.Vertex);
+            ServiceLocator.Instance.Get<PathController>().TogglePathOnVertex(selection.Coordinate, selection.Vertex);
         }
     }
 }

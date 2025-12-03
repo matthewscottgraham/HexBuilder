@@ -1,5 +1,6 @@
 using App.Tweens;
 using Game.Features;
+using Game.Grid;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -12,7 +13,7 @@ namespace Game.Hexes
         private Feature _feature;
         private Transform _hexMesh;
 
-        public Cell Cell { get; private set; }
+        public Coordinate2 Coordinate { get; private set; }
         public  FeatureType FeatureType => _feature?.FeatureType ?? FeatureType.None;
 
         public int FeatureVariation => _feature ? _feature.Variation : 0;
@@ -29,9 +30,9 @@ namespace Game.Hexes
         
         public float Height { get; private set; } = 1;
 
-        public void Initialize(Cell cell, CapsuleCollider capsuleCollider, Transform hexMesh)
+        public void Initialize(Coordinate2 coordinate, CapsuleCollider capsuleCollider, Transform hexMesh)
         {
-            Cell = cell;
+            Coordinate = coordinate;
             _collider = capsuleCollider;
             _hexMesh = hexMesh;
             _hexMesh.SetParent(transform, false);

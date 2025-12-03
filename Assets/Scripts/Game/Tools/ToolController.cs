@@ -88,7 +88,7 @@ namespace Game.Tools
         private void HandleInteractEvent()
         {
             Assert.IsNotNull(CurrentTool);
-            UseToolWithinAreaOfEffect(Selector.Hovered.Cell, _areaOfEffect, CurrentTool);
+            UseToolWithinAreaOfEffect(Selector.Hovered.Coordinate, _areaOfEffect, CurrentTool);
         }
 
         private void SetActiveSelector(SelectionType selectionType)
@@ -101,11 +101,11 @@ namespace Game.Tools
             }
         }
 
-        private void UseToolWithinAreaOfEffect(Cell center, int areaOfEffect, ITool tool)
+        private void UseToolWithinAreaOfEffect(Coordinate2 center, int areaOfEffect, ITool tool)
         {
             SetLevel(center);
             var hexController = ServiceLocator.Instance.Get<HexController>();
-            var cells = ServiceLocator.Instance.Get<HexGrid>().GetCellsWithinRadius(center, areaOfEffect);
+            var cells = ServiceLocator.Instance.Get<HexGrid>().GetHexCoordinatesWithinRadius(center, areaOfEffect);
             foreach (var cell in cells)
             {
                 tool.Use(Selector.Hovered, hexController.GetHex(cell));
@@ -113,9 +113,9 @@ namespace Game.Tools
         }
         
 
-        private void SetLevel(Cell cell)
+        private void SetLevel(Coordinate2 coordinate)
         {
-            var height = ServiceLocator.Instance.Get<HexController>().GetCellHeight(cell);
+            var height = ServiceLocator.Instance.Get<HexController>().GetHexHeight(coordinate);
             foreach (var tool in _tools)
             {
                 if (tool.GetType() != typeof(LevelTerrain)) continue;

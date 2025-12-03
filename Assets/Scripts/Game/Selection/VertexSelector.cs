@@ -21,10 +21,12 @@ namespace Game.Selection
         
         protected override SelectionContext GetClampedSelection(Vector3 worldPosition)
         {
-            var cell = HexGrid.GetClosestCellToPosition(worldPosition);
-            var (position, vertexIndex) = HexGrid.ClampWorldPositionToVertex(worldPosition);
-            position.y = HexController.GetCellHeight(cell);
-            return new SelectionContext(SelectionType.Face, position, cell, null, vertexIndex);
+            var vertexCoordinate = HexGrid.GetClosestVertexCoordinateToPosition(worldPosition);
+            var vertexPosition = HexGrid.GetVertexPosition(vertexCoordinate);
+            var gridCoordinate = vertexCoordinate.GetGridCoordinate;
+            vertexPosition.y = HexController.GetHexHeight(gridCoordinate);
+            
+            return new SelectionContext(SelectionType.Vertex, vertexPosition, gridCoordinate, null, vertexCoordinate.Z);
         }
     }
 }
