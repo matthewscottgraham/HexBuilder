@@ -66,14 +66,34 @@ namespace Game.Selection
         {
             return new SelectionContext();
         }
+        
+        protected virtual SelectionContext GetClampedSelection(HexObject hexObject, Vector3 pos)
+        {
+            return new SelectionContext();
+        }
 
         private void Hover()
         {
             var ray = _camera.ScreenPointToRay(InputController.PointerPosition);
             if (!Physics.Raycast(ray, out var hit)) return;
-            SetHoveredSelection(hit.point);
+            if (!SetHoveredSelection(hit.transform.GetComponent<HexObject>(), hit.point))
+            {
+                SetHoveredSelection(hit.point);
+            }
         }
 
+        private bool SetHoveredSelection(HexObject hexObject, Vector3 hoverPosition)
+        {
+            if (!hexObject) return false;
+            var originalHover = Hovered;
+            var newHover = GetClampedSelection(hexObject, hoverPosition);
+            if (originalHover.Equals(newHover)) return true;
+            Hovered = newHover;
+            CellHighlighter.position = newHover.Position;
+            EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
+            return true;
+        }
+        
         private void SetHoveredSelection(Vector3 hoverPosition)
         {
             var originalHover = Hovered;

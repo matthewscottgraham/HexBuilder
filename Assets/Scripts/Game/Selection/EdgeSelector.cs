@@ -1,3 +1,4 @@
+using Game.Hexes;
 using UnityEngine;
 
 namespace Game.Selection
@@ -23,7 +24,15 @@ namespace Game.Selection
             var position = HexGrid.GetEdgePosition(edge);
             position.y = HexController.GetHexHeight(edge.GetGridCoordinate);
             CellHighlighter.localRotation = Quaternion.Euler(90, (60 * edge.Z) + 30, 0);
-            return new SelectionContext(SelectionType.Face, position, edge.GetGridCoordinate, edge.Z);
+            return new SelectionContext(SelectionType.Edge, position, edge.GetGridCoordinate, edge.Z);
+        }
+        
+        protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 worldPosition)
+        {
+            var edge = HexGrid.GetClosestEdgeCoordinateToPosition(worldPosition);
+            var edgePosition = HexGrid.GetEdgePosition(edge) + new Vector3(0, hexObject.Height, 0);
+            CellHighlighter.localRotation = Quaternion.Euler(90, (60 * edge.Z) + 30, 0);
+            return new SelectionContext(SelectionType.Edge, edgePosition, hexObject.Coordinate, edge.Z);
         }
     }
 }

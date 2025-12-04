@@ -1,3 +1,4 @@
+using Game.Hexes;
 using UnityEngine;
 
 namespace Game.Selection
@@ -15,12 +16,18 @@ namespace Game.Selection
             return highlighter;
         }
         
-        protected override SelectionContext GetClampedSelection(Vector3 position)
+        protected override SelectionContext GetClampedSelection(Vector3 worldPosition)
         {
-            var hexCoordinate = HexGrid.GetClosestFaceCoordinateToPosition(position);
+            var hexCoordinate = HexGrid.GetClosestFaceCoordinateToPosition(worldPosition);
             var facePosition = HexGrid.GetFacePosition(hexCoordinate);
             facePosition.y = HexController.GetHexHeight(hexCoordinate);
             return new SelectionContext(SelectionType.Face, facePosition, hexCoordinate, null);
+        }
+        
+        protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 worldPosition)
+        {
+            var facePosition = hexObject.transform.position + new Vector3(0, hexObject.Height, 0);
+            return new SelectionContext(SelectionType.Face, facePosition, hexObject.Coordinate, null);
         }
     }
 }

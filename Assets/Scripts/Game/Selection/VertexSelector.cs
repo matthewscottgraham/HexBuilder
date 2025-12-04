@@ -25,8 +25,14 @@ namespace Game.Selection
             var vertexPosition = HexGrid.GetVertexPosition(vertexCoordinate);
             var gridCoordinate = vertexCoordinate.GetGridCoordinate;
             vertexPosition.y = HexController.GetHexHeight(gridCoordinate);
-            
             return new SelectionContext(SelectionType.Vertex, vertexPosition, gridCoordinate, vertexCoordinate.Z);
+        }
+        
+        protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 worldPosition)
+        {
+            var vertex = HexGrid.GetClosestVertexCoordinateToPosition(worldPosition);
+            var vertexPosition = HexGrid.GetVertexPosition(vertex) + new Vector3(0, hexObject.Height, 0);
+            return new SelectionContext(SelectionType.Vertex, vertexPosition, hexObject.Coordinate, vertex.Z);
         }
     }
 }
