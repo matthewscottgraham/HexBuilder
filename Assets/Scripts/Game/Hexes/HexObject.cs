@@ -42,7 +42,7 @@ namespace Game.Hexes
         {
             if (height < 0) height = 0;
             Height = height;
-            _hexMesh.TweenScale(Vector3.zero, new Vector3(1, height, 1), AnimationDuration).SetEase(AnimationEaseType);
+            _hexMesh.TweenScale(_hexMesh.transform.localScale, new Vector3(1, height, 1), AnimationDuration).SetEase(AnimationEaseType);
             _collider.height = Height;
             _collider.center = new Vector3(0, Height / 2f, 0);
 

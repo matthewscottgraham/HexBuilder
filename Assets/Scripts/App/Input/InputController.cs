@@ -12,23 +12,15 @@ namespace App.Input
         private EventSystem _eventSystem;
         private InputSystem_Actions _inputSystem;
         
-        private bool _dragging;
+        private const float DragThreshold = 0.2f;
+        
+        private Vector2 _clickStartPosition;
+        private bool _clicking;
+        private bool _wasDragged;
 
         public static bool PointerHasMovedThisFrame { get; private set; }
-        public static Vector2 PointerPosition => Mouse.current.position.ReadValue();
+        public static Vector2 PointerPosition => Pointer.current.position.ReadValue();
         private static Vector2 LastMousePosition { get; set; }
-
-        private void Update()
-        {
-            if (_dragging)
-            {
-                var delta = LastMousePosition - PointerPosition;
-                EventBus<DragEvent>.Raise(new DragEvent(delta.normalized));
-            }
-
-            PointerHasMovedThisFrame = Vector2.Distance(LastMousePosition, PointerPosition) > Mathf.Epsilon;
-            LastMousePosition = PointerPosition;
-        }
 
         public void Initialize()
         {
@@ -37,18 +29,32 @@ namespace App.Input
             _inputSystem.Enable();
 
             _inputSystem.Player.Move.performed += HandleMove;
-            _inputSystem.Player.Interact.started += HandleInteract;
-            _inputSystem.Player.Interact.started += HandleDragStart;
-            _inputSystem.Player.Interact.canceled += HandleDragEnd;
+            _inputSystem.Player.Interact.started += HandleInteractStart;
+            _inputSystem.Player.Interact.canceled += HandleInteractEnd;
         }
 
         public void Dispose()
         {
             _inputSystem.Player.Move.performed -= HandleMove;
-            _inputSystem.Player.Interact.started -= HandleInteract;
-            _inputSystem.Player.Interact.started -= HandleDragStart;
-            _inputSystem.Player.Interact.canceled -= HandleDragEnd;
+            _inputSystem.Player.Interact.started -= HandleInteractStart;
+            _inputSystem.Player.Interact.canceled -= HandleInteractEnd;
             _inputSystem?.Dispose();
+        }
+
+        private void Update()
+        {
+            if (_clicking)
+            {
+                if (Vector2.Distance(_clickStartPosition, PointerPosition) > DragThreshold)
+                {
+                    _wasDragged = true;
+                    var delta = LastMousePosition - PointerPosition;
+                    EventBus<DragEvent>.Raise(new DragEvent(delta.normalized));
+                }
+            }
+
+            PointerHasMovedThisFrame = Vector2.Distance(LastMousePosition, PointerPosition) > Mathf.Epsilon;
+            LastMousePosition = PointerPosition;
         }
 
         private bool IsPointerOverUI()
@@ -67,22 +73,21 @@ namespace App.Input
             EventBus<MoveEvent>.Raise(new MoveEvent(ctx.ReadValue<Vector2>()));
         }
 
-        private void HandleInteract(InputAction.CallbackContext ctx)
-        {
-            if (_dragging) return;
-            if (IsPointerOverUI()) return;
-            EventBus<InteractEvent>.Raise(new InteractEvent());
-        }
-
-        private void HandleDragStart(InputAction.CallbackContext ctx)
+        private void HandleInteractStart(InputAction.CallbackContext ctx)
         {
             if (IsPointerOverUI()) return;
-            _dragging = true;
+            _clicking = true;
+            _clickStartPosition = PointerPosition;
         }
 
-        private void HandleDragEnd(InputAction.CallbackContext ctx)
+        private void HandleInteractEnd(InputAction.CallbackContext ctx)
         {
-            _dragging = false;
+            if (!_wasDragged)
+            {
+                EventBus<InteractEvent>.Raise(new InteractEvent());
+            }
+            _wasDragged = false;
+            _clicking = false;
         }
     }
 }
