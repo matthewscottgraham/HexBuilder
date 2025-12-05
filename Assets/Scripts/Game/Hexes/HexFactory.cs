@@ -27,7 +27,7 @@ namespace Game.Hexes
             go.transform.position = _hexGrid.GetFacePosition(coordinate);
             
             var collider = go.AddComponent<CapsuleCollider>();
-            collider.radius = _hexGrid.InnerRadius;
+            collider.radius = HexGrid.InnerRadius;
             collider.height = 1;
 
             var hexObject = go.AddComponent<HexObject>();

@@ -67,5 +67,55 @@ namespace Game.Hexes
             if (_feature == null) return;
             Destroy(_feature.gameObject);
         }
+
+        private Vector3 GetVertexPosition(int cornerIndex)
+        {
+            var angleDegrees = 60f * cornerIndex;
+            var angleRadians = Mathf.Deg2Rad * angleDegrees;
+            var localVertexPosition = new Vector3(Mathf.Sin(angleRadians) * HexGrid.Radius, 0, Mathf.Cos(angleRadians) * HexGrid.Radius);
+            return localVertexPosition + transform.position + (Vector3.up * Height);
+        }
+
+        private Vector3 GetEdgePosition(int edgeIndex)
+        {
+            return Vector3.Lerp(GetVertexPosition(edgeIndex), GetVertexPosition((edgeIndex + 1) % 6), 0.5f);
+        }
+
+        private Vector3 GetFacePosition()
+        {
+            return transform.position + new Vector3(0, Height, 0);
+        }
+
+        private void OnDrawGizmos()
+        {
+            var vertices = new Vector3[6];
+            for (var i = 0; i < 6; i++)
+            {
+                vertices[i] = GetVertexPosition(i);
+            }
+            
+            // Face
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(GetFacePosition(), 1.8f);
+            for (var i = 0; i < 6; i++)
+            {
+                Gizmos.DrawLine(vertices[i], vertices[(i + 1) % 6]);
+            }
+            
+            // Vertices
+            Gizmos.color = Color.red;
+            for (var i = 0; i < 6; i++)
+            {
+                Gizmos.DrawWireSphere(vertices[i], 0.6f);
+            }
+            
+            // Edges
+            Gizmos.color = Color.blue;
+            for (var i = 0; i < 6; i++)
+            {
+                var pos = Vector3.Lerp(vertices[i], vertices[(i + 1) % 6], 0.5f);
+                Gizmos.DrawWireSphere(pos, 0.8f);
+            }
+        }
     }
 }

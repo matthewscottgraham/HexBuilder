@@ -38,7 +38,7 @@ namespace Game.Hexes
             var saveData = ServiceLocator.Instance.Get<SaveDataController>().LoadSaveSlot<GameData>(ConfigController.CurrentSaveSlot);
             if (saveData == null)
             {
-                var gridSize = ServiceLocator.Instance.Get<HexGrid>().GridSize;
+                var gridSize = HexGrid.GridSize;
                 _map = new HexObject[gridSize.x, gridSize.y];
             }
             else

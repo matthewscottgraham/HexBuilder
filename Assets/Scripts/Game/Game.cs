@@ -33,9 +33,8 @@ namespace Game
             EventBus<GameExitEvent>.Register(_gameExitEventBinding);
 
             ServiceLocator.Instance.Register(this);
-
-            var grid = gridPreset.CreateGrid();
-            ServiceLocator.Instance.Register(grid);
+            
+            ServiceLocator.Instance.Register(gridPreset.CreateGrid());
 
             var featureFactory = new FeatureFactory();
 
@@ -58,7 +57,7 @@ namespace Game
             hexController.Initialize();
             toolController.Initialize();
 
-            ground.transform.localScale = new Vector3(grid.WorldWidth + 3, 1, grid.WorldHeight + 3);
+            ground.transform.localScale = new Vector3(HexGrid.WorldWidth + 3, 1, HexGrid.WorldHeight + 3);
         }
 
         private void HandleGameExit(GameExitEvent gameExitEvent)

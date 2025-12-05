@@ -6,12 +6,11 @@ namespace Game.Grid
 {
     public class HexGrid
     {
-        private readonly float _radius;
-
-        public float InnerRadius => _radius * Mathf.Sqrt(3) / 2f;
-        public readonly Vector2Int GridSize;
-        public float WorldWidth => GridSize.x * InnerRadius * 2f;
-        public float WorldHeight => GridSize.y * _radius * 1.5f;
+        public static float Radius;
+        public static float InnerRadius => Radius * Mathf.Sqrt(3) / 2f;
+        public static Vector2Int GridSize;
+        public static float WorldWidth => GridSize.x * InnerRadius * 2f;
+        public static float WorldHeight => GridSize.y * Radius * 1.5f;
         
         private static readonly Vector2Int[] CornerOwnerOffset =
         {
@@ -26,7 +25,7 @@ namespace Game.Grid
         public HexGrid(Vector2Int gridSize, float radius = 2f)
         {
             GridSize = gridSize;
-            _radius = radius;
+            Radius = radius;
         }
 
         public static Coordinate3 GetVertexCoordinate(Coordinate2 coordinate, int vertexIndex)
@@ -46,7 +45,7 @@ namespace Game.Grid
         {
             var offsetX = coordinate.Y % 2 == 0 ? 0f : InnerRadius;
             var x = (coordinate.X * InnerRadius * 2f) + offsetX;
-            var z = coordinate.Y * _radius * 1.5f;
+            var z = coordinate.Y * Radius * 1.5f;
             return new Vector3(x, 0, z);
         }
 
@@ -130,7 +129,7 @@ namespace Game.Grid
         {
             var angleDegrees = 60f * cornerIndex;
             var angleRadians = Mathf.Deg2Rad * angleDegrees;
-            var localVertexPosition = new Vector3(Mathf.Sin(angleRadians) * _radius, 0, Mathf.Cos(angleRadians) * _radius);
+            var localVertexPosition = new Vector3(Mathf.Sin(angleRadians) * Radius, 0, Mathf.Cos(angleRadians) * Radius);
             return localVertexPosition;
         }
 
@@ -141,7 +140,7 @@ namespace Game.Grid
             var distance = Vector3.Distance(positionA, positionB);
 
             // allow for some variance due to the vertices being perturbed
-            return Mathf.Abs(distance - _radius) < _radius * 0.25f;
+            return Mathf.Abs(distance - Radius) < Radius * 0.25f;
         }
 
         public List<Coordinate2> GetHexCoordinatesWithinRadius(Coordinate2 center, int radius)
