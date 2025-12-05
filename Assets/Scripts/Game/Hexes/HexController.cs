@@ -6,6 +6,7 @@ using App.Services;
 using Game.Features;
 using Game.Grid;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Game.Hexes
 {
@@ -40,6 +41,7 @@ namespace Game.Hexes
             {
                 var gridSize = HexGrid.GridSize;
                 _map = new HexObject[gridSize.x, gridSize.y];
+                CreateRandomMap();
             }
             else
             {
@@ -111,6 +113,21 @@ namespace Game.Hexes
                     hexInfo.FeatureRotation);
                 hexObject.AddFeature(feature);
             }
+        }
+
+        private void CreateRandomMap()
+        {
+            var weights = new int[] { 3, 2, 2, 2,  1, 0, 1, 2, 2, 2, 3 };
+            var hexInfos = new List<HexInfo>();
+            for (var y = 0; y < HexGrid.GridSize.y; y++)
+            {
+                for (var x = 0; x < HexGrid.GridSize.x; x++)
+                {
+                    var height = weights[UnityEngine.Random.Range(0, weights.Length)];
+                    hexInfos.Add(new HexInfo(new Coordinate2(x, y), height, FeatureType.None, 0, 0));
+                }
+            }
+            CreateHexes(hexInfos);
         }
     }
 }
