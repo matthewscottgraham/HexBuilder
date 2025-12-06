@@ -25,14 +25,13 @@ namespace Game.Hexes
             var go = new GameObject(coordinate.ToString());
             go.transform.parent = parent;
             go.transform.position = _hexGrid.GetFacePosition(coordinate);
-            
-            var collider = go.AddComponent<CapsuleCollider>();
-            collider.radius = HexGrid.InnerRadius;
-            collider.height = 1;
 
             var hexObject = go.AddComponent<HexObject>();
-            hexObject.Initialize(coordinate, collider, CreateMeshObject(coordinate).transform);
+            var meshObject = CreateMeshObject(coordinate);
+            var collider = meshObject.AddComponent<MeshCollider>();
+            collider.convex = true;
             
+            hexObject.Initialize(coordinate, meshObject.transform);
             return hexObject;
         }
 

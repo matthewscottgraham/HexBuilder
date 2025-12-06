@@ -6,9 +6,12 @@ namespace Game.Grid
 {
     public class HexGrid
     {
-        public static float Radius;
+        public static float Radius { get; private set; }
         public static float InnerRadius => Radius * Mathf.Sqrt(3) / 2f;
-        public static Vector2Int GridSize;
+        public static float VertexRadius { get; private set; }
+        
+        
+        public static Vector2Int GridSize { get; private set; }
         public static float WorldWidth => GridSize.x * InnerRadius * 2f;
         public static float WorldHeight => GridSize.y * Radius * 1.5f;
         
@@ -22,10 +25,11 @@ namespace Game.Grid
             new(0, 0)   // 5
         };
 
-        public HexGrid(Vector2Int gridSize, float radius = 2f)
+        public HexGrid(Vector2Int gridSize, float radius = 2f, float vertexRadius = 0.6f)
         {
             GridSize = gridSize;
             Radius = radius;
+            VertexRadius = vertexRadius;
         }
 
         public static Coordinate3 GetVertexCoordinate(Coordinate2 coordinate, int vertexIndex)

@@ -76,7 +76,7 @@ namespace Game.Selection
         {
             var ray = _camera.ScreenPointToRay(InputController.PointerPosition);
             if (!Physics.Raycast(ray, out var hit)) return;
-            if (!SetHoveredSelection(hit.transform.GetComponent<HexObject>(), hit.point))
+            if (!SetHoveredSelection(hit.transform.GetComponentInParent<HexObject>(), hit.point))
             {
                 SetHoveredSelection(hit.point);
             }

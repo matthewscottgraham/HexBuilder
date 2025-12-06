@@ -12,8 +12,10 @@ namespace Game.Tools.Paths
         
         public void Use(SelectionContext selection, HexObject hex)
         {
+            if (selection.SelectionType != SelectionType.Vertex) return;
             if (hex == null) return;
-            ServiceLocator.Instance.Get<PathController>().TogglePathOnVertex(selection.Coordinate, selection.ComponentIndex);
+            
+            hex.ToggleVertexFeature(selection.ComponentIndex);
         }
     }
 }

@@ -1,5 +1,3 @@
-using App.Services;
-using Game.Grid;
 using Game.Hexes;
 using UnityEngine;
 
@@ -19,20 +17,12 @@ namespace Game.Selection
             return highlighter;
         }
         
-        protected override SelectionContext GetClampedSelection(Vector3 worldPosition)
+        protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 cursorPosition)
         {
-            var vertexCoordinate = HexGrid.GetClosestVertexCoordinateToPosition(worldPosition);
-            var vertexPosition = HexGrid.GetVertexPosition(vertexCoordinate);
-            var gridCoordinate = vertexCoordinate.GetGridCoordinate;
-            vertexPosition.y = HexController.GetHexHeight(gridCoordinate);
-            return new SelectionContext(SelectionType.Vertex, vertexPosition, gridCoordinate, vertexCoordinate.Z);
-        }
-        
-        protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 worldPosition)
-        {
-            var vertex = HexGrid.GetClosestVertexCoordinateToPosition(worldPosition);
-            var vertexPosition = HexGrid.GetVertexPosition(vertex) + new Vector3(0, hexObject.Height, 0);
-            return new SelectionContext(SelectionType.Vertex, vertexPosition, hexObject.Coordinate, vertex.Z);
+            var vertex = hexObject.GetVertexCloseToPosition(cursorPosition);
+            if (!vertex.HasValue) return new SelectionContext(SelectionType.None, null, null, null);
+            var vertexPosition = hexObject.GetVertexPosition(vertex.Value.Z);
+            return new SelectionContext(SelectionType.Vertex, vertexPosition, hexObject.Coordinate, vertex.Value.Z);
         }
     }
 }

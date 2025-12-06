@@ -1,6 +1,8 @@
+using App.Services;
 using App.Tweens;
 using Game.Features;
 using Game.Grid;
+using Game.Tools.Paths;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -9,8 +11,8 @@ namespace Game.Hexes
     {
         private const float AnimationDuration = 0.3f;
         private const EaseType AnimationEaseType = EaseType.BounceOut;
-        private CapsuleCollider _collider;
         private Feature _feature;
+        private readonly GameObject[] _vertexFeatures = new GameObject[6];
         private Transform _hexMesh;
 
         public Coordinate2 Coordinate { get; private set; }
@@ -30,10 +32,9 @@ namespace Game.Hexes
         
         public float Height { get; private set; } = 1;
 
-        public void Initialize(Coordinate2 coordinate, CapsuleCollider capsuleCollider, Transform hexMesh)
+        public void Initialize(Coordinate2 coordinate, Transform hexMesh)
         {
             Coordinate = coordinate;
-            _collider = capsuleCollider;
             _hexMesh = hexMesh;
             _hexMesh.SetParent(transform, false);
         }
@@ -43,9 +44,9 @@ namespace Game.Hexes
             if (height < 0) height = 0;
             Height = height;
             _hexMesh.TweenScale(_hexMesh.transform.localScale, new Vector3(1, height, 1), AnimationDuration).SetEase(AnimationEaseType);
-            _collider.height = Height;
-            _collider.center = new Vector3(0, Height / 2f, 0);
 
+            SetVertexFeatureVisibility();
+            
             if (_feature == null) return;
             _feature.transform
                 .TweenLocalPosition(_feature.transform.localPosition, new Vector3(0, Height, 0), AnimationDuration)
@@ -68,12 +69,58 @@ namespace Game.Hexes
             Destroy(_feature.gameObject);
         }
 
-        private Vector3 GetVertexPosition(int cornerIndex)
+        public void ToggleVertexFeature(int vertexIndex)
+        {
+            vertexIndex %= 6;
+            if (!_vertexFeatures[vertexIndex])
+            {
+                AddVertexFeature(vertexIndex);
+            }
+            else
+            {
+                RemoveVertexFeature(vertexIndex);
+                
+            }
+
+            UpdateVertexBridges();
+        }
+
+        public Coordinate3? GetVertexCloseToPosition(Vector3 position)
+        {
+            var closestIndex = -1;
+            var closestSquaredDistance = HexGrid.VertexRadius * HexGrid.VertexRadius;
+            
+            for (var i = 0; i < 6; i++)
+            {
+                var squaredDistance = (GetVertexPosition(i) - position).sqrMagnitude;
+                if (!(squaredDistance <= closestSquaredDistance)) continue;
+                closestIndex = i;
+                closestSquaredDistance = squaredDistance;
+            }
+            
+            return closestIndex >= 0 ? new Coordinate3(Coordinate, closestIndex) : null;
+        }
+
+        public Vector3 GetVertexPosition(int cornerIndex)
         {
             var angleDegrees = 60f * cornerIndex;
             var angleRadians = Mathf.Deg2Rad * angleDegrees;
             var localVertexPosition = new Vector3(Mathf.Sin(angleRadians) * HexGrid.Radius, 0, Mathf.Cos(angleRadians) * HexGrid.Radius);
             return localVertexPosition + transform.position + (Vector3.up * Height);
+        }
+
+        private void AddVertexFeature(int vertexIndex)
+        {
+            var pathController = ServiceLocator.Instance.Get<PathController>();
+            var vertexObject = pathController.CreateVertexMesh();
+            vertexObject.transform.SetParent(transform);
+            vertexObject.transform.position = GetVertexPosition(vertexIndex);
+            _vertexFeatures[vertexIndex] = vertexObject;
+        }
+        private void RemoveVertexFeature(int vertexIndex)
+        {
+            if (_vertexFeatures[vertexIndex] == null) return;
+            Destroy(_vertexFeatures[vertexIndex]);
         }
 
         private Vector3 GetEdgePosition(int edgeIndex)
@@ -86,6 +133,17 @@ namespace Game.Hexes
             return transform.position + new Vector3(0, Height, 0);
         }
 
+        private void SetVertexFeatureVisibility()
+        {
+            // get neighbours
+            // if any neighbours the same height
+        }
+
+        private void UpdateVertexBridges()
+        {
+            
+        }
+        
         private void OnDrawGizmos()
         {
             var vertices = new Vector3[6];

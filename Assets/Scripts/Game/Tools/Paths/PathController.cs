@@ -97,6 +97,15 @@ namespace Game.Tools.Paths
             }
         }
 
+        public GameObject CreateVertexMesh()
+        {
+            var obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            obj.name = "Vertex";
+            obj.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
+            obj.GetComponent<MeshRenderer>().material = _material;
+            return obj;
+        }
+
         private GameObject CreateVertexMesh(Coordinate3 vertex)
         {
             // TODO: this should create a mesh rather than an object
