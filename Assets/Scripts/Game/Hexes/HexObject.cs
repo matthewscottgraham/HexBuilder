@@ -13,6 +13,7 @@ namespace Game.Hexes
         private const EaseType AnimationEaseType = EaseType.BounceOut;
         private Feature _feature;
         private readonly GameObject[] _vertexFeatures = new GameObject[6];
+        private readonly GameObject[] _vertexBridges = new GameObject[6];
         private Transform _hexMesh;
 
         public Coordinate2 Coordinate { get; private set; }
@@ -44,8 +45,6 @@ namespace Game.Hexes
             if (height < 0) height = 0;
             Height = height;
             _hexMesh.TweenScale(_hexMesh.transform.localScale, new Vector3(1, height, 1), AnimationDuration).SetEase(AnimationEaseType);
-
-            SetVertexFeatureVisibility();
             
             if (_feature == null) return;
             _feature.transform
@@ -81,7 +80,6 @@ namespace Game.Hexes
                 RemoveVertexFeature(vertexIndex);
                 
             }
-
             UpdateVertexBridges();
         }
 
@@ -111,10 +109,11 @@ namespace Game.Hexes
 
         private void AddVertexFeature(int vertexIndex)
         {
+            if (_vertexFeatures[vertexIndex] != null) return;
+            
             var pathController = ServiceLocator.Instance.Get<PathController>();
-            var vertexObject = pathController.CreateVertexMesh();
-            vertexObject.transform.SetParent(transform);
-            vertexObject.transform.position = GetVertexPosition(vertexIndex);
+            var vertexObject = pathController.CreateVertexMesh(GetVertexPosition(vertexIndex));
+            vertexObject.transform.SetParent(transform, true);
             _vertexFeatures[vertexIndex] = vertexObject;
         }
         private void RemoveVertexFeature(int vertexIndex)
@@ -123,6 +122,24 @@ namespace Game.Hexes
             Destroy(_vertexFeatures[vertexIndex]);
         }
 
+        private void AddVertexBridge(int vertexIndex)
+        {
+            if (_vertexBridges[vertexIndex] != null) return;
+            
+            var pathController = ServiceLocator.Instance.Get<PathController>();
+            var bridgeObject = pathController.CreateBridgeMesh(
+                GetVertexPosition(vertexIndex),
+                GetVertexPosition((vertexIndex + 1) % 6)
+                );
+            bridgeObject.transform.SetParent(transform, true);
+            _vertexFeatures[vertexIndex] = bridgeObject;
+        }
+
+        private void RemoveVertexBridge(int index)
+        {
+            if (_vertexBridges[index] == null) return;
+            Destroy(_vertexBridges[index]);
+        }
         private Vector3 GetEdgePosition(int edgeIndex)
         {
             return Vector3.Lerp(GetVertexPosition(edgeIndex), GetVertexPosition((edgeIndex + 1) % 6), 0.5f);
@@ -133,15 +150,15 @@ namespace Game.Hexes
             return transform.position + new Vector3(0, Height, 0);
         }
 
-        private void SetVertexFeatureVisibility()
-        {
-            // get neighbours
-            // if any neighbours the same height
-        }
-
         private void UpdateVertexBridges()
         {
-            
+            for (var i = 0; i < 6; i++)
+            {
+                var bridgeRequired = _vertexFeatures[i] != null && _vertexFeatures[(i + 1) % 6] != null;
+                
+                if (bridgeRequired && _vertexBridges[i] == null) AddVertexBridge(i);
+                else RemoveVertexBridge(i);
+            }
         }
         
         private void OnDrawGizmos()
