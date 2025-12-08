@@ -1,145 +1,84 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Game.Grid
 {
     public class HexGrid
     {
-        public static float Radius { get; private set; }
-        public static float InnerRadius => Radius * Sqrt3Over2;
-        public static float VertexRadius { get; private set; }
-        
-        
-        public static Vector2Int GridSize { get; private set; }
-        public static float WorldWidth => GridSize.x * InnerRadius * 2f;
-        public static float WorldHeight => GridSize.y * Radius * 1.5f;
-        
-        private static readonly float Sqrt3 = Mathf.Sqrt(3f);
-        private static readonly float Sqrt3Over2 = Sqrt3 * 0.5f;
-        
-        public HexGrid(Vector2Int gridSize, float radius = 2f, float vertexRadius = 0.6f)
-        {
-            GridSize = gridSize;
-            Radius = radius;
-            VertexRadius = vertexRadius;
-        }
+        public static int GridRadius { get; private set; }
+        private static float HexRadius => 2;
+        private static float InnerRadius => HexRadius * Sqrt3Over2;
 
-        public static Vector3 GetFacePosition(CubicCoordinate coordinate)
-        {
-            var worldX = InnerRadius * (Sqrt3 * coordinate.X + Sqrt3Over2 * coordinate.Z);
-            var worldZ = Radius * (1.5f * coordinate.Z);
-            return new Vector3(worldX, 0f, worldZ);
-        }
+        private const float Sqrt3 = 1.7320508f; // Square root of 3
+        private const float Sqrt3Over2 = 0.8660254f; // Square root of 3 * 0.5
 
-        public Vector3 GetVertexPosition(QuarticCoordinate vertex)
+        public HexGrid(int gridRadius)
         {
-            var hexWorldPosition = GetFacePosition(vertex.CubicCoordinate);
-            return hexWorldPosition + GetLocalVertexPosition(vertex.Z);
-        }
-
-        public Vector3 GetEdgePosition(QuarticCoordinate edge)
-        {
-            var vertices = GetEdgeVertices(edge);
-            var a = GetVertexPosition(vertices.A);
-            var b = GetVertexPosition(vertices.B);
-            return (a + b) * 0.5f;
+            GridRadius = gridRadius;
         }
         
-        public static CubicCoordinate GetClosestFaceCoordinateToPosition(Vector3 worldPosition)
-        {
-            var closestHexCoordinate = new CubicCoordinate(0, 0);
-            var closestDistance = float.MaxValue;
-
-            for (var y = 0; y < GridSize.y; y++)
-            {
-                for (var x = 0; x < GridSize.x; x++)
-                {
-                    var hexPosition = GetFacePosition(new CubicCoordinate(x, y));
-                    var distance = (worldPosition - hexPosition).sqrMagnitude;
-                    if (!(distance < closestDistance)) continue;
-                    closestDistance = distance;
-                    closestHexCoordinate = new CubicCoordinate(x, y);
-                }
-            }
-
-            return closestHexCoordinate;
-        }
-
-        public QuarticCoordinate GetClosestVertexCoordinateToPosition(Vector3 worldPosition)
-        {
-            var closestHex = GetClosestFaceCoordinateToPosition(worldPosition);
-
-            QuarticCoordinate closestVertex = default;
-            var closestDistance = float.MaxValue;
-            
-            for (var vertexIndex = 0; vertexIndex < 6; vertexIndex++)
-            {
-                var vertex = new QuarticCoordinate(closestHex, vertexIndex);
-                var vertexPos = GetVertexPosition(vertex);
-                var distanceSquared = (worldPosition - vertexPos).sqrMagnitude;
-                
-                if (!(distanceSquared < closestDistance)) continue;
-                closestDistance = distanceSquared;
-                closestVertex = vertex;
-            }
-
-            return closestVertex;
-        }
-
-        public QuarticCoordinate GetClosestEdgeCoordinateToPosition(Vector3 worldPosition)
-        {
-            var closestHex = GetClosestFaceCoordinateToPosition(worldPosition);
-            QuarticCoordinate closestEdge = default;
-            var closestDistance = float.MaxValue;
-
-            for (var edgeIndex = 0; edgeIndex < 6; edgeIndex++)
-            {
-                var edge = new QuarticCoordinate(closestHex, edgeIndex);
-                var edgePosition = GetEdgePosition(edge);
-                var distanceSquared = (worldPosition - edgePosition).sqrMagnitude;
-                if (!(distanceSquared < closestDistance)) continue;
-                closestDistance = distanceSquared;
-                closestEdge = edge;
-            }
-
-            return closestEdge;
-        }
-
         public static Vector3 GetLocalVertexPosition(int cornerIndex)
         {
             var angleDegrees = 60f * cornerIndex;
             var angleRadians = Mathf.Deg2Rad * angleDegrees;
-            var localVertexPosition = new Vector3(Mathf.Sin(angleRadians) * Radius, 0, Mathf.Cos(angleRadians) * Radius);
-            return localVertexPosition;
+            var x = Mathf.Sin(angleRadians) * HexRadius;
+            var z = Mathf.Cos(angleRadians) * HexRadius;
+            return new Vector3(x, 0f, z);
         }
-
-        public bool AreVerticesAdjacent(QuarticCoordinate vertexA, QuarticCoordinate vertexB)
+        
+        public static CubicCoordinate GetClosestHexCoordinate(Vector3 worldPos)
         {
-            var positionA = GetVertexPosition(vertexA);
-            var positionB = GetVertexPosition(vertexB);
-            var distance = Vector3.Distance(positionA, positionB);
+            // TODO: rewrite this so that it makes more sense to me.
+            // This was a copy paste. It converts world coordinates into cubic coordinates.
+            // It appears to work, but I have trouble reading it.
+            var fx = (Sqrt3 / 3f * worldPos.x - worldPos.z / 3f) / HexRadius;
+            var fz = (2f / 3f * worldPos.z) / HexRadius;
+            var fy = -fx - fz;
 
-            // allow for some variance due to the vertices being perturbed
-            return Mathf.Abs(distance - Radius) < Radius * 0.25f;
+            var rx = Mathf.RoundToInt(fx);
+            var ry = Mathf.RoundToInt(fy);
+            var rz = Mathf.RoundToInt(fz);
+
+            if (Mathf.Abs(rx - fx) > Mathf.Abs(ry - fy) && Mathf.Abs(rx - fx) > Mathf.Abs(rz - fz))
+            {
+                rx = -ry - rz;
+            }
+            else if (Mathf.Abs(ry - fy) > Mathf.Abs(rz - fz))
+            {
+                ry = -rx - rz;
+            }
+            else
+            {
+                rz = -rx - ry;
+            }
+
+            return new CubicCoordinate(rx, ry, rz);
         }
-
-        public static IEnumerable<CubicCoordinate> GetHexCoordinatesWithinRadius(CubicCoordinate center, int radius)
+        
+        public static Vector3 GetWorldPosition(CubicCoordinate coordinate)
+        {
+            var x = HexRadius * Sqrt3 * (coordinate.X + coordinate.Z / 2f);
+            var z = HexRadius * 1.5f * coordinate.Z;
+            return new Vector3(x, 0f, z);
+        }
+        
+        public static IEnumerable<CubicCoordinate> GetNeighboursInRange(CubicCoordinate center, int radius)
         {
             for (var x = -radius; x <= radius; x++)
             {
                 for (var y = Mathf.Max(-radius, -x - radius); y <= Mathf.Min(radius, -x + radius); y++)
                 {
-                    yield return new CubicCoordinate(center.X + x, center.Y + y);
+                    var z = -x - y;
+                    yield return new CubicCoordinate(center.X + x, center.Y + y, center.Z + z);
                 }
             }
         }
-
-        private (QuarticCoordinate A, QuarticCoordinate B) GetEdgeVertices(QuarticCoordinate edge)
+        
+        public static bool InBounds(CubicCoordinate coordinate)
         {
-            var vertexA = new QuarticCoordinate(edge.CubicCoordinate, edge.W);
-            var vertexB = new QuarticCoordinate(edge.CubicCoordinate, (edge.W + 1) % 6);
-            return (vertexA, vertexB);
+            return Mathf.Abs(coordinate.X) <= GridRadius &&
+                   Mathf.Abs(coordinate.Y) <= GridRadius &&
+                   Mathf.Abs(coordinate.Z) <= GridRadius;
         }
     }
 }

@@ -2,7 +2,6 @@ using App.Services;
 using App.Tweens;
 using Game.Features;
 using Game.Grid;
-using Game.Tools.Paths;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -17,10 +16,9 @@ namespace Game.Hexes
         private Transform _hexMesh;
 
         public CubicCoordinate Coordinate { get; private set; }
+        public float Height { get; private set; } = 1;
         public  FeatureType FeatureType => _feature?.FeatureType ?? FeatureType.None;
-
         public int FeatureVariation => _feature ? _feature.Variation : 0;
-
         public float FeatureRotation
         {
             get
@@ -29,9 +27,6 @@ namespace Game.Hexes
                 return 0;
             }
         }
-
-        
-        public float Height { get; private set; } = 1;
 
         public void Initialize(CubicCoordinate coordinate, Transform hexMesh)
         {
@@ -86,7 +81,7 @@ namespace Game.Hexes
         public QuarticCoordinate? GetVertexCloseToPosition(Vector3 position)
         {
             var closestIndex = -1;
-            var closestSquaredDistance = HexGrid.VertexRadius * HexGrid.VertexRadius;
+            var closestSquaredDistance = 0.6f * 0.6f;
             
             for (var i = 0; i < 6; i++)
             {
@@ -99,23 +94,30 @@ namespace Game.Hexes
             return closestIndex >= 0 ? new QuarticCoordinate(Coordinate, closestIndex) : null;
         }
 
-        public Vector3 GetVertexPosition(int cornerIndex)
+        public Vector3 GetVertexPosition(int vertexIndex)
         {
-            var angleDegrees = 60f * cornerIndex;
-            var angleRadians = Mathf.Deg2Rad * angleDegrees;
-            var localVertexPosition = new Vector3(Mathf.Sin(angleRadians) * HexGrid.Radius, 0, Mathf.Cos(angleRadians) * HexGrid.Radius);
-            return localVertexPosition + transform.position + (Vector3.up * Height);
+            return HexGrid.GetLocalVertexPosition(vertexIndex) + transform.position + (Vector3.up * Height);
         }
+        public Vector3 GetEdgePosition(int edgeIndex)
+        {
+            return Vector3.Lerp(GetVertexPosition(edgeIndex), GetVertexPosition((edgeIndex + 1) % 6), 0.5f);
+        }
+        public Vector3 GetFacePosition()
+        {
+            return transform.position + new Vector3(0, Height, 0);
+        }
+
 
         private void AddVertexFeature(int vertexIndex)
         {
             if (_vertexFeatures[vertexIndex] != null) return;
             
-            var pathController = ServiceLocator.Instance.Get<PathController>();
-            var vertexObject = pathController.CreateVertexMesh(GetVertexPosition(vertexIndex));
+            var hexFactory = ServiceLocator.Instance.Get<HexFactory>();
+            var vertexObject = hexFactory.CreateVertexMesh(GetVertexPosition(vertexIndex));
             vertexObject.transform.SetParent(transform, true);
             _vertexFeatures[vertexIndex] = vertexObject;
         }
+
         private void RemoveVertexFeature(int vertexIndex)
         {
             if (_vertexFeatures[vertexIndex] == null) return;
@@ -126,8 +128,8 @@ namespace Game.Hexes
         {
             if (_vertexBridges[vertexIndex] != null) return;
             
-            var pathController = ServiceLocator.Instance.Get<PathController>();
-            var bridgeObject = pathController.CreateBridgeMesh(
+            var hexFactory = ServiceLocator.Instance.Get<HexFactory>();
+            var bridgeObject = hexFactory.CreateBridgeMesh(
                 GetVertexPosition(vertexIndex),
                 GetVertexPosition((vertexIndex + 1) % 6)
                 );
@@ -139,15 +141,6 @@ namespace Game.Hexes
         {
             if (_vertexBridges[index] == null) return;
             Destroy(_vertexBridges[index]);
-        }
-        public Vector3 GetEdgePosition(int edgeIndex)
-        {
-            return Vector3.Lerp(GetVertexPosition(edgeIndex), GetVertexPosition((edgeIndex + 1) % 6), 0.5f);
-        }
-
-        private Vector3 GetFacePosition()
-        {
-            return transform.position + new Vector3(0, Height, 0);
         }
 
         private void UpdateVertexBridges()

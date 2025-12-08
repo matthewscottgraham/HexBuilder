@@ -40,24 +40,21 @@ namespace Game
 
             var hexController = gameObject.AddComponent<HexController>();
             var toolController = gameObject.AddComponent<ToolController>();
-            var pathController = gameObject.AddComponent<PathController>();
 
             _resources = new IDisposable[]
             {
                 featureFactory,
                 hexController,
                 toolController,
-                pathController,
                 new CameraController(Camera.main)
             };
 
             foreach (var resource in _resources) ServiceLocator.Instance.Register(resource);
             
-            pathController.Initialize();
             hexController.Initialize();
             toolController.Initialize();
 
-            ground.transform.localScale = new Vector3(HexGrid.WorldWidth + 3, 1, HexGrid.WorldHeight + 3);
+            ground.transform.localScale = new Vector3(HexGrid.GridRadius * 2 + 3, 1, HexGrid.GridRadius * 2 + 3);
         }
 
         private void HandleGameExit(GameExitEvent gameExitEvent)

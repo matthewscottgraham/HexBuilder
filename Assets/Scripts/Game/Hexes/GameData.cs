@@ -7,14 +7,14 @@ namespace Game.Hexes
 {
     public readonly struct GameData
     {
-        public GameData(Vector2Int gridSize, List<HexInfo> hexInfos)
+        public GameData(int gridRadius, List<HexInfo> hexInfos)
         {
-            Size = new PlanarCoordinate(gridSize.y, gridSize.y);
+            GridRadius = gridRadius;
             Map = hexInfos;
             Features = new Dictionary<int, FeatureType>();
         }
 
-        public readonly PlanarCoordinate Size;
+        public readonly int GridRadius;
         public readonly List<HexInfo> Map;
         public readonly Dictionary<int, FeatureType> Features;
     }

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Game.Grid
 {
@@ -13,33 +14,43 @@ namespace Game.Grid
         public readonly int Y;
         public readonly int Z;
 
-        public CubicCoordinate(int row, int column)
+        public CubicCoordinate(int x, int y, int z)
         {
-            X = row - ((column + (column & 1)) / 2);
-            Z = column;
-            Y = -X - Z;
-        }
+            if (x + y + z != 0) throw new ArgumentException("Cubic coordinates must satisfy x + y + z = 0");
 
-        private CubicCoordinate(int x, int y, int z)
-        {
             X = x;
             Y = y;
             Z = z;
         }
-
-        public CubicCoordinate GetNeighbourCoordinate(int index)
+        
+        public CubicCoordinate(int x, int z)
         {
-            return index switch
-            {
-                0 => new CubicCoordinate(X + 1, Y - 1, Z),
-                1 => new CubicCoordinate(X + 1, Y, Z - 1),
-                2 => new CubicCoordinate(X, Y + 1, Z - 1),
-                3 => new CubicCoordinate(X - 1, Y + 1, Z),
-                4 => new CubicCoordinate(X - 1, Y, Z + 1),
-                5 => new CubicCoordinate(X, Y - 1, Z + 1),
-                _ => this
-            };
+            X = x;
+            Z = z;
+            Y = -x - z;
         }
+
+        public static readonly CubicCoordinate[] Neighbours =
+        {
+            new (1,-1,0),
+            new (1,0,-1),
+            new (0,1,-1),
+            new (-1,1,0),
+            new (-1,0,1),
+            new (0,-1,1)
+        };
+
+        public CubicCoordinate Neighbor(int index) => this + Neighbours[index % 6];
+
+        public static int Distance(CubicCoordinate a, CubicCoordinate b)
+        {
+            return Mathf.Max(Mathf.Abs(a.X - b.X), Mathf.Abs(a.Y - b.Y), Mathf.Abs(a.Z - b.Z));
+        }
+
+        public override string ToString() => $"({X}, {Y}, {Z})";
+
+        public static CubicCoordinate operator +(CubicCoordinate a, CubicCoordinate b)
+            => new (a.X + b.X, a.Y + b.Y, a.Z + b.Z);
 
         public bool Equals(CubicCoordinate other)
         {
@@ -61,7 +72,5 @@ namespace Game.Grid
                 return hashCode;
             }
         }
-        
-        public override string ToString() => $"({X}, {Y}, {Z})";
     }
 }

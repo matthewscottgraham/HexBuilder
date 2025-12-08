@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 840da9f75c634d1c83533e2cd2a0f300, type: 3}
   m_Name: Default_gridPreset
   m_EditorClassIdentifier: Game::Game.Grid.GridPreset
-  gridSize: {x: 24, y: 24}
-  noise: {fileID: 2800000, guid: 867273021db984a77a78015c4eef1dd5, type: 3}
+  gridRadius: 12

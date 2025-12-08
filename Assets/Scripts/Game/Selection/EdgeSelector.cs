@@ -23,8 +23,8 @@ namespace Game.Selection
         {
             var edge = hexObject.GetVertexCloseToPosition(cursorPosition);
             if (!edge.HasValue) return new SelectionContext(SelectionType.None, null, null, null);
-            var vertexPosition = hexObject.GetEdgePosition(edge.Value.W);
-            return new SelectionContext(SelectionType.Edge, vertexPosition, hexObject.Coordinate, edge.Value.W);
+            var edgePosition = hexObject.GetEdgePosition(edge.Value.W);
+            return new SelectionContext(SelectionType.Edge, edgePosition, hexObject.Coordinate, edge.Value.W);
         }
     }
 }
