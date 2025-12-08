@@ -46,13 +46,12 @@ namespace Game.Tools
                 { SelectionType.Edge, gameObject.AddComponent<EdgeSelector>() },
                 { SelectionType.Face, gameObject.AddComponent<FaceSelector>() }
             };
-
-            var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
+            
             var hexController = ServiceLocator.Instance.Get<HexController>();
             
             foreach (var selector in _selectors.Values)
             {
-                selector.Initialize(hexGrid, hexController);
+                selector.Initialize(hexController);
             }
             
             SetActiveTool(1);
@@ -101,19 +100,20 @@ namespace Game.Tools
             }
         }
 
-        private void UseToolWithinAreaOfEffect(Coordinate2 center, int areaOfEffect, ITool tool)
+        private void UseToolWithinAreaOfEffect(CubicCoordinate center, int areaOfEffect, ITool tool)
         {
-            SetLevel(center);
+            SetLevelFromCoordinate(center);
             var hexController = ServiceLocator.Instance.Get<HexController>();
-            var cells = ServiceLocator.Instance.Get<HexGrid>().GetHexCoordinatesWithinRadius(center, areaOfEffect);
-            foreach (var cell in cells)
+            tool.Use(Selector.Hovered, hexController.GetHex(center, tool.CreateHexesAsNeeded));
+            if (areaOfEffect <= 0) return;
+            var neighbours = HexGrid.GetHexCoordinatesWithinRadius(center, areaOfEffect);
+            foreach (var neighbour in neighbours)
             {
-                tool.Use(Selector.Hovered, hexController.GetHex(cell, tool.CreateHexesAsNeeded));
+                tool.Use(Selector.Hovered, hexController.GetHex(neighbour, tool.CreateHexesAsNeeded));
             }
         }
         
-
-        private void SetLevel(Coordinate2 coordinate)
+        private void SetLevelFromCoordinate(CubicCoordinate coordinate)
         {
             var height = ServiceLocator.Instance.Get<HexController>().GetHexHeight(coordinate);
             foreach (var tool in _tools)

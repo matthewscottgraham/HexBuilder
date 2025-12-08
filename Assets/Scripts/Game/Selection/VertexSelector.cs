@@ -21,8 +21,8 @@ namespace Game.Selection
         {
             var vertex = hexObject.GetVertexCloseToPosition(cursorPosition);
             if (!vertex.HasValue) return new SelectionContext(SelectionType.None, null, null, null);
-            var vertexPosition = hexObject.GetVertexPosition(vertex.Value.Z);
-            return new SelectionContext(SelectionType.Vertex, vertexPosition, hexObject.Coordinate, vertex.Value.Z);
+            var vertexPosition = hexObject.GetVertexPosition(vertex.Value.W);
+            return new SelectionContext(SelectionType.Vertex, vertexPosition, hexObject.Coordinate, vertex.Value.W);
         }
     }
 }

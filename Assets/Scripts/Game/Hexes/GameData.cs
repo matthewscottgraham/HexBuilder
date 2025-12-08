@@ -1,20 +1,21 @@
 using System.Collections.Generic;
 using Game.Features;
 using Game.Grid;
+using UnityEngine;
 
 namespace Game.Hexes
 {
-    public struct GameData
+    public readonly struct GameData
     {
-        public GameData(int x, int y)
+        public GameData(Vector2Int gridSize, List<HexInfo> hexInfos)
         {
-            Size = new Coordinate2(x, y);
-            Map = new List<HexInfo>();
+            Size = new PlanarCoordinate(gridSize.y, gridSize.y);
+            Map = hexInfos;
             Features = new Dictionary<int, FeatureType>();
         }
 
-        public Coordinate2 Size;
-        public List<HexInfo> Map;
-        public Dictionary<int, FeatureType> Features;
+        public readonly PlanarCoordinate Size;
+        public readonly List<HexInfo> Map;
+        public readonly Dictionary<int, FeatureType> Features;
     }
 }

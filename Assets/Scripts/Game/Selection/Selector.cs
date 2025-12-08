@@ -11,7 +11,6 @@ namespace Game.Selection
 {
     public class Selector : MonoBehaviour, IDisposable
     {
-        protected HexGrid HexGrid;
         protected HexController HexController;
         protected Transform CellHighlighter;
 
@@ -35,9 +34,8 @@ namespace Game.Selection
             Hover();
         }
 
-        public void Initialize(HexGrid hexGrid, HexController hexController)
+        public void Initialize(HexController hexController)
         {
-            HexGrid = hexGrid;
             HexController = hexController;
             
             _moveEventBinding = new EventBinding<MoveEvent>(HandleMoveEvent);

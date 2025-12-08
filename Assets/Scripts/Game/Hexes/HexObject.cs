@@ -16,7 +16,7 @@ namespace Game.Hexes
         private readonly GameObject[] _vertexBridges = new GameObject[6];
         private Transform _hexMesh;
 
-        public Coordinate2 Coordinate { get; private set; }
+        public CubicCoordinate Coordinate { get; private set; }
         public  FeatureType FeatureType => _feature?.FeatureType ?? FeatureType.None;
 
         public int FeatureVariation => _feature ? _feature.Variation : 0;
@@ -33,7 +33,7 @@ namespace Game.Hexes
         
         public float Height { get; private set; } = 1;
 
-        public void Initialize(Coordinate2 coordinate, Transform hexMesh)
+        public void Initialize(CubicCoordinate coordinate, Transform hexMesh)
         {
             Coordinate = coordinate;
             _hexMesh = hexMesh;
@@ -83,7 +83,7 @@ namespace Game.Hexes
             UpdateVertexBridges();
         }
 
-        public Coordinate3? GetVertexCloseToPosition(Vector3 position)
+        public QuarticCoordinate? GetVertexCloseToPosition(Vector3 position)
         {
             var closestIndex = -1;
             var closestSquaredDistance = HexGrid.VertexRadius * HexGrid.VertexRadius;
@@ -96,7 +96,7 @@ namespace Game.Hexes
                 closestSquaredDistance = squaredDistance;
             }
             
-            return closestIndex >= 0 ? new Coordinate3(Coordinate, closestIndex) : null;
+            return closestIndex >= 0 ? new QuarticCoordinate(Coordinate, closestIndex) : null;
         }
 
         public Vector3 GetVertexPosition(int cornerIndex)
@@ -140,7 +140,7 @@ namespace Game.Hexes
             if (_vertexBridges[index] == null) return;
             Destroy(_vertexBridges[index]);
         }
-        private Vector3 GetEdgePosition(int edgeIndex)
+        public Vector3 GetEdgePosition(int edgeIndex)
         {
             return Vector3.Lerp(GetVertexPosition(edgeIndex), GetVertexPosition((edgeIndex + 1) % 6), 0.5f);
         }

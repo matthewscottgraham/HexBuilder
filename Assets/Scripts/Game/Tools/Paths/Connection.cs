@@ -5,16 +5,16 @@ namespace Game.Tools.Paths
 {
     public readonly struct Connection : IEquatable<Connection>
     {
-        public readonly Coordinate3 A;
-        public readonly Coordinate3 B;
+        public readonly QuarticCoordinate A;
+        public readonly QuarticCoordinate B;
 
-        public Connection(Coordinate3 a, Coordinate3 b)
+        public Connection(QuarticCoordinate a, QuarticCoordinate b)
         {
             A = a; 
             B = b;
         }
         
-        public static Connection SetVertexOrder(Coordinate3 a, Coordinate3 b)
+        public static Connection SetVertexOrder(QuarticCoordinate a, QuarticCoordinate b)
         {
             return a.CompareTo(b) < 0
                 ? new Connection(a, b)

@@ -9,14 +9,14 @@ namespace Game.Selection
     {
         public SelectionType SelectionType;
         public Vector3 Position;
-        public Coordinate2 Coordinate;
+        public CubicCoordinate Coordinate;
         public int ComponentIndex;
 
-        public SelectionContext(SelectionType selectionType, Vector3? position, Coordinate2? cell, int? componentIndex)
+        public SelectionContext(SelectionType selectionType, Vector3? position, CubicCoordinate? coordinate, int? componentIndex)
         {
             SelectionType = selectionType;
             Position = position ?? Vector3.zero;
-            Coordinate = cell ?? new Coordinate2();
+            Coordinate = coordinate ?? new CubicCoordinate();
             ComponentIndex = componentIndex ?? 0;
         }
         

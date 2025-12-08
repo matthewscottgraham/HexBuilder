@@ -10,7 +10,7 @@ namespace Game.Tools
         {
             var hexController = ServiceLocator.Instance.Get<HexController>();
 
-            if (!hexController.InBounds(selection.Coordinate) || hex == null) return;
+            if (!HexController.InBounds(selection.Coordinate) || hex == null) return;
 
             hex.SetHeight(hex.Height - 1);
         }

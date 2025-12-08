@@ -11,7 +11,7 @@ namespace Game.Tools.Paths
         private Material _material;
         private HexGrid _hexGrid;
 
-        private readonly Dictionary<Coordinate3, GameObject> _vertexObjects = new();
+        private readonly Dictionary<QuarticCoordinate, GameObject> _vertexObjects = new();
         private readonly Dictionary<Connection, GameObject> _connectionObjects = new();
         
         public void Initialize()
@@ -35,9 +35,9 @@ namespace Game.Tools.Paths
             _connectionObjects.Clear();
         }
 
-        public void TogglePathOnVertex(Coordinate2 coordinate, int vertexIndex)
+        public void TogglePathOnVertex(CubicCoordinate coordinate, int vertexIndex)
         {
-            var vertex = HexGrid.GetVertexCoordinate(coordinate, vertexIndex);
+            var vertex = new QuarticCoordinate(coordinate, vertexIndex);
 
             if (_vertexObjects.ContainsKey(vertex))
             {
@@ -49,7 +49,7 @@ namespace Game.Tools.Paths
             CreateConnectionsForVertex(vertex);
         }
 
-        private void RemoveVertex(Coordinate3 vertex)
+        private void RemoveVertex(QuarticCoordinate vertex)
         {
             if (!_vertexObjects.TryGetValue(vertex, out var vertexObject)) return;
             
@@ -58,7 +58,7 @@ namespace Game.Tools.Paths
             RemoveInvalidConnectionsForVertex(vertex);
         }
         
-        private void CreateConnectionsForVertex(Coordinate3 vertex)
+        private void CreateConnectionsForVertex(QuarticCoordinate vertex)
         {
             foreach (var other in _vertexObjects.Keys)
             {
@@ -71,7 +71,7 @@ namespace Game.Tools.Paths
             }
         }
 
-        private void RemoveInvalidConnectionsForVertex(Coordinate3 vertex)
+        private void RemoveInvalidConnectionsForVertex(QuarticCoordinate vertex)
         {
             var invalidConnections = new List<Connection>();
             foreach (var connection in _connectionObjects.Keys)
@@ -120,7 +120,7 @@ namespace Game.Tools.Paths
             return obj;
         }
 
-        private GameObject CreateVertexMesh(Coordinate3 vertex)
+        private GameObject CreateVertexMesh(QuarticCoordinate vertex)
         {
             // TODO: this should create a mesh rather than an object
             // also remove the hard coded height

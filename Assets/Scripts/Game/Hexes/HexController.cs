@@ -14,12 +14,12 @@ namespace Game.Hexes
     {
         private const int AutoSaveFrequency = 60;
         private HexFactory _hexFactory;
-        private HexObject[,] _map;
+        private Dictionary<CubicCoordinate, HexObject> _map;
 
         public void Initialize()
         {
             var hexGrid = ServiceLocator.Instance.Get<HexGrid>();
-            _hexFactory = new HexFactory(hexGrid);
+            _hexFactory = new HexFactory();
             
             LoadData();
             InvokeRepeating(nameof(SaveData), AutoSaveFrequency, AutoSaveFrequency);
@@ -34,71 +34,72 @@ namespace Game.Hexes
             _map = null;
         }
 
+        public HexObject GetHexObject(CubicCoordinate coordinate)
+        {
+            if (!InBounds(coordinate)) return null;
+            _map.TryGetValue(coordinate, out var o);
+            return o;
+        }
+
+        public static bool InBounds(CubicCoordinate coordinate)
+        {
+            var col = coordinate.X + (coordinate.Z + (coordinate.Z & 1)) / 2;
+            var row = coordinate.Z;
+
+            return col >= 0 && col < HexGrid.GridSize.x
+                            && row >= 0 && row < HexGrid.GridSize.y;
+        }
+
         private void LoadData()
         {
+            _map = new Dictionary<CubicCoordinate, HexObject>();
             var saveData = ServiceLocator.Instance.Get<SaveDataController>().LoadSaveSlot<GameData>(ConfigController.CurrentSaveSlot);
             if (saveData == null)
             {
-                var gridSize = HexGrid.GridSize;
-                _map = new HexObject[gridSize.x, gridSize.y];
                 CreateRandomMap();
             }
             else
             {
                 var gameData = saveData.Value.Data;
-                _map = new HexObject[gameData.Size.X, gameData.Size.Y];
                 CreateHexes(gameData.Map);
             }
         }
 
         public void SaveData()
         {
-            var gameData = new GameData(_map.GetLength(0), _map.GetLength(1));
-
             var hexes = new List<HexInfo>();
-            for (var x = 0; x < _map.GetLength(0); x++)
+            foreach (var hexObject in _map.Values)
             {
-                for (var y = 0; y < _map.GetLength(1); y++)
-                {
-                    if (!_map[x, y]) continue;
-                    hexes.Add(new HexInfo(new Coordinate2(x, y), (int)_map[x, y].Height, _map[x, y].FeatureType,
-                        _map[x, y].FeatureVariation, _map[x ,y].FeatureRotation));
-                }
+                hexes.Add(new HexInfo(hexObject));
             }
-
-            gameData.Map = hexes;
+            var gameData = new GameData(HexGrid.GridSize, hexes);
             ServiceLocator.Instance?.Get<SaveDataController>().SaveWithScreenshot(this, gameData);
         }
 
-        public float GetHexHeight(Coordinate2 coordinate)
+        public float GetHexHeight(CubicCoordinate coordinate)
         {
-            if (_map == null || !InBounds(coordinate) || !_map[coordinate.X, coordinate.Y]) return 1;
-            return _map[coordinate.X, coordinate.Y].Height;
+            if (_map == null || !InBounds(coordinate) || !_map.ContainsKey(coordinate)) return 1;
+            return _map[coordinate].Height;
         }
 
-        public HexObject GetHex(Coordinate2 coordinate, bool createIfMissing = false)
+        public HexObject GetHex(CubicCoordinate coordinate, bool createIfMissing = false)
         {
             if (_map == null || !InBounds(coordinate)) return null;
-            if (!_map[coordinate.X, coordinate.Y] && createIfMissing)
+            if (!_map.ContainsKey(coordinate) && createIfMissing)
             {
                 CreateNewHex(coordinate);
             }
-            return _map[coordinate.X, coordinate.Y];
+            return _map[coordinate];
         }
 
-        public HexObject CreateNewHex(Coordinate2 coordinate)
+        public HexObject CreateNewHex(CubicCoordinate coordinate)
         {
             if (!InBounds(coordinate)) return null;
-            if (_map[coordinate.X, coordinate.Y] != null) return _map[coordinate.X, coordinate.Y];
-            
-            _map[coordinate.X, coordinate.Y] = _hexFactory.CreateHex(coordinate, transform);
-
-            return _map[coordinate.X, coordinate.Y];
-        }
-
-        public bool InBounds(Coordinate2 coordinate)
-        {
-            return coordinate.X >= 0 && coordinate.X < _map.GetLength(0) && coordinate.Y >= 0 && coordinate.Y < _map.GetLength(1);
+            if (!_map.ContainsKey(coordinate))
+            {
+                _map.Add(coordinate, _hexFactory.CreateHex(coordinate, transform));
+            }
+            return _map[coordinate];
         }
 
         private void CreateHexes(List<HexInfo> hexInfos)
@@ -124,7 +125,7 @@ namespace Game.Hexes
                 for (var x = 0; x < HexGrid.GridSize.x; x++)
                 {
                     var height = weights[UnityEngine.Random.Range(0, weights.Length)];
-                    hexInfos.Add(new HexInfo(new Coordinate2(x, y), height, FeatureType.None, 0, 0));
+                    hexInfos.Add(new HexInfo(new CubicCoordinate(x, y), height, FeatureType.None, 0, 0));
                 }
             }
             CreateHexes(hexInfos);
