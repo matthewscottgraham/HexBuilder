@@ -112,8 +112,8 @@ namespace Game.Hexes
         {
             if (_vertexFeatures[vertexIndex] != null) return;
             
-            var hexFactory = ServiceLocator.Instance.Get<HexFactory>();
-            var vertexObject = hexFactory.CreateVertexMesh(GetVertexPosition(vertexIndex));
+            var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
+            var vertexObject = featureFactory.CreateVertexMesh(GetVertexPosition(vertexIndex));
             vertexObject.transform.SetParent(transform, true);
             _vertexFeatures[vertexIndex] = vertexObject;
         }
@@ -128,8 +128,8 @@ namespace Game.Hexes
         {
             if (_vertexBridges[vertexIndex] != null) return;
             
-            var hexFactory = ServiceLocator.Instance.Get<HexFactory>();
-            var bridgeObject = hexFactory.CreateBridgeMesh(
+            var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
+            var bridgeObject = featureFactory.CreateBridgeMesh(
                 GetVertexPosition(vertexIndex),
                 GetVertexPosition((vertexIndex + 1) % 6)
                 );

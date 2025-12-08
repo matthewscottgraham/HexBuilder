@@ -29,30 +29,6 @@ namespace Game.Hexes
             return hexObject;
         }
         
-        public GameObject CreateVertexMesh(Vector3 vertexPosition)
-        {
-            var obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            Object.Destroy(obj.GetComponent<Collider>());
-            obj.name = "Vertex";
-            obj.transform.position = vertexPosition;
-            obj.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
-            obj.GetComponent<MeshRenderer>().material = _material;
-            return obj;
-        }
-
-        public GameObject CreateBridgeMesh(Vector3 vertexAPosition, Vector3 vertexBPosition)
-        {
-            var obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Object.Destroy(obj.GetComponent<Collider>());
-            obj.name = "VertexBridge";
-            obj.transform.position = (vertexAPosition + vertexBPosition) / 2f;
-            obj.transform.rotation = Quaternion.LookRotation(vertexBPosition - vertexAPosition);
-            obj.transform.localScale = new Vector3(0.2f, 0.2f, Vector3.Distance(vertexAPosition, vertexBPosition));
-            obj.GetComponent<MeshRenderer>().material = _material;
-            return obj;
-        }
-
-        
         private GameObject CreateMeshObject()
         {
             var hexMesh = new GameObject("HexMesh");
