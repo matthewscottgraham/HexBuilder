@@ -1,16 +1,15 @@
 using System;
 using Game.Grid;
-using Game.Hexes;
 using UnityEngine;
 
 namespace Game.Selection
 {
     public struct SelectionContext : IEquatable<SelectionContext>
     {
-        public SelectionType SelectionType;
+        public readonly SelectionType SelectionType;
         public Vector3 Position;
         public CubicCoordinate Coordinate;
-        public int ComponentIndex;
+        public readonly int ComponentIndex;
 
         public SelectionContext(SelectionType selectionType, Vector3? position, CubicCoordinate? coordinate, int? componentIndex)
         {

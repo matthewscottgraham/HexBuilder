@@ -3,7 +3,6 @@ using System.Collections;
 using App.Events;
 using App.Input;
 using Game.Events;
-using Game.Grid;
 using Game.Hexes;
 using UnityEngine;
 
@@ -12,7 +11,7 @@ namespace Game.Selection
     public class Selector : MonoBehaviour, IDisposable
     {
         protected HexController HexController;
-        protected Transform CellHighlighter;
+        private Transform _cellHighlighter;
 
         private Camera _camera;
         private EventBinding<InteractEvent> _interactEventBinding;
@@ -44,7 +43,7 @@ namespace Game.Selection
             EventBus<InteractEvent>.Register(_interactEventBinding);
 
             _camera = Camera.main;
-            CellHighlighter = CreateHighlighter();
+            _cellHighlighter = CreateHighlighter();
         }
 
         public void Dispose()
@@ -87,7 +86,7 @@ namespace Game.Selection
             var newHover = GetClampedSelection(hexObject, hoverPosition);
             if (originalHover.Equals(newHover)) return true;
             Hovered = newHover;
-            CellHighlighter.position = newHover.Position;
+            _cellHighlighter.position = newHover.Position;
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
             return true;
         }
@@ -98,7 +97,7 @@ namespace Game.Selection
             var newHover = GetClampedSelection(hoverPosition);
             if (originalHover.Equals(newHover)) return;
             Hovered = newHover;
-            CellHighlighter.position = newHover.Position;
+            _cellHighlighter.position = newHover.Position;
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
         }
 

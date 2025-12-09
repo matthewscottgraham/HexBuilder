@@ -14,7 +14,7 @@ namespace Game.Hexes
         public HexInfo(HexObject hexObject)
         {
             Coordinate = hexObject.Coordinate;
-            Height = (int)hexObject.Height;
+            Height = hexObject.Height;
             FeatureType = hexObject.FeatureType;
             FeatureVariation = hexObject.FeatureVariation;
             FeatureRotation = hexObject.FeatureRotation;

@@ -8,7 +8,6 @@ using Game.Features;
 using Game.Grid;
 using Game.Hexes;
 using Game.Tools;
-using Game.Tools.Paths;
 using UnityEngine;
 
 namespace Game

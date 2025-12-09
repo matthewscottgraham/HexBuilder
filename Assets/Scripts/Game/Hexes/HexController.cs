@@ -43,7 +43,7 @@ namespace Game.Hexes
             ServiceLocator.Instance?.Get<SaveDataController>().SaveWithScreenshot(this, gameData);
         }
 
-        public float GetHexHeight(CubicCoordinate coordinate)
+        public int GetHexHeight(CubicCoordinate coordinate)
         {
             if (!HexGrid.InBounds(coordinate) || !_map.ContainsKey(coordinate)) return 1;
             return _map[coordinate].Height;

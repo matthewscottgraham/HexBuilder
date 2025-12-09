@@ -8,7 +8,7 @@ namespace Game.Tools
     public class LevelTerrain : ITool
     {
         public bool CreateHexesAsNeeded => true;
-        public float Level { get; set; }
+        public int Level { get; set; }
 
         public void Use(SelectionContext selection, HexObject hex)
         {

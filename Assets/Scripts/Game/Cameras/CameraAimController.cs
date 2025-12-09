@@ -1,9 +1,7 @@
 using App.Events;
-using Game.Events;
-using Game.Selection;
 using UnityEngine;
 
-namespace Game.Hexes
+namespace Game.Cameras
 {
     public class CameraAimController : MonoBehaviour
     {

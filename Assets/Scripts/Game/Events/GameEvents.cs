@@ -1,5 +1,4 @@
 using App.Events;
-using Game.Hexes;
 using Game.Selection;
 
 namespace Game.Events

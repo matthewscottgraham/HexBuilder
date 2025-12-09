@@ -12,7 +12,7 @@ namespace Game.Features
     {
         private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues;
         private Dictionary<FeatureType, IObjectPool<Feature>> _pools;
-        private Material _pathMaterial = Resources.Load<Material>("Materials/mat_path");
+        private readonly Material _pathMaterial = Resources.Load<Material>("Materials/mat_path");
         public FeatureFactory()
         {
             _catalogues = GetCatalogues();

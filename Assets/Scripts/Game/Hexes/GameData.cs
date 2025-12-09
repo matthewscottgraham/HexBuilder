@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using Game.Features;
-using Game.Grid;
-using UnityEngine;
 
 namespace Game.Hexes
 {

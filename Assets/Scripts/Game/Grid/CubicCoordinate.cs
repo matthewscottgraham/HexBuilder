@@ -30,17 +30,20 @@ namespace Game.Grid
             Y = -x - z;
         }
 
-        public static readonly CubicCoordinate[] Neighbours =
+        public CubicCoordinate[] GetNeighbours()
         {
-            new (1,-1,0),
-            new (1,0,-1),
-            new (0,1,-1),
-            new (-1,1,0),
-            new (-1,0,1),
-            new (0,-1,1)
-        };
+            return new[]
+            {
+                new CubicCoordinate(X + 0, Y + 1, Z - 1), // NW
+                new CubicCoordinate(X + 1, Y + 0, Z - 1), // NE
+                new CubicCoordinate(X + 1, Y - 1, Z + 0), // E
+                new CubicCoordinate(X + 0, Y - 1, Z + 1), // SE
+                new CubicCoordinate(X - 1, Y + 0, Z + 1), // SW
+                new CubicCoordinate(X - 1, Y + 1, Z + 0), // W
+            };
+        }
 
-        public CubicCoordinate Neighbor(int index) => this + Neighbours[index % 6];
+        public CubicCoordinate Neighbor(int index) => this + GetNeighbours()[index % 6];
 
         public static int Distance(CubicCoordinate a, CubicCoordinate b)
         {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 namespace Game.Grid
 {
@@ -7,10 +8,7 @@ namespace Game.Grid
     {
         public static int GridRadius { get; private set; }
         private static float HexRadius => 2;
-        private static float InnerRadius => HexRadius * Sqrt3Over2;
-
         private const float Sqrt3 = 1.7320508f; // Square root of 3
-        private const float Sqrt3Over2 = 0.8660254f; // Square root of 3 * 0.5
 
         public HexGrid(int gridRadius)
         {
@@ -62,7 +60,7 @@ namespace Game.Grid
             return new Vector3(x, 0f, z);
         }
         
-        public static IEnumerable<CubicCoordinate> GetNeighboursInRange(CubicCoordinate center, int radius)
+        public static IEnumerable<CubicCoordinate> GetHexCoordinatesWithinRadius(CubicCoordinate center, int radius)
         {
             for (var x = -radius; x <= radius; x++)
             {
@@ -79,6 +77,26 @@ namespace Game.Grid
             return Mathf.Abs(coordinate.X) <= GridRadius &&
                    Mathf.Abs(coordinate.Y) <= GridRadius &&
                    Mathf.Abs(coordinate.Z) <= GridRadius;
+        }
+        
+        public static (CubicCoordinate A, CubicCoordinate B) GetNeighboursSharingVertex(CubicCoordinate center, int vertexIndex)
+        {
+            var neighbours = center.GetNeighbours();
+            return vertexIndex switch
+            {
+                0 => (neighbours[4], neighbours[3]),
+                1 => (neighbours[3], neighbours[2]),
+                2 => (neighbours[2], neighbours[1]),
+                3 => (neighbours[1], neighbours[0]),
+                4 => (neighbours[0], neighbours[5]),
+                5 => (neighbours[5], neighbours[4]),
+                _ => throw new ArgumentOutOfRangeException(nameof(vertexIndex), vertexIndex, null)
+            };
+        }
+
+        public static (int A, int B) GetNeighbourVertexIndices(int vertexIndex)
+        {
+            return ((vertexIndex + 2) % 6, (vertexIndex + 4) % 6);
         }
     }
 }

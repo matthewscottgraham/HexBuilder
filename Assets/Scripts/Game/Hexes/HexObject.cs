@@ -16,7 +16,7 @@ namespace Game.Hexes
         private Transform _hexMesh;
 
         public CubicCoordinate Coordinate { get; private set; }
-        public float Height { get; private set; } = 1;
+        public int Height { get; private set; } = 1;
         public  FeatureType FeatureType => _feature?.FeatureType ?? FeatureType.None;
         public int FeatureVariation => _feature ? _feature.Variation : 0;
         public float FeatureRotation
@@ -35,7 +35,7 @@ namespace Game.Hexes
             _hexMesh.SetParent(transform, false);
         }
 
-        public void SetHeight(float height)
+        public void SetHeight(int height)
         {
             if (height < 0) height = 0;
             Height = height;
@@ -65,17 +65,28 @@ namespace Game.Hexes
 
         public void ToggleVertexFeature(int vertexIndex)
         {
+            SetVertexFeature(!_vertexFeatures[vertexIndex], vertexIndex);
+        }
+        
+        public void SetVertexFeature(bool hasFeature, int vertexIndex)
+        {
             vertexIndex %= 6;
-            if (!_vertexFeatures[vertexIndex])
+            if (hasFeature)
             {
                 AddVertexFeature(vertexIndex);
             }
             else
             {
                 RemoveVertexFeature(vertexIndex);
-                
             }
+            
             UpdateVertexBridges();
+        }
+
+        public bool HasVertexFeature(int vertexIndex)
+        {
+            vertexIndex %= 6;
+            return _vertexFeatures[vertexIndex] != null;
         }
 
         public QuarticCoordinate? GetVertexCloseToPosition(Vector3 position)

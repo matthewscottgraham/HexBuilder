@@ -106,7 +106,7 @@ namespace Game.Tools
             var hexController = ServiceLocator.Instance.Get<HexController>();
             tool.Use(Selector.Hovered, hexController.GetHexObject(center, tool.CreateHexesAsNeeded));
             if (areaOfEffect <= 0) return;
-            var neighbours = HexGrid.GetNeighboursInRange(center, areaOfEffect);
+            var neighbours = HexGrid.GetHexCoordinatesWithinRadius(center, areaOfEffect);
             foreach (var neighbour in neighbours)
             {
                 tool.Use(Selector.Hovered, hexController.GetHexObject(neighbour, tool.CreateHexesAsNeeded));
