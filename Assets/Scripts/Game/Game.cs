@@ -8,7 +8,6 @@ using Game.Features;
 using Game.Grid;
 using Game.Hexes;
 using Game.Tools;
-using Game.Tools.Paths;
 using UnityEngine;
 
 namespace Game
@@ -33,32 +32,28 @@ namespace Game
             EventBus<GameExitEvent>.Register(_gameExitEventBinding);
 
             ServiceLocator.Instance.Register(this);
-
-            var grid = gridPreset.CreateGrid();
-            ServiceLocator.Instance.Register(grid);
+            
+            ServiceLocator.Instance.Register(gridPreset.CreateGrid());
 
             var featureFactory = new FeatureFactory();
 
             var hexController = gameObject.AddComponent<HexController>();
             var toolController = gameObject.AddComponent<ToolController>();
-            var pathController = gameObject.AddComponent<PathController>();
 
             _resources = new IDisposable[]
             {
                 featureFactory,
                 hexController,
                 toolController,
-                pathController,
                 new CameraController(Camera.main)
             };
 
             foreach (var resource in _resources) ServiceLocator.Instance.Register(resource);
             
-            pathController.Initialize();
             hexController.Initialize();
             toolController.Initialize();
 
-            ground.transform.localScale = new Vector3(grid.WorldWidth + 3, 1, grid.WorldHeight + 3);
+            ground.transform.localScale = new Vector3(HexGrid.GridRadius * 2 + 3, 1, HexGrid.GridRadius * 2 + 3);
         }
 
         private void HandleGameExit(GameExitEvent gameExitEvent)

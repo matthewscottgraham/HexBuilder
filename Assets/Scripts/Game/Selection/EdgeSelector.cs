@@ -18,21 +18,12 @@ namespace Game.Selection
             return highlighter;
         }
         
-        protected override SelectionContext GetClampedSelection(Vector3 worldPosition)
+        protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 cursorPosition)
         {
-            var edge = HexGrid.GetClosestEdgeCoordinateToPosition(worldPosition);
-            var position = HexGrid.GetEdgePosition(edge);
-            position.y = HexController.GetHexHeight(edge.GetGridCoordinate);
-            CellHighlighter.localRotation = Quaternion.Euler(90, (60 * edge.Z) + 30, 0);
-            return new SelectionContext(SelectionType.Edge, position, edge.GetGridCoordinate, edge.Z);
-        }
-        
-        protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 worldPosition)
-        {
-            var edge = HexGrid.GetClosestEdgeCoordinateToPosition(worldPosition);
-            var edgePosition = HexGrid.GetEdgePosition(edge) + new Vector3(0, hexObject.Height, 0);
-            CellHighlighter.localRotation = Quaternion.Euler(90, (60 * edge.Z) + 30, 0);
-            return new SelectionContext(SelectionType.Edge, edgePosition, hexObject.Coordinate, edge.Z);
+            var edge = hexObject.GetVertexCloseToPosition(cursorPosition);
+            if (!edge.HasValue) return new SelectionContext(SelectionType.None, null, null, null);
+            var edgePosition = hexObject.GetEdgePosition(edge.Value.W);
+            return new SelectionContext(SelectionType.Edge, edgePosition, hexObject.Coordinate, edge.Value.W);
         }
     }
 }

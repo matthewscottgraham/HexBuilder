@@ -3,7 +3,6 @@ using System.Collections;
 using App.Events;
 using App.Input;
 using Game.Events;
-using Game.Grid;
 using Game.Hexes;
 using UnityEngine;
 
@@ -11,9 +10,8 @@ namespace Game.Selection
 {
     public class Selector : MonoBehaviour, IDisposable
     {
-        protected HexGrid HexGrid;
         protected HexController HexController;
-        protected Transform CellHighlighter;
+        private Transform _cellHighlighter;
 
         private Camera _camera;
         private EventBinding<InteractEvent> _interactEventBinding;
@@ -35,9 +33,8 @@ namespace Game.Selection
             Hover();
         }
 
-        public void Initialize(HexGrid hexGrid, HexController hexController)
+        public void Initialize(HexController hexController)
         {
-            HexGrid = hexGrid;
             HexController = hexController;
             
             _moveEventBinding = new EventBinding<MoveEvent>(HandleMoveEvent);
@@ -46,7 +43,7 @@ namespace Game.Selection
             EventBus<InteractEvent>.Register(_interactEventBinding);
 
             _camera = Camera.main;
-            CellHighlighter = CreateHighlighter();
+            _cellHighlighter = CreateHighlighter();
         }
 
         public void Dispose()
@@ -76,7 +73,7 @@ namespace Game.Selection
         {
             var ray = _camera.ScreenPointToRay(InputController.PointerPosition);
             if (!Physics.Raycast(ray, out var hit)) return;
-            if (!SetHoveredSelection(hit.transform.GetComponent<HexObject>(), hit.point))
+            if (!SetHoveredSelection(hit.transform.GetComponentInParent<HexObject>(), hit.point))
             {
                 SetHoveredSelection(hit.point);
             }
@@ -89,7 +86,7 @@ namespace Game.Selection
             var newHover = GetClampedSelection(hexObject, hoverPosition);
             if (originalHover.Equals(newHover)) return true;
             Hovered = newHover;
-            CellHighlighter.position = newHover.Position;
+            _cellHighlighter.position = newHover.Position;
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
             return true;
         }
@@ -100,7 +97,7 @@ namespace Game.Selection
             var newHover = GetClampedSelection(hoverPosition);
             if (originalHover.Equals(newHover)) return;
             Hovered = newHover;
-            CellHighlighter.position = newHover.Position;
+            _cellHighlighter.position = newHover.Position;
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
         }
 

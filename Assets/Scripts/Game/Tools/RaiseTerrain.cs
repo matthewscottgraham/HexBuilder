@@ -1,4 +1,5 @@
 using App.Services;
+using Game.Grid;
 using Game.Hexes;
 using Game.Selection;
 
@@ -12,7 +13,7 @@ namespace Game.Tools
         {
             var hexController = ServiceLocator.Instance.Get<HexController>();
 
-            if (!hexController.InBounds(selection.Coordinate)) return;
+            if (!HexGrid.InBounds(selection.Coordinate)) return;
 
             if (hex == null)
             {

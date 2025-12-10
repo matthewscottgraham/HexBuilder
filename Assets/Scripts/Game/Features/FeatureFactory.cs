@@ -12,7 +12,7 @@ namespace Game.Features
     {
         private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues;
         private Dictionary<FeatureType, IObjectPool<Feature>> _pools;
-
+        private readonly Material _pathMaterial = Resources.Load<Material>("Materials/mat_path");
         public FeatureFactory()
         {
             _catalogues = GetCatalogues();
@@ -48,6 +48,29 @@ namespace Game.Features
             var feature = CreateNewFeature(featureType, false, variation);
             feature.transform.localEulerAngles = new Vector3(0f, rotation, 0f);
             return feature;
+        }
+        
+        public GameObject CreateVertexMesh(Vector3 vertexPosition)
+        {
+            var obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            Object.Destroy(obj.GetComponent<Collider>());
+            obj.name = "Vertex";
+            obj.transform.position = vertexPosition;
+            obj.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
+            obj.GetComponent<MeshRenderer>().material = _pathMaterial;
+            return obj;
+        }
+
+        public GameObject CreateBridgeMesh(Vector3 vertexAPosition, Vector3 vertexBPosition)
+        {
+            var obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Object.Destroy(obj.GetComponent<Collider>());
+            obj.name = "VertexBridge";
+            obj.transform.position = (vertexAPosition + vertexBPosition) / 2f;
+            obj.transform.rotation = Quaternion.LookRotation(vertexBPosition - vertexAPosition);
+            obj.transform.localScale = new Vector3(0.2f, 0.2f, Vector3.Distance(vertexAPosition, vertexBPosition));
+            obj.GetComponent<MeshRenderer>().material = _pathMaterial;
+            return obj;
         }
 
         private static Dictionary<FeatureType, FeatureModelCatalogues> GetCatalogues()

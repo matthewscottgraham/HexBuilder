@@ -1,57 +1,50 @@
 using System;
 using Game.Grid;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Game.Hexes
 {
     public class HexFactory : IDisposable
     {
         private Material _material = Resources.Load<Material>("Materials/mat_land");
-        private HexGrid _hexGrid;
-
-        public HexFactory(HexGrid hexGrid)
-        {
-            _hexGrid = hexGrid;
-        }
 
         public void Dispose()
         {
-            _hexGrid = null;
             _material = null;
         }
         
-        public HexObject CreateHex(Coordinate2 coordinate, Transform parent)
+        public HexObject CreateHex(CubicCoordinate coordinate, Transform parent)
         {
             var go = new GameObject(coordinate.ToString());
             go.transform.parent = parent;
-            go.transform.position = _hexGrid.GetFacePosition(coordinate);
-            
-            var collider = go.AddComponent<CapsuleCollider>();
-            collider.radius = _hexGrid.InnerRadius;
-            collider.height = 1;
+            go.transform.position = HexGrid.GetWorldPosition(coordinate);
 
             var hexObject = go.AddComponent<HexObject>();
-            hexObject.Initialize(coordinate, collider, CreateMeshObject(coordinate).transform);
+            var meshObject = CreateMeshObject();
+            var collider = meshObject.AddComponent<MeshCollider>();
+            collider.convex = true;
             
+            hexObject.Initialize(coordinate, meshObject.transform);
             return hexObject;
         }
-
-        private GameObject CreateMeshObject(Coordinate2 coordinate)
+        
+        private GameObject CreateMeshObject()
         {
             var hexMesh = new GameObject("HexMesh");
             var filter = hexMesh.AddComponent<MeshFilter>();
-            filter.mesh = CreateMesh(coordinate);
+            filter.mesh = CreateMesh();
 
             var renderer = hexMesh.AddComponent<MeshRenderer>();
             renderer.material = _material;
             return hexMesh;
         }
 
-        private Mesh CreateMesh(Coordinate2 coordinate)
+        private static Mesh CreateMesh()
         {
             var mesh = new Mesh
             {
-                vertices = GetPrismVertices(1, coordinate),
+                vertices = GetPrismVertices(1),
                 triangles = GetPrismTriangles()
             };
 
@@ -61,26 +54,26 @@ namespace Game.Hexes
             return mesh;
         }
 
-        private Vector3[] GetPrismVertices(float height, Coordinate2 coordinate)
+        private static Vector3[] GetPrismVertices(float height)
         {
             var vertices = new Vector3[18];
 
             // top face vertices
             for (var i = 0; i < 6; i++)
             {
-                vertices[i] = _hexGrid.GetLocalVertexPosition(i) + Vector3.up * height;
+                vertices[i] = HexGrid.GetLocalVertexPosition(i) + Vector3.up * height;
             }
 
             // top of side face vertices
             for (var i = 6; i < 12; i++)
             {
-                vertices[i] = _hexGrid.GetLocalVertexPosition(i - 6) + Vector3.up * height;
+                vertices[i] = HexGrid.GetLocalVertexPosition(i - 6) + Vector3.up * height;
             }
 
             // bottom of side face vertices
             for (var i = 12; i < 18; i++)
             {
-                vertices[i] = _hexGrid.GetLocalVertexPosition(i - 12);
+                vertices[i] = HexGrid.GetLocalVertexPosition(i - 12);
             }
 
             return vertices;

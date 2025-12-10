@@ -1,19 +1,21 @@
+using System;
 using System.Collections.Generic;
 using Game.Features;
-using Game.Grid;
 
 namespace Game.Hexes
 {
-    public struct GameData
+    [Serializable]
+    public class GameData
     {
-        public GameData(int x, int y)
+        public GameData(int gridRadius, List<HexInfo> hexInfos)
         {
-            Size = new Coordinate2(x, y);
-            Map = new List<HexInfo>();
+            hexInfos ??= new List<HexInfo>();
+            this.gridRadius = gridRadius;
+            Map = hexInfos;
             Features = new Dictionary<int, FeatureType>();
         }
 
-        public Coordinate2 Size;
+        public int gridRadius;
         public List<HexInfo> Map;
         public Dictionary<int, FeatureType> Features;
     }
