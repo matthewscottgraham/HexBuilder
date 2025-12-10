@@ -7,6 +7,8 @@ namespace Game.Tools
 {
     public class AddFarm : ITool
     {
+        bool ITool.AllowAreaOfEffect => false;
+        
         public void Use(SelectionContext selection, HexObject hex)
         {
             if (hex == null) return;

@@ -96,12 +96,30 @@ namespace Game.Hexes
             if (loadedData == null)
             {
                 //CreateRandomMap();
+                CreateEmptyMap();
             }
             else
             {
                 var gameData = loadedData.Value.Data;
                 CreateHexes(gameData.Map);
             }
+        }
+
+        private void CreateEmptyMap()
+        {
+            var hexInfos = new List<HexInfo>();
+
+            var radius = HexGrid.GridRadius;
+            
+            for (var x = -radius; x <= radius; x++)
+            {
+                for (var z = Mathf.Max(-radius, -x - radius); z <= Mathf.Min(radius, -x + radius); z++)
+                {
+                    hexInfos.Add(new HexInfo(new CubicCoordinate(x, z), 0, FeatureType.None, 0, 0));
+                }
+            }
+
+            CreateHexes(hexInfos);
         }
 
         private void CreateRandomMap()
