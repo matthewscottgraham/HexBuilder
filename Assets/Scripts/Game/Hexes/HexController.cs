@@ -81,6 +81,11 @@ namespace Game.Hexes
                 var feature = featureFactory.CreateFeature(hexInfo.FeatureType, hexInfo.FeatureVariation,
                     hexInfo.FeatureRotation);
                 hexObject.AddFeature(feature);
+                
+                for (var i = 0; i < hexInfo.VertexFeatures.Length; i++)
+                {
+                    if (hexInfo.VertexFeatures[i]) hexObject.SetVertexFeature(true, i); 
+                }
             }
         }
 
@@ -90,7 +95,7 @@ namespace Game.Hexes
             var loadedData = ServiceLocator.Instance.Get<SaveDataController>().LoadSaveSlot<GameData>(ConfigController.CurrentSaveSlot);
             if (loadedData == null)
             {
-                CreateRandomMap();
+                //CreateRandomMap();
             }
             else
             {

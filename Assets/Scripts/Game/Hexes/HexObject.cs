@@ -14,7 +14,7 @@ namespace Game.Hexes
         private readonly GameObject[] _vertexFeatures = new GameObject[6];
         private readonly GameObject[] _vertexBridges = new GameObject[6];
         private Transform _hexMesh;
-
+        private Transform _vertexParent;
         public CubicCoordinate Coordinate { get; private set; }
         public int Height { get; private set; } = 1;
         public  FeatureType FeatureType => _feature?.FeatureType ?? FeatureType.None;
@@ -33,13 +33,19 @@ namespace Game.Hexes
             Coordinate = coordinate;
             _hexMesh = hexMesh;
             _hexMesh.SetParent(transform, false);
+            _vertexParent = new GameObject("VertexFeatures").transform;
+            _vertexParent.SetParent(transform);
         }
 
         public void SetHeight(int height)
         {
             if (height < 0) height = 0;
             Height = height;
-            _hexMesh.TweenScale(_hexMesh.transform.localScale, new Vector3(1, height, 1), AnimationDuration).SetEase(AnimationEaseType);
+            _hexMesh.TweenScale(_hexMesh.transform.localScale, new Vector3(1, height, 1), AnimationDuration)
+                .SetEase(AnimationEaseType);
+            
+            _vertexParent.TweenLocalPosition(_vertexParent.localPosition, new Vector3(0, height, 0), AnimationDuration)
+                .SetEase(AnimationEaseType);
             
             if (_feature == null) return;
             _feature.transform
@@ -89,6 +95,16 @@ namespace Game.Hexes
             return _vertexFeatures[vertexIndex] != null;
         }
 
+        public bool[] VertexFeaturesPresent()
+        {
+            var vertexFeatures = new bool[6];
+            for (var i = 0; i < _vertexFeatures.Length; i++)
+            {
+                vertexFeatures[i] = HasVertexFeature(i);
+            }
+            return vertexFeatures;
+        }
+
         public QuarticCoordinate? GetVertexCloseToPosition(Vector3 position)
         {
             var closestIndex = -1;
@@ -125,7 +141,10 @@ namespace Game.Hexes
             
             var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
             var vertexObject = featureFactory.CreateVertexMesh(GetVertexPosition(vertexIndex));
-            vertexObject.transform.SetParent(transform, true);
+            vertexObject.transform.SetParent(_vertexParent, true);
+            var localPosition = vertexObject.transform.localPosition;
+            localPosition.y = 0;
+            vertexObject.transform.localPosition = localPosition;
             _vertexFeatures[vertexIndex] = vertexObject;
         }
 
@@ -144,7 +163,10 @@ namespace Game.Hexes
                 GetVertexPosition(vertexIndex),
                 GetVertexPosition((vertexIndex + 1) % 6)
                 );
-            bridgeObject.transform.SetParent(transform, true);
+            bridgeObject.transform.SetParent(_vertexParent, true);
+            var localPosition = bridgeObject.transform.localPosition;
+            localPosition.y = 0;
+            bridgeObject.transform.localPosition = localPosition;
             _vertexFeatures[vertexIndex] = bridgeObject;
         }
 
