@@ -87,14 +87,14 @@ namespace Game.Hexes
         private void LoadData()
         {
             _map = new Dictionary<CubicCoordinate, HexObject>();
-            var saveData = ServiceLocator.Instance.Get<SaveDataController>().LoadSaveSlot<GameData>(ConfigController.CurrentSaveSlot);
-            if (saveData == null)
+            var loadedData = ServiceLocator.Instance.Get<SaveDataController>().LoadSaveSlot<GameData>(ConfigController.CurrentSaveSlot);
+            if (loadedData == null)
             {
                 CreateRandomMap();
             }
             else
             {
-                var gameData = saveData.Value.Data;
+                var gameData = loadedData.Value.Data;
                 CreateHexes(gameData.Map);
             }
         }

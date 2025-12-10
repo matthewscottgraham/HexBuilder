@@ -24,9 +24,9 @@ namespace Game.Grid
         public QuarticCoordinate(CubicCoordinate coordinate, int w)
         {
             W = w % 6; // Make sure that the W component is always in the range 0-5.
-            X = coordinate.X;
-            Y = coordinate.Y;
-            Z = coordinate.Z;
+            X = coordinate.x;
+            Y = coordinate.y;
+            Z = coordinate.z;
         }
 
         public CubicCoordinate CubicCoordinate => new (X, Y);

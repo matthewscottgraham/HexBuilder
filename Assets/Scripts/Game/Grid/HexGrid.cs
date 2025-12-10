@@ -55,8 +55,8 @@ namespace Game.Grid
         
         public static Vector3 GetWorldPosition(CubicCoordinate coordinate)
         {
-            var x = HexRadius * Sqrt3 * (coordinate.X + coordinate.Z / 2f);
-            var z = HexRadius * 1.5f * coordinate.Z;
+            var x = HexRadius * Sqrt3 * (coordinate.x + coordinate.z / 2f);
+            var z = HexRadius * 1.5f * coordinate.z;
             return new Vector3(x, 0f, z);
         }
         
@@ -67,16 +67,16 @@ namespace Game.Grid
                 for (var y = Mathf.Max(-radius, -x - radius); y <= Mathf.Min(radius, -x + radius); y++)
                 {
                     var z = -x - y;
-                    yield return new CubicCoordinate(center.X + x, center.Y + y, center.Z + z);
+                    yield return new CubicCoordinate(center.x + x, center.y + y, center.z + z);
                 }
             }
         }
         
         public static bool InBounds(CubicCoordinate coordinate)
         {
-            return Mathf.Abs(coordinate.X) <= GridRadius &&
-                   Mathf.Abs(coordinate.Y) <= GridRadius &&
-                   Mathf.Abs(coordinate.Z) <= GridRadius;
+            return Mathf.Abs(coordinate.x) <= GridRadius &&
+                   Mathf.Abs(coordinate.y) <= GridRadius &&
+                   Mathf.Abs(coordinate.z) <= GridRadius;
         }
         
         public static (CubicCoordinate A, CubicCoordinate B) GetNeighboursSharingVertex(CubicCoordinate center, int vertexIndex)

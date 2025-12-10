@@ -1,5 +1,6 @@
 using Game.Features;
 using Game.Grid;
+using Newtonsoft.Json;
 
 namespace Game.Hexes
 {
@@ -20,6 +21,7 @@ namespace Game.Hexes
             FeatureRotation = hexObject.FeatureRotation;
         }
 
+        [JsonConstructor]
         public HexInfo(CubicCoordinate coordinate, int height, FeatureType featureType, int featureVariation, float featureRotation)
         {
             Coordinate = coordinate;

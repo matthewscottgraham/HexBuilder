@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.Grid
 {
@@ -8,38 +9,38 @@ namespace Game.Grid
     /// contain properties I don't want when serializing.
     /// </summary>
     [Serializable]
-    public readonly struct CubicCoordinate : IEquatable<CubicCoordinate>
+    public struct CubicCoordinate : IEquatable<CubicCoordinate>
     {
-        public readonly int X;
-        public readonly int Y;
-        public readonly int Z;
+        [FormerlySerializedAs("X")] public int x;
+        [FormerlySerializedAs("Y")] public int y;
+        [FormerlySerializedAs("Z")] public int z;
 
         public CubicCoordinate(int x, int y, int z)
         {
             if (x + y + z != 0) throw new ArgumentException("Cubic coordinates must satisfy x + y + z = 0");
 
-            X = x;
-            Y = y;
-            Z = z;
+            this.x = x;
+            this.y = y;
+            this.z = z;
         }
         
         public CubicCoordinate(int x, int z)
         {
-            X = x;
-            Z = z;
-            Y = -x - z;
+            this.x = x;
+            this.z = z;
+            y = -x - z;
         }
 
         public CubicCoordinate[] GetNeighbours()
         {
             return new[]
             {
-                new CubicCoordinate(X + 0, Y + 1, Z - 1), // NW
-                new CubicCoordinate(X + 1, Y + 0, Z - 1), // NE
-                new CubicCoordinate(X + 1, Y - 1, Z + 0), // E
-                new CubicCoordinate(X + 0, Y - 1, Z + 1), // SE
-                new CubicCoordinate(X - 1, Y + 0, Z + 1), // SW
-                new CubicCoordinate(X - 1, Y + 1, Z + 0), // W
+                new CubicCoordinate(x + 0, y + 1, z - 1), // NW
+                new CubicCoordinate(x + 1, y + 0, z - 1), // NE
+                new CubicCoordinate(x + 1, y - 1, z + 0), // E
+                new CubicCoordinate(x + 0, y - 1, z + 1), // SE
+                new CubicCoordinate(x - 1, y + 0, z + 1), // SW
+                new CubicCoordinate(x - 1, y + 1, z + 0), // W
             };
         }
 
@@ -47,17 +48,17 @@ namespace Game.Grid
 
         public static int Distance(CubicCoordinate a, CubicCoordinate b)
         {
-            return Mathf.Max(Mathf.Abs(a.X - b.X), Mathf.Abs(a.Y - b.Y), Mathf.Abs(a.Z - b.Z));
+            return Mathf.Max(Mathf.Abs(a.x - b.x), Mathf.Abs(a.y - b.y), Mathf.Abs(a.z - b.z));
         }
 
-        public override string ToString() => $"({X}, {Y}, {Z})";
+        public override string ToString() => $"({x}, {y}, {z})";
 
         public static CubicCoordinate operator +(CubicCoordinate a, CubicCoordinate b)
-            => new (a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+            => new (a.x + b.x, a.y + b.y, a.z + b.z);
 
         public bool Equals(CubicCoordinate other)
         {
-            return X == other.X && Y == other.Y && Z == other.Z;
+            return x == other.x && y == other.y && z == other.z;
         }
 
         public override bool Equals(object obj)
@@ -69,9 +70,9 @@ namespace Game.Grid
         {
             unchecked
             {
-                var hashCode = X;
-                hashCode = (hashCode * 397) ^ Y;
-                hashCode = (hashCode * 397) ^ Z;
+                var hashCode = x;
+                hashCode = (hashCode * 397) ^ y;
+                hashCode = (hashCode * 397) ^ z;
                 return hashCode;
             }
         }
