@@ -30,6 +30,10 @@ namespace App.Events
     {
     }
 
+    public struct GameReloadEvent : IEvent
+    {
+    }
+
     public struct FileSaveEvent : IEvent
     {
     }

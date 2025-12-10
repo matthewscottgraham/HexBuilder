@@ -24,6 +24,7 @@ namespace Game.Selection
         public void Activate(bool isActive)
         {
             _isActive = isActive;
+            _cellHighlighter.gameObject.SetActive(_isActive);
         }
         
         private void Update()

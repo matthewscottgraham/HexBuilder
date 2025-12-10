@@ -1,4 +1,5 @@
 using App.Config;
+using App.Events;
 using App.SaveData;
 using App.Scenes;
 using App.Services;
@@ -76,11 +77,15 @@ namespace Game.Menu
 
         private void HandleSlotClicked(int index)
         {
-            ServiceLocator.Instance.Get<HexController>().SaveData();
-            if (_isNewGame) ServiceLocator.Instance.Get<SaveDataController>().DeleteSaveData(index);
+            if (ConfigController.CurrentSaveSlot != index)
+                ServiceLocator.Instance.Get<HexController>().SaveData();
+            
+            if (_isNewGame) 
+                ServiceLocator.Instance.Get<SaveDataController>().DeleteSaveData(index);
+            
             ConfigController.CurrentSaveSlot = index;
-            ServiceLocator.Instance.Get<SceneController>().LoadGameScene();
             CloseWindow();
+            EventBus<GameReloadEvent>.Raise(new GameReloadEvent());
         }
     }
 }

@@ -14,7 +14,7 @@ namespace App
 
         public void DeleteDirectory(string relativePath)
         {
-            Assert.IsTrue(DoesRelativeDirectoryExist(relativePath));
+            if (!DoesRelativeDirectoryExist(relativePath)) return;
             Directory.Delete(Path.Combine(_appDataPath, relativePath), true);
         }
 

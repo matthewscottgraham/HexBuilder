@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Linq;
 using App.Events;
+using App.Scenes;
 using App.Services;
+using App.Tweens;
 using Game.Cameras;
 using Game.Features;
 using Game.Grid;
@@ -17,6 +19,7 @@ namespace Game
         [SerializeField] private GridPreset gridPreset;
         [SerializeField] private Transform ground;
 
+        private EventBinding<GameReloadEvent> _gameReloadEventBinding;
         private EventBinding<GameExitEvent> _gameExitEventBinding;
         private IDisposable[] _resources;
 
@@ -28,6 +31,9 @@ namespace Game
 
         private void Initialize()
         {
+            _gameReloadEventBinding = new EventBinding<GameReloadEvent>(HandleGameReload);
+            EventBus<GameReloadEvent>.Register(_gameReloadEventBinding);
+            
             _gameExitEventBinding = new EventBinding<GameExitEvent>(HandleGameExit);
             EventBus<GameExitEvent>.Register(_gameExitEventBinding);
 
@@ -56,6 +62,11 @@ namespace Game
             ground.transform.localScale = new Vector3(HexGrid.GridRadius * 2 + 3, 1, HexGrid.GridRadius * 2 + 3);
         }
 
+        private void HandleGameReload(GameReloadEvent gameReloadEvent)
+        {
+            StartCoroutine(RestartGame());
+        }
+
         private void HandleGameExit(GameExitEvent gameExitEvent)
         {
             StartCoroutine(ExitGame());
@@ -65,23 +76,31 @@ namespace Game
         {
             Debug.Log("Exiting Game");
             yield return new WaitForEndOfFrame();
-            
             ServiceLocator.Instance.Get<HexController>().SaveData();
-            
-            EventBus<GameExitEvent>.Deregister(_gameExitEventBinding);
+            ReleaseResources();
+            EventBus<AppExitEvent>.Raise(new AppExitEvent());
+        }
 
-            ServiceLocator.Instance.Deregister(typeof(HexGrid));
-            ServiceLocator.Instance.Deregister(typeof(FeatureFactory));
+        private IEnumerator RestartGame()
+        {
+            Debug.Log("Restarting Game");
+            yield return new WaitForEndOfFrame();
+            ReleaseResources();
+            ServiceLocator.Instance.Get<SceneController>().LoadGameScene();
+        }
+
+        private void ReleaseResources()
+        {
+            EventBus<GameReloadEvent>.Deregister(_gameReloadEventBinding);            
+            EventBus<GameExitEvent>.Deregister(_gameExitEventBinding);
 
             foreach (var t in _resources.ToList())
             {
                 ServiceLocator.Instance.Deregister(t);
                 t.Dispose();
             }
-
+            ServiceLocator.Instance.Deregister(typeof(HexGrid));
             ServiceLocator.Instance.Deregister(this);
-
-            EventBus<AppExitEvent>.Raise(new AppExitEvent());
         }
     }
 }
