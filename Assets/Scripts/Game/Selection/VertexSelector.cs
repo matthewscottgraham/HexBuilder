@@ -20,7 +20,7 @@ namespace Game.Selection
         protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 cursorPosition)
         {
             var vertex = hexObject.GetVertexCloseToPosition(cursorPosition);
-            if (!vertex.HasValue) return new SelectionContext(SelectionType.None, null, null, null);
+            if (!vertex.HasValue) return BlankSelection;
             var vertexPosition = hexObject.GetVertexPosition(vertex.Value.W);
             return new SelectionContext(SelectionType.Vertex, vertexPosition, hexObject.Coordinate, vertex.Value.W);
         }

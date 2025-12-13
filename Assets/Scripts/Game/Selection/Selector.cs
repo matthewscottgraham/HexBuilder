@@ -17,8 +17,9 @@ namespace Game.Selection
         private EventBinding<InteractEvent> _interactEventBinding;
         private EventBinding<MoveEvent> _moveEventBinding;
         private bool _isActive;
+        protected static readonly SelectionContext BlankSelection = new (SelectionType.None, null, null, null);
         
-        public static SelectionContext Hovered { get; private set; }
+        public static SelectionContext Hovered { get; private set; } = BlankSelection;
         public virtual SelectionType SelectionType => SelectionType.None;
         
         public void Activate(bool isActive)

@@ -21,7 +21,7 @@ namespace Game.Selection
         protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 cursorPosition)
         {
             var edge = hexObject.GetVertexCloseToPosition(cursorPosition);
-            if (!edge.HasValue) return new SelectionContext(SelectionType.None, null, null, null);
+            if (!edge.HasValue) return BlankSelection;
             var edgePosition = hexObject.GetEdgePosition(edge.Value.W);
             return new SelectionContext(SelectionType.Edge, edgePosition, hexObject.Coordinate, edge.Value.W);
         }
