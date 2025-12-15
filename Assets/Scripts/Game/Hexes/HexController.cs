@@ -80,11 +80,11 @@ namespace Game.Hexes
                 hexObject.SetHeight(hexInfo.Height);
                 var feature = featureFactory.CreateFeature(hexInfo.FeatureType, hexInfo.FeatureVariation,
                     hexInfo.FeatureRotation);
-                hexObject.AddFeature(feature);
+                hexObject.Face.AddFeature(feature);
                 
                 for (var i = 0; i < hexInfo.VertexFeatures.Length; i++)
                 {
-                    if (hexInfo.VertexFeatures[i]) hexObject.SetVertexFeature(true, i); 
+                    if (hexInfo.VertexFeatures[i]) hexObject.Vertices.Set(i, true); 
                 }
             }
         }

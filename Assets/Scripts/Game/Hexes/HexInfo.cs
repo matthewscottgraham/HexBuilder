@@ -17,10 +17,10 @@ namespace Game.Hexes
         {
             Coordinate = hexObject.Coordinate;
             Height = hexObject.Height;
-            FeatureType = hexObject.FeatureType;
-            FeatureVariation = hexObject.FeatureVariation;
-            FeatureRotation = hexObject.FeatureRotation;
-            VertexFeatures = hexObject.VertexFeaturesPresent();
+            FeatureType = hexObject.Face.FeatureType;
+            FeatureVariation = hexObject.Face.FeatureVariation;
+            FeatureRotation = hexObject.Face.FeatureRotation;
+            VertexFeatures = hexObject.Vertices.FeaturesPresent();
         }
 
         [JsonConstructor]

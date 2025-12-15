@@ -21,15 +21,15 @@ namespace Game.Selection
         
         protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 cursorPosition)
         {
-            var edge = hexObject.GetVertexCloseToPosition(cursorPosition);
+            var edge = hexObject.Vertices.GetClosestFeatureCoordinate(cursorPosition);
             if (!edge.HasValue) return BlankSelection;
-            var edgePosition = hexObject.GetEdgePosition(edge.Value.W);
+            var edgePosition = hexObject.Edges.Position(edge.Value.W);
             return new SelectionContext(SelectionType.Edge, edgePosition, hexObject.Coordinate, edge.Value.W);
         }
 
         protected override void SetHoverRotation(HexObject hexObject)
         {
-            CellHighlighter.LookAt(hexObject.GetFacePosition());
+            CellHighlighter.LookAt(hexObject.Face.Position);
             CellHighlighter.transform.rotation *= Quaternion.Euler(new Vector3(90, 0, 0));
         }
     }

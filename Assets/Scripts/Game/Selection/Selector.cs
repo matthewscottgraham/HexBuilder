@@ -73,7 +73,7 @@ namespace Game.Selection
 
         protected virtual void SetHoverRotation(HexObject hexObject)
         {
-            CellHighlighter.LookAt(hexObject.GetFacePosition());
+            CellHighlighter.LookAt(hexObject.Face.Position);
         }
 
         private void Hover()

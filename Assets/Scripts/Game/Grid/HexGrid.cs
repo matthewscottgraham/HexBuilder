@@ -23,6 +23,13 @@ namespace Game.Grid
             var z = Mathf.Cos(angleRadians) * HexRadius;
             return new Vector3(x, 0f, z);
         }
+
+        public static Vector3 GetLocalEdgePosition(int edgeIndex)
+        {
+            var p1 = GetLocalVertexPosition(edgeIndex);
+            var p2 = GetLocalVertexPosition(edgeIndex + 1);
+            return Vector3.Lerp(p1, p2, 0.5f);
+        }
         
         public static CubicCoordinate GetClosestHexCoordinate(Vector3 worldPos)
         {

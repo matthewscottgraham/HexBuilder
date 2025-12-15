@@ -18,8 +18,6 @@ namespace Game.Tools
 
             if (hex == null) hex = hexController.CreateNewHex(selection.Coordinate);
 
-            hex.RemoveFeature();
-
             hex.SetHeight(Level);
         }
     }

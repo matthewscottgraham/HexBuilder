@@ -28,7 +28,7 @@ namespace Game.Selection
         
         protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 worldPosition)
         {
-            return new SelectionContext(SelectionType.Face, hexObject.GetFacePosition(), hexObject.Coordinate, null);
+            return new SelectionContext(SelectionType.Face, hexObject.Face.Position, hexObject.Coordinate, null);
         }
     }
 }

@@ -15,16 +15,17 @@ namespace Game.Tools
             if (selection.SelectionType != SelectionType.Edge) return;
             if (hex == null) return;
 
-            hex.ToggleEdgeFeature(selection.ComponentIndex);
+            hex.Edges.Toggle(selection.ComponentIndex);
             
             var neighbourCoordinate = HexGrid.GetNeighbourSharingEdge(selection.Coordinate, selection.ComponentIndex);
             var neighbourEdgeIndex = HexGrid.GetNeighboursSharedEdgeIndex(selection.ComponentIndex);
             var neighbourHex = ServiceLocator.Instance.Get<HexController>().GetHexObject(neighbourCoordinate);
             if (neighbourHex == null) return;
-            
+
+            var active = hex.Edges.Exists(selection.ComponentIndex);
             if( hex.Height == neighbourHex.Height)
             {
-                neighbourHex.SetEdgeFeature(hex.HasEdgeFeature(selection.ComponentIndex), neighbourEdgeIndex);    
+                neighbourHex.Edges.Set(neighbourEdgeIndex, active);     
             }
             else
             {
