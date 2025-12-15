@@ -11,7 +11,7 @@ namespace Game.Selection
     public class Selector : MonoBehaviour, IDisposable
     {
         protected HexController HexController;
-        private Transform _cellHighlighter;
+        protected Transform CellHighlighter;
 
         private Camera _camera;
         private EventBinding<InteractEvent> _interactEventBinding;
@@ -25,7 +25,7 @@ namespace Game.Selection
         public void Activate(bool isActive)
         {
             _isActive = isActive;
-            _cellHighlighter.gameObject.SetActive(_isActive);
+            CellHighlighter.gameObject.SetActive(_isActive);
         }
         
         private void Update()
@@ -45,7 +45,7 @@ namespace Game.Selection
             EventBus<InteractEvent>.Register(_interactEventBinding);
 
             _camera = Camera.main;
-            _cellHighlighter = CreateHighlighter();
+            CellHighlighter = CreateHighlighter();
         }
 
         public void Dispose()
@@ -71,6 +71,11 @@ namespace Game.Selection
             return new SelectionContext();
         }
 
+        protected virtual void SetHoverRotation(HexObject hexObject)
+        {
+            CellHighlighter.LookAt(hexObject.GetFacePosition());
+        }
+
         private void Hover()
         {
             var ray = _camera.ScreenPointToRay(InputController.PointerPosition);
@@ -88,7 +93,8 @@ namespace Game.Selection
             var newHover = GetClampedSelection(hexObject, hoverPosition);
             if (originalHover.Equals(newHover)) return true;
             Hovered = newHover;
-            _cellHighlighter.position = newHover.Position;
+            CellHighlighter.position = newHover.Position;
+            SetHoverRotation(hexObject);
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
             return true;
         }
@@ -99,7 +105,7 @@ namespace Game.Selection
             var newHover = GetClampedSelection(hoverPosition);
             if (originalHover.Equals(newHover)) return;
             Hovered = newHover;
-            _cellHighlighter.position = newHover.Position;
+            CellHighlighter.position = newHover.Position;
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
         }
 

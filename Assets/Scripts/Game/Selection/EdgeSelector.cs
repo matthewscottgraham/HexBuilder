@@ -10,10 +10,11 @@ namespace Game.Selection
         protected override Transform CreateHighlighter()
         {
             var highlighter = GameObject.CreatePrimitive(PrimitiveType.Cylinder).transform;
+            Destroy(highlighter.GetComponent<Collider>());
             highlighter.SetParent(transform);
             highlighter.localPosition = new Vector3(0, 0.5f, 0);
             highlighter.localRotation = Quaternion.Euler(90, 0, 0);
-            highlighter.localScale = new Vector3(0.2f, 1f, 0.2f);
+            highlighter.localScale = new Vector3(0.3f, 1f, 0.3f);
             highlighter.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/mat_highlight");
             return highlighter;
         }
@@ -24,6 +25,12 @@ namespace Game.Selection
             if (!edge.HasValue) return BlankSelection;
             var edgePosition = hexObject.GetEdgePosition(edge.Value.W);
             return new SelectionContext(SelectionType.Edge, edgePosition, hexObject.Coordinate, edge.Value.W);
+        }
+
+        protected override void SetHoverRotation(HexObject hexObject)
+        {
+            CellHighlighter.LookAt(hexObject.GetFacePosition());
+            CellHighlighter.transform.rotation *= Quaternion.Euler(new Vector3(90, 0, 0));
         }
     }
 }

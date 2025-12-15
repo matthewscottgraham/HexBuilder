@@ -13,6 +13,7 @@ namespace Game.Features
         private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues;
         private Dictionary<FeatureType, IObjectPool<Feature>> _pools;
         private readonly Material _pathMaterial = Resources.Load<Material>("Materials/mat_path");
+        private readonly Material _riverMaterial = Resources.Load<Material>("Materials/mat_river");
         public FeatureFactory()
         {
             _catalogues = GetCatalogues();
@@ -32,12 +33,9 @@ namespace Game.Features
         {
             return featureType switch
             {
-                FeatureType.None => null,
                 FeatureType.Mountain => _pools[FeatureType.Mountain].Get(),
                 FeatureType.Wilderness => _pools[FeatureType.Wilderness].Get(),
                 FeatureType.Settlement => _pools[FeatureType.Settlement].Get(),
-                FeatureType.Water => CreateWater(),
-                FeatureType.Path => CreatePath(),
                 _ => null
             };
         }
@@ -58,6 +56,18 @@ namespace Game.Features
             obj.transform.position = vertexPosition;
             obj.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
             obj.GetComponent<MeshRenderer>().material = _pathMaterial;
+            return obj;
+        }
+        
+        public GameObject CreateEdgeMesh(Vector3 hexCenter, Vector3 edgePosition)
+        {
+            var obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Object.Destroy(obj.GetComponent<Collider>());
+            obj.name = "Edge";
+            obj.transform.position = Vector3.Lerp(hexCenter, edgePosition, 0.5f);
+            obj.transform.localScale = new Vector3(0.8f, 0.6f, Vector3.Distance(hexCenter, edgePosition));
+            obj.transform.LookAt(hexCenter);
+            obj.GetComponent<MeshRenderer>().material = _riverMaterial;
             return obj;
         }
 
@@ -113,22 +123,6 @@ namespace Game.Features
         {
             var randomRotation = Random.Range(0f, 360f);
             feature.transform.localEulerAngles = new Vector3(0f, randomRotation, 0f);
-        }
-
-        private Feature CreatePath()
-        {
-            var (prefab, variation) = _catalogues[FeatureType.Path].GetPrefab();
-            var feature = InstantiatePrefab(prefab);
-            feature.Initialize(FeatureType.Path, variation);
-            return feature;
-        }
-
-        private Feature CreateWater()
-        {
-            var (prefab, variation) = _catalogues[FeatureType.Path].GetPrefab();
-            var feature = InstantiatePrefab(prefab);
-            feature.Initialize(FeatureType.Path, variation);
-            return feature;
         }
     }
 }

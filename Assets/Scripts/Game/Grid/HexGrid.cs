@@ -94,9 +94,29 @@ namespace Game.Grid
             };
         }
 
+        public static CubicCoordinate GetNeighbourSharingEdge(CubicCoordinate center, int edgeIndex)
+        {
+            var neighbours = center.GetNeighbours();
+            return edgeIndex switch
+            {
+                0 => neighbours[3],
+                1 => neighbours[2],
+                2 => neighbours[1],
+                3 => neighbours[0],
+                4 => neighbours[5],
+                5 => neighbours[4],
+                _ => throw new ArgumentOutOfRangeException(nameof(edgeIndex), edgeIndex, null)
+            };
+        }
+
         public static (int A, int B) GetNeighbourVertexIndices(int vertexIndex)
         {
             return ((vertexIndex + 2) % 6, (vertexIndex + 4) % 6);
+        }
+
+        public static int GetNeighboursSharedEdgeIndex(int edgeIndex)
+        {
+            return (edgeIndex + 3) % 6;
         }
     }
 }

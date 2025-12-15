@@ -1,5 +1,6 @@
 using App.Services;
 using App.Tweens;
+using App.Utils;
 using Game.Features;
 using Game.Grid;
 using UnityEngine;
@@ -13,8 +14,11 @@ namespace Game.Hexes
         private Feature _feature;
         private readonly GameObject[] _vertexFeatures = new GameObject[6];
         private readonly GameObject[] _vertexBridges = new GameObject[6];
+        private readonly GameObject[] _edgeFeatures = new GameObject[6];
+        private readonly GameObject[] _edgeBridges = new GameObject[6];
         private Transform _hexMesh;
         private Transform _vertexParent;
+        private Transform _edgeParent;
         public CubicCoordinate Coordinate { get; private set; }
         public int Height { get; private set; } = 1;
         public  FeatureType FeatureType => _feature?.FeatureType ?? FeatureType.None;
@@ -33,8 +37,8 @@ namespace Game.Hexes
             Coordinate = coordinate;
             _hexMesh = hexMesh;
             _hexMesh.SetParent(transform, false);
-            _vertexParent = new GameObject("VertexFeatures").transform;
-            _vertexParent.SetParent(transform);
+            _vertexParent = gameObject.AddChild("Vertices").transform;
+            _edgeParent = gameObject.AddChild("Edges").transform;
         }
 
         public void SetHeight(int height)
@@ -105,6 +109,32 @@ namespace Game.Hexes
             return vertexFeatures;
         }
 
+        public void ToggleEdgeFeature(int edgeIndex)
+        {
+            SetEdgeFeature(!_edgeFeatures[edgeIndex], edgeIndex);
+        }
+        
+        public void SetEdgeFeature(bool hasFeature, int edgeIndex)
+        {
+            edgeIndex %= 6;
+            if (hasFeature)
+            {
+                AddEdgeFeature(edgeIndex);
+            }
+            else
+            {
+                RemoveEdgeFeature(edgeIndex);
+            }
+            
+            UpdateEdgeBridges();
+        }
+
+        public bool HasEdgeFeature(int edgeIndex)
+        {
+            edgeIndex %= 6;
+            return _edgeFeatures[edgeIndex] != null;
+        }
+        
         public QuarticCoordinate? GetVertexCloseToPosition(Vector3 position)
         {
             var closestIndex = -1;
@@ -185,6 +215,55 @@ namespace Game.Hexes
                 if (bridgeRequired && _vertexBridges[i] == null) AddVertexBridge(i);
                 else RemoveVertexBridge(i);
             }
+        }
+        
+        private void AddEdgeFeature(int edgeIndex)
+        {
+            if (_edgeFeatures[edgeIndex] != null) return;
+            
+            var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
+            var edgeObject = featureFactory.CreateEdgeMesh(GetFacePosition(), GetEdgePosition(edgeIndex));
+            edgeObject.transform.SetParent(_edgeParent, true);
+            _edgeFeatures[edgeIndex] = edgeObject;
+        }
+
+        private void RemoveEdgeFeature(int edgeIndex)
+        {
+            if (_edgeFeatures[edgeIndex] == null) return;
+            Destroy(_edgeFeatures[edgeIndex]);
+        }
+
+        private void AddEdgeBridge(int edgeIndex)
+        {
+            // if (_edgeFeatures[edgeIndex] != null) return;
+            //
+            // var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
+            // var bridgeObject = featureFactory.CreateBridgeMesh(
+            //     GetEdgePosition(edgeIndex),
+            //     GetEdgePosition((edgeIndex + 1) % 6)
+            //     );
+            // bridgeObject.transform.SetParent(_vertexParent, true);
+            // var localPosition = bridgeObject.transform.localPosition;
+            // localPosition.y = 0;
+            // bridgeObject.transform.localPosition = localPosition;
+            // _edgeBridges[edgeIndex] = bridgeObject;
+        }
+
+        private void RemoveEdgeBridge(int index)
+        {
+            // if (_edgeBridges[index] == null) return;
+            // Destroy(_edgeBridges[index]);
+        }
+
+        private void UpdateEdgeBridges()
+        {
+            // for (var i = 0; i < 6; i++)
+            // {
+            //     var bridgeRequired = _edgeBridges[i] != null && _vertexFeatures[(i + 1) % 6] != null;
+            //     
+            //     if (bridgeRequired && _vertexBridges[i] == null) AddVertexBridge(i);
+            //     else RemoveVertexBridge(i);
+            // }
         }
         
         private void OnDrawGizmos()
