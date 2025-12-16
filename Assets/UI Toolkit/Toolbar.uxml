@@ -5,13 +5,17 @@
             <ui:Button text="Load" name="LoadGameButton" />
             <ui:Button text="Exit" name="ExitGameButton" class="exit-button" />
         </ui:VisualElement>
+        <ui:VisualElement name="TimePanel" class="game-panel">
+            <ui:Button text="Pause" name="PauseButton" />
+            <ui:Button text="Resume" name="ResumeButton" />
+        </ui:VisualElement>
         <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
         <ui:ToggleButtonGroup value="000010">
             <ui:Button text="Level Terrain" />
             <ui:Button text="Raise Terrain" />
             <ui:Button text="Lower Terrain" />
             <ui:Button text="Add Mountain" />
-            <ui:Button text="Add Water" />
+            <ui:Button text="Add River" />
             <ui:Button text="Plant Trees" />
             <ui:Button text="Add Farm" />
             <ui:Button text="Add Path" />

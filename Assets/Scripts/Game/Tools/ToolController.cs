@@ -19,12 +19,19 @@ namespace Game.Tools
         private ITool[] _tools;
         private Dictionary<SelectionType, Selector> _selectors;
         private EventBinding<SelectionEvent> _selectionEventBinding;
+        private EventBinding<GamePauseEvent> _pauseEventBinding;
+        private EventBinding<GameResumeEvent> _resumeEventBinding;
         private Selector _currentSelector;
 
         public ITool CurrentTool { get; private set; }
 
         public void Initialize()
         {
+            _pauseEventBinding = new EventBinding<GamePauseEvent>(HandlePauseEvent);
+            _resumeEventBinding = new EventBinding<GameResumeEvent>(HandleResumeEvent);
+            EventBus<GamePauseEvent>.Register(_pauseEventBinding);
+            EventBus<GameResumeEvent>.Register(_resumeEventBinding);
+            
             _selectionEventBinding = new EventBinding<SelectionEvent>(HandleInteractEvent);
             EventBus<SelectionEvent>.Register(_selectionEventBinding);
             
@@ -63,6 +70,8 @@ namespace Game.Tools
             CurrentTool = null;
             _currentSelector = null;
             EventBus<SelectionEvent>.Deregister(_selectionEventBinding);
+            EventBus<GamePauseEvent>.Deregister(_pauseEventBinding);
+            EventBus<GameResumeEvent>.Deregister(_resumeEventBinding);
             _selectionEventBinding = null;
             foreach (var selector in _selectors.Values.ToArray())
             {
@@ -129,6 +138,19 @@ namespace Game.Tools
                 var levelTerrainTool = (LevelTerrain)tool;
                 levelTerrainTool.Level = height;
             }
+        }
+        
+        private void HandlePauseEvent()
+        {
+            foreach (var pair in _selectors)
+            {
+                pair.Value.Activate(false);
+            }
+        }
+
+        private void HandleResumeEvent()
+        {
+            SetActiveSelector(_currentSelector.SelectionType);
         }
     }
 }

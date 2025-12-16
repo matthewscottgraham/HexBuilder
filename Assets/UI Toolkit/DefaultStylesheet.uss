@@ -68,3 +68,11 @@ Button.unity-button:checked {
 #unity-tracker {
     background-color: black;
 }
+
+#PauseButton {
+    
+}
+
+#ResumeButton {
+    background-color: goldenrod;
+}

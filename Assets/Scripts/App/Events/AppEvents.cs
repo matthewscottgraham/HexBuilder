@@ -22,26 +22,19 @@ namespace App.Events
         public string SceneName;
     }
 
-    public struct AppExitEvent : IEvent
-    {
-    }
+    public struct AppExitEvent : IEvent { }
 
-    public struct GameExitEvent : IEvent
-    {
-    }
+    public struct GameExitEvent : IEvent { }
 
-    public struct GameReloadEvent : IEvent
-    {
-    }
+    public struct GameReloadEvent : IEvent { }
 
-    public struct FileSaveEvent : IEvent
-    {
-    }
+    public struct GamePauseEvent : IEvent { }
 
-    public struct FileLoadEvent : IEvent
-    {
-    }
+    public struct GameResumeEvent : IEvent { }
 
+    public struct FileSaveEvent : IEvent { }
+    public struct FileLoadEvent : IEvent { }
+    
     public struct InteractEvent : IEvent
     {
     }
