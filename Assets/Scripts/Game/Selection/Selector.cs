@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using App.Events;
 using App.Input;
+using App.Utils;
 using Game.Events;
 using Game.Hexes;
 using UnityEngine;
@@ -11,8 +12,9 @@ namespace Game.Selection
     public class Selector : MonoBehaviour, IDisposable
     {
         protected HexController HexController;
-        protected Transform CellHighlighter;
+        protected Transform Highlighter;
 
+        private Transform _guide;
         private Camera _camera;
         private EventBinding<InteractEvent> _interactEventBinding;
         private EventBinding<MoveEvent> _moveEventBinding;
@@ -21,11 +23,13 @@ namespace Game.Selection
         
         public static SelectionContext Hovered { get; private set; } = BlankSelection;
         public virtual SelectionType SelectionType => SelectionType.None;
+        private static readonly Vector3 GuideOffset = new Vector3(0, 0.1f, 0);
         
         public void Activate(bool isActive)
         {
             _isActive = isActive;
-            CellHighlighter.gameObject.SetActive(_isActive);
+            Highlighter.gameObject.SetActive(_isActive);
+            _guide.gameObject.SetActive(_isActive);
         }
         
         private void Update()
@@ -45,7 +49,8 @@ namespace Game.Selection
             EventBus<InteractEvent>.Register(_interactEventBinding);
 
             _camera = Camera.main;
-            CellHighlighter = CreateHighlighter();
+            Highlighter = CreateHighlighter();
+            _guide = CreateGuide();
         }
 
         public void Dispose()
@@ -61,6 +66,16 @@ namespace Game.Selection
             return null;
         }
 
+        protected virtual Transform CreateGuide()
+        {
+            var guide = gameObject.AddChild<SpriteRenderer>("FaceGuide");
+            guide.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+            guide.transform.localScale = Vector3.one * 1.7f;
+            guide.sprite = Resources.Load<Sprite>("Sprites/FaceGuide");
+            guide.color = Color.coral;
+            return guide.transform;
+        }
+
         protected virtual SelectionContext GetClampedSelection(Vector3 pos)
         {
             return new SelectionContext();
@@ -73,7 +88,7 @@ namespace Game.Selection
 
         protected virtual void SetHoverRotation(HexObject hexObject)
         {
-            CellHighlighter.LookAt(hexObject.Face.Position);
+            Highlighter.LookAt(hexObject.Face.Position);
         }
 
         private void Hover()
@@ -89,11 +104,12 @@ namespace Game.Selection
         private bool SetHoveredSelection(HexObject hexObject, Vector3 hoverPosition)
         {
             if (!hexObject) return false;
+            _guide.transform.position = hexObject.Face.Position + GuideOffset;
             var originalHover = Hovered;
             var newHover = GetClampedSelection(hexObject, hoverPosition);
             if (originalHover.Equals(newHover)) return true;
             Hovered = newHover;
-            CellHighlighter.position = newHover.Position;
+            Highlighter.position = newHover.Position;
             SetHoverRotation(hexObject);
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
             return true;
@@ -105,7 +121,7 @@ namespace Game.Selection
             var newHover = GetClampedSelection(hoverPosition);
             if (originalHover.Equals(newHover)) return;
             Hovered = newHover;
-            CellHighlighter.position = newHover.Position;
+            Highlighter.position = newHover.Position;
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
         }
 

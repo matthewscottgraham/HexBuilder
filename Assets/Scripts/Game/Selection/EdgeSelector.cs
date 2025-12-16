@@ -10,8 +10,8 @@ namespace Game.Selection
         protected override Transform CreateHighlighter()
         {
             var highlighter = GameObject.CreatePrimitive(PrimitiveType.Cylinder).transform;
-            Destroy(highlighter.GetComponent<Collider>());
             highlighter.SetParent(transform);
+            Destroy(highlighter.GetComponent<Collider>());
             highlighter.localPosition = new Vector3(0, 0.5f, 0);
             highlighter.localRotation = Quaternion.Euler(90, 0, 0);
             highlighter.localScale = new Vector3(0.3f, 1f, 0.3f);
@@ -29,8 +29,8 @@ namespace Game.Selection
 
         protected override void SetHoverRotation(HexObject hexObject)
         {
-            CellHighlighter.LookAt(hexObject.Face.Position);
-            CellHighlighter.transform.rotation *= Quaternion.Euler(new Vector3(90, 0, 0));
+            Highlighter.LookAt(hexObject.Face.Position);
+            Highlighter.transform.rotation *= Quaternion.Euler(new Vector3(90, 0, 0));
         }
     }
 }

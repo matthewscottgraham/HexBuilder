@@ -104,12 +104,18 @@ namespace Game.Tools
         {
             SetLevelFromCoordinate(center);
             var hexController = ServiceLocator.Instance.Get<HexController>();
-            tool.Use(Selector.Hovered, hexController.GetHexObject(center, tool.CreateHexesAsNeeded));
-            if (!tool.AllowAreaOfEffect || areaOfEffect <= 0) return;
-            var neighbours = HexGrid.GetHexCoordinatesWithinRadius(center, areaOfEffect);
-            foreach (var neighbour in neighbours)
+            
+            if (!tool.AllowAreaOfEffect || areaOfEffect > 1)
             {
-                tool.Use(Selector.Hovered, hexController.GetHexObject(neighbour, tool.CreateHexesAsNeeded));
+                var neighbours = HexGrid.GetHexCoordinatesWithinRadius(center, areaOfEffect);
+                foreach (var neighbour in neighbours)
+                {
+                    tool.Use(Selector.Hovered, hexController.GetHexObject(neighbour, tool.CreateHexesAsNeeded));
+                }
+            }
+            else
+            {
+                tool.Use(Selector.Hovered, hexController.GetHexObject(center, tool.CreateHexesAsNeeded));
             }
         }
         

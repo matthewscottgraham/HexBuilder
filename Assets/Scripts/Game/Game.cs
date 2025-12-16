@@ -5,6 +5,7 @@ using App.Events;
 using App.Scenes;
 using App.Services;
 using App.Tweens;
+using App.Utils;
 using Game.Cameras;
 using Game.Grid;
 using Game.Hexes;
@@ -43,8 +44,8 @@ namespace Game
 
             var featureFactory = new FeatureFactory();
 
-            var hexController = gameObject.AddComponent<HexController>();
-            var toolController = gameObject.AddComponent<ToolController>();
+            var hexController = gameObject.AddChild<HexController>("Hexes");
+            var toolController = gameObject.AddChild<ToolController>("Tools");
 
             _resources = new IDisposable[]
             {

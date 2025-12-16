@@ -11,6 +11,7 @@ namespace Game.Selection
         protected override Transform CreateHighlighter()
         {
             var highlighter = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
+            highlighter.SetParent(transform);
             Destroy(highlighter.GetComponent<Collider>());
             highlighter.SetParent(transform);
             highlighter.localPosition = new Vector3(0, 0.5f, 0);
