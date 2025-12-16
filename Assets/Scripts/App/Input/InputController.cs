@@ -45,6 +45,11 @@ namespace App.Input
         {
             if (_clicking)
             {
+                if (IsPointerOverUI())
+                {
+                    CancelClick();
+                    return;
+                }
                 if (Vector2.Distance(_clickStartPosition, PointerPosition) > DragThreshold)
                 {
                     _wasDragged = true;
@@ -82,10 +87,15 @@ namespace App.Input
 
         private void HandleInteractEnd(InputAction.CallbackContext ctx)
         {
-            if (!_wasDragged)
+            if (_clicking && !_wasDragged)
             {
                 EventBus<InteractEvent>.Raise(new InteractEvent());
             }
+            CancelClick();
+        }
+
+        private void CancelClick()
+        {
             _wasDragged = false;
             _clicking = false;
         }
