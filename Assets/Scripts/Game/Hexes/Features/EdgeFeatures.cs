@@ -1,10 +1,9 @@
 using App.Services;
 using App.Utils;
 using Game.Grid;
-using Game.Hexes.Features;
 using UnityEngine;
 
-namespace Game.Hexes
+namespace Game.Hexes.Features
 {
     public class EdgeFeatures : HexComponent
     {
@@ -16,7 +15,24 @@ namespace Game.Hexes
         }
 
         public Vector3 Position(int edgeIndex) => Owner.Face.Position + HexGrid.GetLocalEdgePosition(edgeIndex);
+        
+        public override QuarticCoordinate? GetClosestFeatureCoordinate(Vector3 position)
+        {
+            var closestVertex = Owner.Vertices.GetClosestFeatureCoordinate(position);
+            if (!closestVertex.HasValue) return null;
+            
+            var cubicCoordinate = closestVertex.Value.CubicCoordinate;
+            var componentIndex = closestVertex.Value.W;
+            
+            var prev = Owner.Vertices.Position((componentIndex + 5) % 6);
+            var current = Owner.Vertices.Position(componentIndex);
+            var next = Owner.Vertices.Position((componentIndex + 1) % 6);
 
+            return Vector3.Distance(prev, current) < Vector3.Distance(current, next) 
+                ? new QuarticCoordinate(cubicCoordinate, (componentIndex + 5) % 6) 
+                : new QuarticCoordinate(cubicCoordinate, componentIndex);
+        }
+        
         protected override void UpdateFeatureType()
         {
             FeatureType = Features[0]? FeatureType.River : FeatureType.None;

@@ -1,8 +1,7 @@
 using App.Services;
-using Game.Hexes.Features;
 using UnityEngine;
 
-namespace Game.Hexes
+namespace Game.Hexes.Features
 {
     public class FaceFeatures : HexComponent
     {

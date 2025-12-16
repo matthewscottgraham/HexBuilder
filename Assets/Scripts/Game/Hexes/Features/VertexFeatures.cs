@@ -1,10 +1,9 @@
 using App.Services;
 using App.Utils;
 using Game.Grid;
-using Game.Hexes.Features;
 using UnityEngine;
 
-namespace Game.Hexes
+namespace Game.Hexes.Features
 {
     public class VertexFeatures : HexComponent
     {
@@ -19,12 +18,12 @@ namespace Game.Hexes
         public override QuarticCoordinate? GetClosestFeatureCoordinate(Vector3 position)
         {
             var closestIndex = -1;
-            var closestSquaredDistance = 0.6f * 0.6f;
+            var closestSquaredDistance = 1f;
             
             for (var i = 0; i < 6; i++)
             {
                 var squaredDistance = (Position(i) - position).sqrMagnitude;
-                if (!(squaredDistance <= closestSquaredDistance)) continue;
+                if (!(squaredDistance < closestSquaredDistance)) continue;
                 closestIndex = i;
                 closestSquaredDistance = squaredDistance;
             }
