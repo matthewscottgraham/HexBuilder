@@ -114,7 +114,7 @@ namespace Game.Tools
             SetLevelFromCoordinate(center);
             var hexController = ServiceLocator.Instance.Get<HexController>();
             
-            if (!tool.AllowAreaOfEffect || areaOfEffect > 1)
+            if (tool.AllowAreaOfEffect && areaOfEffect > 1)
             {
                 var neighbours = HexGrid.GetHexCoordinatesWithinRadius(center, areaOfEffect);
                 foreach (var neighbour in neighbours)
