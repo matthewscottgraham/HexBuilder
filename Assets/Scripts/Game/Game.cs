@@ -6,9 +6,9 @@ using App.Scenes;
 using App.Services;
 using App.Tweens;
 using Game.Cameras;
-using Game.Features;
 using Game.Grid;
 using Game.Hexes;
+using Game.Hexes.Features;
 using Game.Tools;
 using UnityEngine;
 

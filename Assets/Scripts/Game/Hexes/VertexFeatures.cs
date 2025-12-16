@@ -1,7 +1,7 @@
 using App.Services;
-using App.Tweens;
-using Game.Features;
+using App.Utils;
 using Game.Grid;
+using Game.Hexes.Features;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -15,13 +15,6 @@ namespace Game.Hexes
         }
 
         public Vector3 Position(int vertexIndex) => HexGrid.GetLocalVertexPosition(vertexIndex) + Owner.Face.Position;
-        
-        public void SetHeight(int height)
-        {
-            FeatureParent.TweenLocalPosition(
-                    FeatureParent.localPosition, new Vector3(0, height, 0),HexObject.AnimationDuration)
-                .SetEase(HexObject.AnimationEaseType);
-        }
 
         public override QuarticCoordinate? GetClosestFeatureCoordinate(Vector3 position)
         {
@@ -38,7 +31,12 @@ namespace Game.Hexes
             
             return closestIndex >= 0 ? new QuarticCoordinate(Owner.Coordinate, closestIndex) : null;
         }
-
+        
+        protected override void UpdateFeatureType()
+        {
+            FeatureType = Features[0]? FeatureType.Path : FeatureType.None;
+        }
+        
         protected override void Add(int vertexIndex)
         {
             if (Features[vertexIndex] != null) return;
@@ -46,9 +44,7 @@ namespace Game.Hexes
             var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
             var vertexObject = featureFactory.CreateVertexMesh(Position(vertexIndex));
             vertexObject.transform.SetParent(FeatureParent, true);
-            var localPosition = vertexObject.transform.localPosition;
-            localPosition.y = 0;
-            vertexObject.transform.localPosition = localPosition;
+            vertexObject.transform.SetLocalHeight(0);
             Features[vertexIndex] = vertexObject;
         }
 

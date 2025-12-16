@@ -1,6 +1,4 @@
 using App.Tweens;
-using App.Utils;
-using Game.Features;
 using Game.Grid;
 using UnityEngine;
 
@@ -18,6 +16,8 @@ namespace Game.Hexes
         public FaceFeatures Face { get; private set; }
         public EdgeFeatures Edges { get; private set; }
         public VertexFeatures Vertices { get; private set; }
+        
+        public int Variation { get; private set; }
         
         public void Initialize(CubicCoordinate coordinate, Transform hexMesh)
         {

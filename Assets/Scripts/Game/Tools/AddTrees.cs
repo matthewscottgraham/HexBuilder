@@ -1,6 +1,6 @@
 using App.Services;
-using Game.Features;
 using Game.Hexes;
+using Game.Hexes.Features;
 using Game.Selection;
 
 namespace Game.Tools
@@ -12,8 +12,7 @@ namespace Game.Tools
         public void Use(SelectionContext selection, HexObject hex)
         {
             if (hex == null) return;
-            var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(FeatureType.Wilderness);
-            hex.Face.AddFeature(feature);
+            hex.Face.Add(FeatureType.Wilderness);
         }
     }
 }

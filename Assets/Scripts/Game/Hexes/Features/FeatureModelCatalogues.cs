@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Game.Features
+namespace Game.Hexes.Features
 {
     [CreateAssetMenu(fileName = "NewFeatureModelCatalogue", menuName = "Features/New Feature Model Catalogue")]
     public class FeatureModelCatalogues : ScriptableObject

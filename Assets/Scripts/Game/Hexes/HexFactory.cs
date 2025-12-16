@@ -1,7 +1,7 @@
 using System;
+using App.Utils;
 using Game.Grid;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Game.Hexes
 {
@@ -16,11 +16,9 @@ namespace Game.Hexes
         
         public HexObject CreateHex(CubicCoordinate coordinate, Transform parent)
         {
-            var go = new GameObject(coordinate.ToString());
-            go.transform.parent = parent;
-            go.transform.position = HexGrid.GetWorldPosition(coordinate);
-
-            var hexObject = go.AddComponent<HexObject>();
+            var hexObject = parent.gameObject.AddChild<HexObject>(coordinate.ToString());
+            hexObject.transform.position = HexGrid.GetWorldPosition(coordinate);
+            
             var meshObject = CreateMeshObject();
             var collider = meshObject.AddComponent<MeshCollider>();
             collider.convex = true;

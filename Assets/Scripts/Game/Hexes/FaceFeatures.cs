@@ -1,48 +1,42 @@
-using App.Tweens;
-using Game.Features;
+using App.Services;
+using Game.Hexes.Features;
 using UnityEngine;
 
 namespace Game.Hexes
 {
     public class FaceFeatures : HexComponent
     {
-        private Feature _feature;
-        
-        public  FeatureType FeatureType => _feature?.FeatureType ?? FeatureType.None;
-        public int FeatureVariation => _feature ? _feature.Variation : 0;
-        public float FeatureRotation
-        {
-            get
-            {
-                if (_feature) return _feature.transform.localRotation.eulerAngles.y;
-                return 0;
-            }
-        }
-        
+        private FeatureType _currentFeatureType = FeatureType.None;
         protected override string Name => nameof(FaceFeatures);
-
+        
         public FaceFeatures(HexObject owner) : base(owner)
         {
         }
 
         public Vector3 Position => Owner.transform.position + new Vector3(0, Owner.Height, 0);
 
-        public void SetHeight(int height)
-        {
-            if (!_feature) return;
-            _feature.transform.TweenLocalPosition(
-                    _feature.transform.localPosition, new Vector3(0, height, 0),HexObject.AnimationDuration)
-                .SetEase(HexObject.AnimationEaseType);
-        }
-
-        public void AddFeature(Feature feature)
+        public void Add(FeatureType featureType)
         {
             Remove(0);
-            _feature = feature;
+            if (_currentFeatureType == featureType) return;
+            
+            _currentFeatureType = featureType;
+            var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(FeatureType.Wilderness);
+            feature.transform.SetParent(FeatureParent, false);
+            FeatureParent.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
+            Features[0] = feature;
+        }
 
-            if (_feature == null) return;
-            _feature.transform.SetParent(Owner.transform, false);
-            _feature.transform.localPosition = new Vector3(0, Owner.Height, 0);
+        public void Add(FeatureType featureType, int variation, float rotation)
+        {
+            var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(featureType, variation);
+            feature.transform.SetParent(FeatureParent, false);
+            FeatureParent.rotation = Quaternion.Euler(0, rotation, 0);
+            Features[0] = feature;
+        }
+        protected override void UpdateFeatureType()
+        {
+            FeatureType = Features[0]? _currentFeatureType : FeatureType.None;
         }
     }
 }

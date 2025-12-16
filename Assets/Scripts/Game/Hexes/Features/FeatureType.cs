@@ -1,4 +1,4 @@
-namespace Game.Features
+namespace Game.Hexes.Features
 {
     public enum FeatureType
     {
@@ -6,7 +6,7 @@ namespace Game.Features
         Mountain,
         Wilderness,
         Settlement,
-        Water,
+        River,
         Path
     }
 }

@@ -1,22 +1,34 @@
+using App.Tweens;
 using App.Utils;
 using Game.Grid;
+using Game.Hexes.Features;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game.Hexes
 {
     public class HexComponent
     {
         protected virtual string Name => "HexComponent";
-        protected HexObject Owner;
-        protected Transform FeatureParent;
-        protected GameObject[] Features = new GameObject[6];
-        protected GameObject[] Connections = new GameObject[6];
+        protected readonly HexObject Owner;
+        protected readonly Transform FeatureParent;
+        protected readonly GameObject[] Features = new GameObject[6];
+        protected readonly GameObject[] Connections = new GameObject[6];
+        
+        public int FeatureVariation => Owner? Owner.Variation : 0;
+        public float FeatureRotation => FeatureParent.transform.localEulerAngles.y;
+        public virtual FeatureType FeatureType { get; protected set; } = FeatureType.None;
         
         protected HexComponent(HexObject owner)
         {
             Owner = owner;
             FeatureParent = Owner.gameObject.AddChild(Name).transform;
+        }
+        
+        public void SetHeight(int height)
+        {
+            FeatureParent.TweenLocalPosition(
+                    FeatureParent.localPosition, new Vector3(0, height, 0),HexObject.AnimationDuration)
+                .SetEase(HexObject.AnimationEaseType);
         }
         
         public virtual bool Exists(int index = 0)
@@ -60,6 +72,12 @@ namespace Game.Hexes
             }
             
             UpdateConnections();
+            UpdateFeatureType();
+        }
+
+        protected virtual void UpdateFeatureType()
+        {
+            // NOOP
         }
 
         protected virtual void Add(int index)

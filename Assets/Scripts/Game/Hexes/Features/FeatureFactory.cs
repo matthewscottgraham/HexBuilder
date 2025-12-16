@@ -4,14 +4,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
 using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
-namespace Game.Features
+namespace Game.Hexes.Features
 {
     public class FeatureFactory : IDisposable
     {
         private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues;
-        private Dictionary<FeatureType, IObjectPool<Feature>> _pools;
+        private Dictionary<FeatureType, IObjectPool<GameObject>> _pools;
         private readonly Material _pathMaterial = Resources.Load<Material>("Materials/mat_path");
         private readonly Material _riverMaterial = Resources.Load<Material>("Materials/mat_river");
         public FeatureFactory()
@@ -29,7 +28,7 @@ namespace Game.Features
             }
         }
 
-        public Feature CreateFeature(FeatureType featureType)
+        public GameObject CreateFeature(FeatureType featureType)
         {
             return featureType switch
             {
@@ -40,12 +39,10 @@ namespace Game.Features
             };
         }
 
-        public Feature CreateFeature(FeatureType featureType, int variation, float rotation)
+        public GameObject CreateFeature(FeatureType featureType, int variation)
         {
             if (featureType == FeatureType.None) return null;
-            var feature = CreateNewFeature(featureType, false, variation);
-            feature.transform.localEulerAngles = new Vector3(0f, rotation, 0f);
-            return feature;
+            return CreateNewFeature(featureType, false, variation);
         }
         
         public GameObject CreateVertexMesh(Vector3 vertexPosition)
@@ -95,34 +92,18 @@ namespace Game.Features
 
         private void CreatePools()
         {
-            _pools = new Dictionary<FeatureType, IObjectPool<Feature>>
+            _pools = new Dictionary<FeatureType, IObjectPool<GameObject>>
             {
-                { FeatureType.Mountain, new ObjectPool<Feature>(() => CreateNewFeature(FeatureType.Mountain), AddRandomRotation) },
-                { FeatureType.Wilderness, new ObjectPool<Feature>(() => CreateNewFeature(FeatureType.Wilderness), AddRandomRotation) },
-                { FeatureType.Settlement, new ObjectPool<Feature>(() => CreateNewFeature(FeatureType.Settlement), AddRandomRotation) }
+                { FeatureType.Mountain, new ObjectPool<GameObject>(() => CreateNewFeature(FeatureType.Mountain)) },
+                { FeatureType.Wilderness, new ObjectPool<GameObject>(() => CreateNewFeature(FeatureType.Wilderness)) },
+                { FeatureType.Settlement, new ObjectPool<GameObject>(() => CreateNewFeature(FeatureType.Settlement)) }
             };
         }
 
-        private Feature CreateNewFeature(FeatureType featureType, bool getRandomPrefab = true, int prefabVariation = 0)
+        private GameObject CreateNewFeature(FeatureType featureType, bool getRandomPrefab = true, int prefabVariation = 0)
         {
             var (prefab, variation) = _catalogues[featureType].GetPrefab(getRandomPrefab, prefabVariation);
-            var feature = InstantiatePrefab(prefab);
-            feature.Initialize(featureType, variation);
-            return feature;
-        }
-
-        private static Feature InstantiatePrefab(GameObject prefab)
-        {
-            var go = Object.Instantiate(prefab);
-            var feature = go.AddComponent<Feature>();
-            AddRandomRotation(feature);
-            return feature;
-        }
-
-        private static void AddRandomRotation(Feature feature)
-        {
-            var randomRotation = Random.Range(0f, 360f);
-            feature.transform.localEulerAngles = new Vector3(0f, randomRotation, 0f);
+            return Object.Instantiate(prefab);
         }
     }
 }

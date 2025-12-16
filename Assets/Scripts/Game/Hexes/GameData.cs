@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Game.Features;
+using Game.Hexes.Features;
 
 namespace Game.Hexes
 {

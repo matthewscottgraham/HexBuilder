@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using App.Config;
 using App.SaveData;
 using App.Services;
-using Game.Features;
 using Game.Grid;
+using Game.Hexes.Features;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -78,10 +78,17 @@ namespace Game.Hexes
                 if (!HexGrid.InBounds(hexInfo.Coordinate)) continue;
                 var hexObject = CreateNewHex(hexInfo.Coordinate);
                 hexObject.SetHeight(hexInfo.Height);
-                var feature = featureFactory.CreateFeature(hexInfo.FeatureType, hexInfo.FeatureVariation,
-                    hexInfo.FeatureRotation);
-                hexObject.Face.AddFeature(feature);
-                
+
+                if (hexInfo.FeatureType != FeatureType.None)
+                {
+                    hexObject.Face.Add(hexInfo.FeatureType, hexInfo.FeatureVariation, hexInfo.FeatureRotation);
+                }
+
+                for (int i = 0; i < hexInfo.EdgeFeatures.Length; i++)
+                {
+                    if (hexInfo.EdgeFeatures[i]) hexObject.Edges.Set(i, true);
+                }
+
                 for (var i = 0; i < hexInfo.VertexFeatures.Length; i++)
                 {
                     if (hexInfo.VertexFeatures[i]) hexObject.Vertices.Set(i, true); 
