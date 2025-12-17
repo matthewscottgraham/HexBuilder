@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using App.Audio;
 using App.Events;
 using App.Input;
+using App.Services;
 using App.Utils;
 using Game.Events;
 using Game.Hexes;
@@ -13,7 +15,9 @@ namespace Game.Selection
     {
         protected HexController HexController;
         protected Transform Highlighter;
-
+        
+        private const string HoverSoundID = "Audio/SFX/hover";
+        
         private Transform _guide;
         private Camera _camera;
         private EventBinding<InteractEvent> _interactEventBinding;
@@ -51,6 +55,8 @@ namespace Game.Selection
             _camera = Camera.main;
             Highlighter = CreateHighlighter();
             _guide = CreateGuide();
+            
+            ServiceLocator.Instance.Get<AudioController>().RegisterSound(HoverSoundID, Resources.Load<AudioClip>(HoverSoundID));
         }
 
         public void Dispose()
@@ -112,6 +118,7 @@ namespace Game.Selection
             Highlighter.position = newHover.Position;
             SetHoverRotation(hexObject);
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
+            EventBus<PlaySoundEvent>.Raise(new PlaySoundEvent(HoverSoundID, true));
             return true;
         }
         

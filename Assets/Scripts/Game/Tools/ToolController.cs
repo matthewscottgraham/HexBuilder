@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using App.Audio;
 using App.Events;
 using App.Services;
 using Game.Events;
@@ -15,6 +16,7 @@ namespace Game.Tools
 {
     public class ToolController : MonoBehaviour, IDisposable
     {
+        private const string UseToolSoundID = "Audio/SFX/place";
         private int _areaOfEffect;
         private ITool[] _tools;
         private Dictionary<SelectionType, Selector> _selectors;
@@ -62,6 +64,8 @@ namespace Game.Tools
             }
             
             SetActiveTool(1);
+            
+            ServiceLocator.Instance.Get<AudioController>().RegisterSound(UseToolSoundID, Resources.Load<AudioClip>(UseToolSoundID));
         }
 
         public void Dispose()
@@ -126,6 +130,8 @@ namespace Game.Tools
             {
                 tool.Use(Selector.Hovered, hexController.GetHexObject(center, tool.CreateHexesAsNeeded));
             }
+            
+            EventBus<PlaySoundEvent>.Raise(new PlaySoundEvent(UseToolSoundID, true));
         }
         
         private void SetLevelFromCoordinate(CubicCoordinate coordinate)

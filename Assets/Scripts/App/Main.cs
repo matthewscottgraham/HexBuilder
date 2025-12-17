@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using App.Audio;
 using App.Config;
 using App.Events;
 using App.Input;
@@ -34,6 +35,7 @@ namespace App
 
             var inputController = gameObject.AddComponent<InputController>();
             var tweenController = gameObject.AddComponent<TweenController>();
+            var audioController = gameObject.AddComponent<AudioController>();
 
             _resources = new IDisposable[]
             {
@@ -42,9 +44,11 @@ namespace App
                 new SaveDataController(),
                 tweenController,
                 inputController,
+                audioController,
                 serviceLocator
             };
-
+            
+            audioController.Initialize();
             tweenController.Initialize();
             inputController.Initialize();
 

@@ -58,4 +58,19 @@ namespace App.Events
 
         public Vector2 Delta;
     }
+    
+    public struct PlaySoundEvent : IEvent
+    {
+        public PlaySoundEvent(string soundID, bool randomPitch = false)
+        {
+            SoundID = soundID;
+            RandomPitch = randomPitch;
+        }
+
+        public readonly string SoundID;
+        public readonly bool RandomPitch;
+    }
+    
+    public struct PlayMusicEvent : IEvent { }
+    public struct StopMusicEvent : IEvent { }
 }
