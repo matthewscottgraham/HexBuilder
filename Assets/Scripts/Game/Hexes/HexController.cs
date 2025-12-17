@@ -81,7 +81,7 @@ namespace Game.Hexes
 
                 if (hexInfo.FeatureType != FeatureType.None)
                 {
-                    hexObject.Face.Add(hexInfo.FeatureType, hexInfo.FeatureVariation, hexInfo.FeatureRotation);
+                    hexObject.Face.Add(hexInfo.FeatureType, hexInfo.FeatureVariation);
                 }
 
                 for (int i = 0; i < hexInfo.EdgeFeatures.Length; i++)
@@ -122,7 +122,7 @@ namespace Game.Hexes
             {
                 for (var z = Mathf.Max(-radius, -x - radius); z <= Mathf.Min(radius, -x + radius); z++)
                 {
-                    hexInfos.Add(new HexInfo(new CubicCoordinate(x, z), 0, FeatureType.None, 0, 0));
+                    hexInfos.Add(new HexInfo(new CubicCoordinate(x, z), 0, FeatureType.None, 0));
                 }
             }
 
@@ -141,7 +141,7 @@ namespace Game.Hexes
                 for (var z = Mathf.Max(-radius, -x - radius); z <= Mathf.Min(radius, -x + radius); z++)
                 {
                     var height = weights[UnityEngine.Random.Range(0, weights.Length)];
-                    hexInfos.Add(new HexInfo(new CubicCoordinate(x, z), height, FeatureType.None, 0, 0));
+                    hexInfos.Add(new HexInfo(new CubicCoordinate(x, z), height, FeatureType.None, 0));
                 }
             }
 

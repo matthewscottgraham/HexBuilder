@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game::Game.Features.FeatureCategory
   featureType: 3
   prefabs:
-  - {fileID: 3413371715897598706, guid: d14a9e2b77ae24091956be1343292c48, type: 3}
-  - {fileID: 3413371715897598706, guid: 89ce6136992814c839a46d29f30d818b, type: 3}
-  - {fileID: 3413371715897598706, guid: 8b849d0a4a5994642b263130e2fef61c, type: 3}
+  - prefab: {fileID: 2021093281289282885, guid: 73e0f4d1f73954b0fa0f9138ea4949d7, type: 3}
+    allowRotation: 1
+  - prefab: {fileID: 8240358770881312597, guid: 7f9d0a37c827b47e08f8c8bf78e6faef, type: 3}
+    allowRotation: 0
+  - prefab: {fileID: 5242125084442541436, guid: d650c321760d941b9aff9a703c2f69d7, type: 3}
+    allowRotation: 1
+  - prefab: {fileID: 2096918973143824915, guid: e6530ff4432ee48149ee421479bc035a, type: 3}
+    allowRotation: 1

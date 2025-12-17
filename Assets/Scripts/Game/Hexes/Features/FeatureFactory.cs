@@ -102,8 +102,15 @@ namespace Game.Hexes.Features
 
         private GameObject CreateNewFeature(FeatureType featureType, bool getRandomPrefab = true, int prefabVariation = 0)
         {
-            var (prefab, variation) = _catalogues[featureType].GetPrefab(getRandomPrefab, prefabVariation);
-            return Object.Instantiate(prefab);
+            var (featurePrefab, variation) = _catalogues[featureType].GetPrefab(getRandomPrefab, prefabVariation);
+            var instance = Object.Instantiate(featurePrefab.Prefab);
+            
+            if (featurePrefab.AllowRotation)
+            {
+                instance.transform.localRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360f), 0);
+            }
+
+            return instance;
         }
     }
 }

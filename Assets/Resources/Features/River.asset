@@ -10,11 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e5ba13c7c8214c6882d06080d4fd65e, type: 3}
-  m_Name: Mountain
+  m_Name: River
   m_EditorClassIdentifier: Game::Game.Features.FeatureCategory
-  featureType: 1
+  featureType: 4
   prefabs:
-  - prefab: {fileID: 443742877951503677, guid: 6366d2aefde5b4e73bf8b4da0cea0907, type: 3}
-    allowRotation: 1
-  - prefab: {fileID: 709745925262384342, guid: 5726ac7906d3f475bbd82ddf83ac7397, type: 3}
-    allowRotation: 1
+  - {fileID: 8345709953554697544, guid: 9059cc5abcf7544a1bbf7e72394e964d, type: 3}

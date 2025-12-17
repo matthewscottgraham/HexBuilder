@@ -20,17 +20,15 @@ namespace Game.Hexes.Features
             if (_currentFeatureType == featureType) return;
             
             _currentFeatureType = featureType;
-            var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(FeatureType.Wilderness);
+            var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(featureType);
             feature.transform.SetParent(FeatureParent, false);
-            FeatureParent.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
             Features[0] = feature;
         }
 
-        public void Add(FeatureType featureType, int variation, float rotation)
+        public void Add(FeatureType featureType, int variation)
         {
             var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(featureType, variation);
             feature.transform.SetParent(FeatureParent, false);
-            FeatureParent.rotation = Quaternion.Euler(0, rotation, 0);
             Features[0] = feature;
         }
         protected override void UpdateFeatureType()
