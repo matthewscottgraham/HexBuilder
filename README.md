@@ -9,10 +9,10 @@ The project can be used as:
 - A reference implementation for hex-grid systems in Unity
 - A starting point for building hex-tile-based games or editors
 
-<p>
-	<img src="images/ScreenshotA.jpg" alt="Screenshot A" height="400"/>
-	<img src="images/ScreenshotB.jpg" alt="Screenshot B" height="400"/>
-	<img src="images/ScreenshotC.jpg" alt="Screenshot C" height="400"/>
+<p align="center">
+	<img src="images/ScreenshotA.jpg" alt="Screenshot A" height="250"/>
+	<img src="images/ScreenshotB.jpg" alt="Screenshot B" height="250"/>
+	<img src="images/ScreenshotC.jpg" alt="Screenshot C" height="250"/>
 </p>
 
 ## Motivation
