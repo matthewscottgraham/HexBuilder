@@ -9,9 +9,11 @@ The project can be used as:
 - A reference implementation for hex-grid systems in Unity
 - A starting point for building hex-tile-based games or editors
 
-![Screenshot A] (images/ScreenshotA.jpg)
-![Screenshot B] (images/ScreenshotB.jpg)
-![Screenshot C] (images/ScreenshotC.jpg)
+<p>
+	<img src="images/ScreenshotA.jpg" alt="Screenshot A" height="400"/>
+	<img src="images/ScreenshotB.jpg" alt="Screenshot B" height="400"/>
+	<img src="images/ScreenshotC.jpg" alt="Screenshot C" height="400"/>
+</p>
 
 ## Motivation
 This project grew out of an earlier Unity prototype that attempted to combine mechanics from **Catan**, **Carcassonne**, and **Scrabble**. While the original game was unsuccessful, the most compelling part turned out to be the level editor and tile manipulation systems.
@@ -51,7 +53,7 @@ Notable areas of interest:
 ### Play a Build
 Prebuilt binaries and a WebGL version are available on Itch.io:
 
-👉 **Itch.io page:** https://msgraham.itch.io/hexbuilder
+**Itch.io page:** https://msgraham.itch.io/hexbuilder
 
 ### Controls
 - Click-Drag to move the camera
@@ -64,13 +66,12 @@ Prebuilt binaries and a WebGL version are available on Itch.io:
 - Serialization / Deserialization of game data.
 
 ## Roadmap
-- **v0.1** — Working prototype
-- **v0.2** — Visual polish and rendering improvements
-- **v0.3** — Landscape presets and procedural terrain generation
-- **v0.4** — Quality-of-life improvements, user options etc
+- **v0.1** - Current - Working prototype
+- **v0.2** - Visual polish and rendering improvements
+- **v0.3** - Landscape presets and procedural terrain generation
+- **v0.4** - Quality-of-life improvements, user options etc
 
-## Extending the Project
-Hex Builder is intentionally pretty bare bones. Potential extension points include:
-- Custom hex definitions and adjacency rules
-- Multiplayer or turn-based mechanics
-- Graph of connected edges / vertices
+## References
+- Screen Based outline shader based on this tutorial by Digvijaysinh Gohil: https://www.youtube.com/watch?v=nc3a3THBFrg
+- Service Locator based on a tutorial from Git-Ammend: https://www.youtube.com/watch?v=D4r5EyYQvwY
+- Tweening based on a tutorial by Sasquatch B Studios: https://www.youtube.com/watch?v=43o0FzU55V4
