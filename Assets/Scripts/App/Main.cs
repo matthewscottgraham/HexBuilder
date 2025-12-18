@@ -9,6 +9,8 @@ using App.SaveData;
 using App.Scenes;
 using App.Services;
 using App.Tweens;
+using App.Utils;
+using App.VFX;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
@@ -33,9 +35,10 @@ namespace App
             var serviceLocator = new ServiceLocator();
             serviceLocator.Register(new IOController());
 
-            var inputController = gameObject.AddComponent<InputController>();
-            var tweenController = gameObject.AddComponent<TweenController>();
-            var audioController = gameObject.AddComponent<AudioController>();
+            var inputController = gameObject.AddChild<InputController>("InputController");
+            var tweenController = gameObject.AddChild<TweenController>("TweenController");
+            var audioController = gameObject.AddChild<AudioController>("AudioController");
+            var vfxController = gameObject.AddChild<VFXController>("VFXController");
 
             _resources = new IDisposable[]
             {
@@ -45,9 +48,11 @@ namespace App
                 tweenController,
                 inputController,
                 audioController,
+                vfxController,
                 serviceLocator
             };
             
+            vfxController.Initialize();
             audioController.Initialize();
             tweenController.Initialize();
             inputController.Initialize();

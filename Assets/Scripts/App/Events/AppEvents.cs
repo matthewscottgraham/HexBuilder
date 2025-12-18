@@ -73,4 +73,18 @@ namespace App.Events
     
     public struct PlayMusicEvent : IEvent { }
     public struct StopMusicEvent : IEvent { }
+
+    public struct PlayVFXBurstEvent : IEvent
+    {
+        public PlayVFXBurstEvent(string effectID, Vector3 position, Vector3 rotation)
+        {
+            EffectID = effectID;
+            Position = position;
+            Rotation = rotation;
+        }
+        
+        public readonly string EffectID;
+        public readonly Vector3 Position;
+        public readonly Vector3 Rotation;
+    }
 }

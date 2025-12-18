@@ -12,22 +12,22 @@ namespace App.Audio
 {
     public class AudioController : MonoBehaviour, IDisposable
     {
+        private const int MaxPoolSize = 25;
+        
         private EventBinding<PlayMusicEvent> _playMusicEvent;
         private EventBinding<StopMusicEvent> _stopMusicEvent;
         private EventBinding<PlaySoundEvent> _playSoundEvent;
-        
         private EventBinding<GamePauseEvent> _gamePauseEvent;
         private EventBinding<GameResumeEvent> _gameResumeEvent;
-        
-        private readonly Dictionary<string, AudioClip> _soundClips = new();
+
         private AudioSource _musicSource;
-        private readonly List<AudioSource> _soundSources = new();
-        
-        private const int MaxPoolSize = 25;
+        private readonly Dictionary<string, AudioClip> _soundClips = new();
+        private readonly List<AudioSource> _activeAudioSources = new();
         private ObjectPool<AudioSource> _soundSourcesPool;
+
         public void Initialize()
         {
-            _soundSourcesPool = new ObjectPool<AudioSource>(CreateSoundSource, GetSoundSource, ReleaseSoundSource);
+            _soundSourcesPool = new ObjectPool<AudioSource>(CreateSoundSource, OnGetSoundSource, OnReleaseSoundSource);
             _musicSource = gameObject.AddChild<AudioSource>("Music");
             _musicSource.loop = true;
             _musicSource.clip = Resources.Load<AudioClip>("Audio/Music/musicA");
@@ -55,6 +55,11 @@ namespace App.Audio
         {
             _soundClips.Clear();
             _soundSourcesPool.Clear();
+            EventBus<PlayMusicEvent>.Deregister(_playMusicEvent);
+            EventBus<StopMusicEvent>.Deregister(_stopMusicEvent);
+            EventBus<PlaySoundEvent>.Deregister(_playSoundEvent);
+            EventBus<GamePauseEvent>.Deregister(_gamePauseEvent);
+            EventBus<GameResumeEvent>.Deregister(_gameResumeEvent);
             _playMusicEvent = null;
             _stopMusicEvent = null;
             _playSoundEvent = null;
@@ -98,9 +103,8 @@ namespace App.Audio
         private void HandleGamePause()
         {
             _musicSource.Pause();
-            foreach (var soundSource in _soundSources)
+            foreach (var soundSource in _activeAudioSources)
             {
-                if (soundSource.gameObject.activeInHierarchy)
                     soundSource.Pause();
             }
         }
@@ -108,9 +112,8 @@ namespace App.Audio
         private void HandleGameResume()
         {
             _musicSource.Play();
-            foreach (var soundSource in _soundSources)
+            foreach (var soundSource in _activeAudioSources)
             {
-                if (soundSource.gameObject.activeInHierarchy)
                     soundSource.Play();
             }
         }
@@ -118,20 +121,20 @@ namespace App.Audio
         private AudioSource CreateSoundSource()
         {
             var soundSource = gameObject.AddChild<AudioSource>("SoundSource");
-            _soundSources.Add(soundSource);
             return soundSource;
         }
 
-        private static void GetSoundSource(AudioSource source)
+        private void OnGetSoundSource(AudioSource source)
         {
-            source.gameObject.SetActive(true);
+            _activeAudioSources.Add(source);
         }
 
-        private static void ReleaseSoundSource(AudioSource source)
+        private void OnReleaseSoundSource(AudioSource source)
         {
             source.clip = null;
             source.pitch = 1;
-            source.gameObject.SetActive(false);
+            if (_activeAudioSources.Contains(source))
+                _activeAudioSources.Remove(source);
         }
     }
 }

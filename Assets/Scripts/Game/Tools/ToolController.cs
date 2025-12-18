@@ -4,6 +4,7 @@ using System.Linq;
 using App.Audio;
 using App.Events;
 using App.Services;
+using App.VFX;
 using Game.Events;
 using Game.Grid;
 using Game.Hexes;
@@ -11,12 +12,15 @@ using Game.Selection;
 using Game.Tools.Paths;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.VFX;
 
 namespace Game.Tools
 {
     public class ToolController : MonoBehaviour, IDisposable
     {
         private const string UseToolSoundID = "Audio/SFX/place";
+        private const string UseToolVfxID = "VFX/useTool";
+        
         private int _areaOfEffect;
         private ITool[] _tools;
         private Dictionary<SelectionType, Selector> _selectors;
@@ -66,6 +70,7 @@ namespace Game.Tools
             SetActiveTool(1);
             
             ServiceLocator.Instance.Get<AudioController>().RegisterSound(UseToolSoundID, Resources.Load<AudioClip>(UseToolSoundID));
+            ServiceLocator.Instance.Get<VFXController>().RegisterVFX(UseToolVfxID, Resources.Load<VisualEffectAsset>(UseToolVfxID));
         }
 
         public void Dispose()
@@ -123,12 +128,16 @@ namespace Game.Tools
                 var neighbours = HexGrid.GetHexCoordinatesWithinRadius(center, areaOfEffect);
                 foreach (var neighbour in neighbours)
                 {
-                    tool.Use(Selector.Hovered, hexController.GetHexObject(neighbour, tool.CreateHexesAsNeeded));
+                    var hexObject = hexController.GetHexObject(neighbour, tool.CreateHexesAsNeeded);
+                    tool.Use(Selector.Hovered, hexObject);
+                    EventBus<PlayVFXBurstEvent>.Raise(new PlayVFXBurstEvent(UseToolVfxID, hexObject.Face.Position, Vector3.zero));
                 }
             }
             else
             {
-                tool.Use(Selector.Hovered, hexController.GetHexObject(center, tool.CreateHexesAsNeeded));
+                var hexObject = hexController.GetHexObject(center, tool.CreateHexesAsNeeded);
+                tool.Use(Selector.Hovered, hexObject);
+                EventBus<PlayVFXBurstEvent>.Raise(new PlayVFXBurstEvent(UseToolVfxID, hexObject.Face.Position, Vector3.zero));
             }
             
             EventBus<PlaySoundEvent>.Raise(new PlaySoundEvent(UseToolSoundID, true));
