@@ -49,6 +49,26 @@ namespace App.Events
         public Vector2 Delta;
     }
 
+    public struct ZoomEvent : IEvent
+    {
+        public ZoomEvent(float delta)
+        {
+            Delta = delta;
+        }
+        
+        public readonly float Delta;
+    }
+    
+    public struct RotateEvent : IEvent
+    {
+        public RotateEvent(float delta)
+        {
+            Delta = delta;
+        }
+        
+        public readonly float Delta;
+    }
+
     public struct DragEvent : IEvent
     {
         public DragEvent(Vector2 delta)

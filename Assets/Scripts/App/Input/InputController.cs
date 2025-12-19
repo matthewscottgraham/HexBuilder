@@ -17,6 +17,7 @@ namespace App.Input
         private Vector2 _clickStartPosition;
         private bool _clicking;
         private bool _wasDragged;
+        private bool _moving;
 
         public static bool PointerHasMovedThisFrame { get; private set; }
         public static Vector2 PointerPosition => Pointer.current.position.ReadValue();
@@ -28,21 +29,27 @@ namespace App.Input
             _inputSystem = new InputSystem_Actions();
             _inputSystem.Enable();
 
-            _inputSystem.Player.Move.performed += HandleMove;
+            _inputSystem.Player.Move.started += HandleMoveStart;
+            _inputSystem.Player.Move.canceled += HandleMoveEnd;
             _inputSystem.Player.Interact.started += HandleInteractStart;
             _inputSystem.Player.Interact.canceled += HandleInteractEnd;
+            _inputSystem.Player.Zoom.performed += HandleZoom;
         }
 
         public void Dispose()
         {
-            _inputSystem.Player.Move.performed -= HandleMove;
+            _inputSystem.Player.Move.started -= HandleMoveStart;
+            _inputSystem.Player.Move.canceled -= HandleMoveEnd;
             _inputSystem.Player.Interact.started -= HandleInteractStart;
             _inputSystem.Player.Interact.canceled -= HandleInteractEnd;
+            _inputSystem.Player.Zoom.performed -= HandleZoom;
             _inputSystem?.Dispose();
         }
 
         private void Update()
         {
+            if (_moving) EventBus<MoveEvent>.Raise(new MoveEvent(_inputSystem.Player.Move.ReadValue<Vector2>()));
+            
             if (_clicking)
             {
                 if (IsPointerOverUI())
@@ -73,9 +80,13 @@ namespace App.Input
             return results.Count > 0;
         }
 
-        private static void HandleMove(InputAction.CallbackContext ctx)
+        private void HandleMoveStart(InputAction.CallbackContext ctx) => _moving = true;
+
+        private void HandleMoveEnd(InputAction.CallbackContext ctx) => _moving = false;
+
+        private static void HandleZoom(InputAction.CallbackContext ctx)
         {
-            EventBus<MoveEvent>.Raise(new MoveEvent(ctx.ReadValue<Vector2>()));
+            EventBus<ZoomEvent>.Raise(new ZoomEvent(ctx.ReadValue<float>()));
         }
 
         private void HandleInteractStart(InputAction.CallbackContext ctx)
