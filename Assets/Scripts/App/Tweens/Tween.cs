@@ -88,7 +88,7 @@ namespace App.Tweens
             if (_pingPong) _reversed = !_reversed;
 
             if (_loopCount <= 0 || _loopsCompleted < _loopCount) return;
-
+            
             CompleteTween();
             IsComplete = true;
         }
@@ -96,6 +96,7 @@ namespace App.Tweens
         public void CompleteTween()
         {
             IsComplete = true;
+            _onUpdate?.Invoke(_endValue);
             _onUpdate = null;
             _onTweenUpdate = null;
             _onPercentComplete = null;
