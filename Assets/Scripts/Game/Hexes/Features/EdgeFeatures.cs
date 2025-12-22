@@ -1,3 +1,4 @@
+using System.Linq;
 using App.Services;
 using App.Utils;
 using Game.Grid;
@@ -35,18 +36,19 @@ namespace Game.Hexes.Features
         
         protected override void UpdateFeatureType()
         {
-            FeatureType = Features[0]? FeatureType.River : FeatureType.None;
+            FeatureType = HasFeatures.Any(t=> t) ? FeatureType.River : FeatureType.None;
         }
-        
-        protected override void Add(int index)
+
+        protected override void UpdateMesh()
         {
-            if (Features[index] != null) return;
+            if (Feature) Object.Destroy(Feature);
             
+            if (FeatureType == FeatureType.None || HasFeatures.All(t=> !t)) return;
             var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
-            var edgeObject = featureFactory.CreateEdgeMesh(Owner.Face.Position, Position(index));
-            edgeObject.transform.SetParent(FeatureParent, true);
-            edgeObject.transform.SetLocalHeight(0);
-            Features[index] = edgeObject;
+            var edgeObject = featureFactory.GetRiverMesh(FeaturesPresent());
+            edgeObject.transform.SetParent(FeatureParent, false);
+            edgeObject.transform.SetLocalHeight(0.01f);
+            Feature = edgeObject;
         }
         
     }

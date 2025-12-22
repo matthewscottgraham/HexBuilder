@@ -1,3 +1,4 @@
+using System.Linq;
 using App.Services;
 using UnityEngine;
 
@@ -16,24 +17,37 @@ namespace Game.Hexes.Features
 
         public void Add(FeatureType featureType)
         {
-            Remove(0);
-            if (_currentFeatureType == featureType) return;
+            if (_currentFeatureType == featureType)
+            {
+                Remove(0);
+                _currentFeatureType = FeatureType.None;
+                return;
+            }
             
+            Remove(0);
             _currentFeatureType = featureType;
             var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(featureType);
             feature.transform.SetParent(FeatureParent, false);
-            Features[0] = feature;
+            Feature = feature;
+            HasFeatures[0] = true;
         }
 
         public void Add(FeatureType featureType, int variation)
         {
             var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(featureType, variation);
             feature.transform.SetParent(FeatureParent, false);
-            Features[0] = feature;
+            Feature = feature;
+            HasFeatures[0] = true;
         }
         protected override void UpdateFeatureType()
         {
-            FeatureType = Features[0]? _currentFeatureType : FeatureType.None;
+            FeatureType = HasFeatures.Any(t=> t) ? _currentFeatureType : FeatureType.None;
+        }
+
+        protected override void Remove(int index)
+        {
+            HasFeatures[index] = false;
+            if (Feature) Object.Destroy(Feature);
         }
     }
 }

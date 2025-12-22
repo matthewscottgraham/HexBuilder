@@ -118,7 +118,7 @@ namespace Game.Grid
 
         public static (int A, int B) GetNeighbourVertexIndices(int vertexIndex)
         {
-            return ((vertexIndex + 2) % 6, (vertexIndex + 4) % 6);
+            return ((vertexIndex + 3) % 6, (vertexIndex + 5) % 6);
         }
 
         public static int GetNeighboursSharedEdgeIndex(int edgeIndex)

@@ -9,9 +9,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e5ba13c7c8214c6882d06080d4fd65e, type: 3}
+  m_Script: {fileID: 11500000, guid: 714cb5b4d4744602982aa4bf8735b9b8, type: 3}
   m_Name: River
-  m_EditorClassIdentifier: Game::Game.Features.FeatureCategory
-  featureType: 4
-  prefabs:
-  - {fileID: 8345709953554697544, guid: 9059cc5abcf7544a1bbf7e72394e964d, type: 3}
+  m_EditorClassIdentifier: Game::Game.Hexes.Features.ConnectedFeatureCatalogue
+  riverPrefabs:
+  - prefab: {fileID: 6014322033591163277, guid: dbafe545da97b493fa899973e302260a, type: 3}
+    edges: 010000000000
+  - prefab: {fileID: 5135861556157625030, guid: f3a180c067dbd46db81071b58d2c6fb5, type: 3}
+    edges: 010100000000
+  - prefab: {fileID: 2323857160189023696, guid: f7db7048e686048a3b1c728c774a4754, type: 3}
+    edges: 010001000000
+  - prefab: {fileID: 1596539023284104681, guid: 7a57bba5cbf274322811416fd35ae528, type: 3}
+    edges: 010000010000
+  - prefab: {fileID: 6852803091849614876, guid: 9db61637c583c4bd1bab3cd2512d2532, type: 3}
+    edges: 010101000000
+  - prefab: {fileID: 8935742445144818754, guid: 4e6c364dd0a7a4d05a3451168dc9f86c, type: 3}
+    edges: 010100010000
+  - prefab: {fileID: 6764902579556437187, guid: aedbcc68905394625902df331597182f, type: 3}
+    edges: 010001010000
+  - prefab: {fileID: 7892824139549834244, guid: ed28a5add676d48c2837dd1f93a50bf1, type: 3}
+    edges: 010001000100
+  - prefab: {fileID: 910967195482451642, guid: 03edfe6342db246ed98cce85db7b87cf, type: 3}
+    edges: 010101010000
+  - prefab: {fileID: 130991082732516177, guid: d00338e6ae3814ac3b80a5206cf5e5ee, type: 3}
+    edges: 010101000100
+  - prefab: {fileID: 1471132600870531920, guid: d429020f8f13c427d987f3487c87890f, type: 3}
+    edges: 010100010100
+  - prefab: {fileID: 9085390403115166107, guid: 95edd7767219140bf8b6bd7042c5c808, type: 3}
+    edges: 010101010100
+  - prefab: {fileID: 859060016523159756, guid: 0c029efaa891949ea9b4ec895be5bca4, type: 3}
+    edges: 010101010101

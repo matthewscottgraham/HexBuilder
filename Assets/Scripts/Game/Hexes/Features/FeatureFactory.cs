@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using App.Utils;
 using UnityEngine;
-using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
 namespace Game.Hexes.Features
@@ -10,33 +9,24 @@ namespace Game.Hexes.Features
     public class FeatureFactory : IDisposable
     {
         private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues;
-        private Dictionary<FeatureType, IObjectPool<GameObject>> _pools;
+        private ConnectedFeatureCatalogue _riverCatalogue;
         private readonly Material _pathMaterial = Resources.Load<Material>("Materials/mat_path");
-        private readonly Material _riverMaterial = Resources.Load<Material>("Materials/mat_river");
+        
         public FeatureFactory()
         {
             _catalogues = GetCatalogues();
-            CreatePools();
+            _riverCatalogue = Resources.Load<ConnectedFeatureCatalogue>("Features/River");
         }
 
         public void Dispose()
         {
             _catalogues.Clear();
-            foreach (var pool in _pools.Values.ToArray())
-            {
-                pool.Clear();
-            }
+            _riverCatalogue = null;
         }
 
         public GameObject CreateFeature(FeatureType featureType)
         {
-            return featureType switch
-            {
-                FeatureType.Mountain => _pools[FeatureType.Mountain].Get(),
-                FeatureType.Wilderness => _pools[FeatureType.Wilderness].Get(),
-                FeatureType.Settlement => _pools[FeatureType.Settlement].Get(),
-                _ => null
-            };
+            return CreateNewFeature(featureType);
         }
 
         public GameObject CreateFeature(FeatureType featureType, int variation)
@@ -56,15 +46,12 @@ namespace Game.Hexes.Features
             return obj;
         }
         
-        public GameObject CreateEdgeMesh(Vector3 hexCenter, Vector3 edgePosition)
+        public GameObject GetRiverMesh(bool[] edges)
         {
-            var obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Object.Destroy(obj.GetComponent<Collider>());
-            obj.name = "Edge";
-            obj.transform.position = Vector3.Lerp(hexCenter, edgePosition, 0.5f);
-            obj.transform.localScale = new Vector3(0.8f, 0.6f, Vector3.Distance(hexCenter, edgePosition));
-            obj.transform.LookAt(hexCenter);
-            obj.GetComponent<MeshRenderer>().material = _riverMaterial;
+            var riverPrefab = _riverCatalogue.GetRiverPrefab(edges);
+            var obj = Object.Instantiate(riverPrefab.prefab);
+            obj.transform.rotation = Quaternion.Euler(0, riverPrefab.rotations * 60 - 180, 0);
+            obj.name = "River";
             return obj;
         }
 
@@ -88,16 +75,6 @@ namespace Game.Hexes.Features
                 if (!dict.TryAdd(modelCatalogue.FeatureType, modelCatalogue))
                     Debug.LogError($"A catalogue of models for: {modelCatalogue.name} already exists");
             return dict;
-        }
-
-        private void CreatePools()
-        {
-            _pools = new Dictionary<FeatureType, IObjectPool<GameObject>>
-            {
-                { FeatureType.Mountain, new ObjectPool<GameObject>(() => CreateNewFeature(FeatureType.Mountain)) },
-                { FeatureType.Wilderness, new ObjectPool<GameObject>(() => CreateNewFeature(FeatureType.Wilderness)) },
-                { FeatureType.Settlement, new ObjectPool<GameObject>(() => CreateNewFeature(FeatureType.Settlement)) }
-            };
         }
 
         private GameObject CreateNewFeature(FeatureType featureType, bool getRandomPrefab = true, int prefabVariation = 0)

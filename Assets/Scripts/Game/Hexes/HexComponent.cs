@@ -11,7 +11,8 @@ namespace Game.Hexes
         protected virtual string Name => "HexComponent";
         protected readonly HexObject Owner;
         protected readonly Transform FeatureParent;
-        protected readonly GameObject[] Features = new GameObject[6];
+        protected GameObject Feature;
+        protected readonly bool[] HasFeatures = new bool[6];
         protected readonly GameObject[] Connections = new GameObject[6];
         
         public int FeatureVariation => Owner? Owner.Variation : 0;
@@ -34,17 +35,12 @@ namespace Game.Hexes
         public virtual bool Exists(int index = 0)
         {
             index %= 6;
-            return Features[index];
+            return HasFeatures[index];
         }
         
         public bool[] FeaturesPresent()
         {
-            var features = new bool[6];
-            for (var i = 0; i < Features.Length; i++)
-            {
-                features[i] = Exists(i);
-            }
-            return features;
+            return HasFeatures;
         }
 
         public virtual QuarticCoordinate? GetClosestFeatureCoordinate(Vector3 position)
@@ -56,7 +52,7 @@ namespace Game.Hexes
         public virtual void Toggle(int index = 0)
         {
             index %= 6;
-            Set(index, !Features[index]);
+            Set(index, !HasFeatures[index]);
         }
 
         public virtual void Set(int index, bool hasFeature)
@@ -80,15 +76,17 @@ namespace Game.Hexes
             // NOOP
         }
 
-        protected virtual void Add(int index)
+        private void Add(int index)
         {
-            // NOOP
+            if (Feature) Object.Destroy(Feature);
+            HasFeatures[index] = true;
+            UpdateMesh();
         }
 
         protected virtual void Remove(int index)
         {
-            if (Features[index] == null) return;
-            Object.Destroy(Features[index]);
+            HasFeatures[index] = false;
+            UpdateMesh();
         }
 
         protected virtual void AddConnection(int index)
@@ -103,6 +101,11 @@ namespace Game.Hexes
         }
 
         protected virtual void UpdateConnections()
+        {
+            // NOOP
+        }
+
+        protected virtual void UpdateMesh()
         {
             // NOOP
         }
