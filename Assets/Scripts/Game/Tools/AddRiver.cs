@@ -7,7 +7,7 @@ namespace Game.Tools
 {
     public class AddRiver : ITool
     {
-        bool ITool.AllowAreaOfEffect => false;
+        bool ITool.UseRadius => false;
         SelectionType ITool.SelectionType => SelectionType.Edge;
         
         public void Use(SelectionContext selection, HexObject hex)

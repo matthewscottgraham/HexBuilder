@@ -7,7 +7,7 @@ namespace Game.Tools.Paths
 {
     public class AddPath : ITool
     {
-        bool ITool.AllowAreaOfEffect => false;
+        bool ITool.UseRadius => false;
         SelectionType ITool.SelectionType => SelectionType.Vertex;
         
         public void Use(SelectionContext selection, HexObject hex)

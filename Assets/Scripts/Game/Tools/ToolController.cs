@@ -21,7 +21,7 @@ namespace Game.Tools
         private const string UseToolSoundID = "Audio/SFX/place";
         private const string UseToolVfxID = "VFX/useTool";
         
-        private int _areaOfEffect;
+        private int _radius;
         private ITool[] _tools;
         private Dictionary<SelectionType, Selector> _selectors;
         private EventBinding<SelectionEvent> _selectionEventBinding;
@@ -97,15 +97,15 @@ namespace Game.Tools
             SetActiveSelector(CurrentTool.SelectionType);
         }
 
-        public void SetAreaOfEffect(int areaOfEffect)
+        public void SetToolRadius(int radius)
         {
-            _areaOfEffect = areaOfEffect;
+            _radius = radius;
         }
 
         private void HandleInteractEvent()
         {
             Assert.IsNotNull(CurrentTool);
-            UseToolWithinAreaOfEffect(Selector.Hovered.Coordinate, _areaOfEffect, CurrentTool);
+            UseToolOnCoordinatePlusRadius(Selector.Hovered.Coordinate, _radius, CurrentTool);
         }
 
         private void SetActiveSelector(SelectionType selectionType)
@@ -118,14 +118,14 @@ namespace Game.Tools
             }
         }
 
-        private void UseToolWithinAreaOfEffect(CubicCoordinate center, int areaOfEffect, ITool tool)
+        private void UseToolOnCoordinatePlusRadius(CubicCoordinate center, int radius, ITool tool)
         {
             SetLevelFromCoordinate(center);
             var hexController = ServiceLocator.Instance.Get<HexController>();
             
-            if (tool.AllowAreaOfEffect && areaOfEffect > 1)
+            if (tool.UseRadius && radius > 0)
             {
-                var neighbours = HexGrid.GetHexCoordinatesWithinRadius(center, areaOfEffect);
+                var neighbours = HexGrid.GetHexCoordinatesWithinRadius(center, radius);
                 foreach (var neighbour in neighbours)
                 {
                     var hexObject = hexController.GetHexObject(neighbour, tool.CreateHexesAsNeeded);

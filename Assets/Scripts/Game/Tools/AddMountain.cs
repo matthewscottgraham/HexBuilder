@@ -7,7 +7,7 @@ namespace Game.Tools
 {
     public class AddMountain : ITool
     {
-        bool ITool.AllowAreaOfEffect => false;
+        bool ITool.UseRadius => false;
         
         public void Use(SelectionContext selection, HexObject hex)
         {

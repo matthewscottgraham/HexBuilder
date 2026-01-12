@@ -7,7 +7,7 @@ namespace Game.Tools
 {
     public class ToolView : MonoBehaviour
     {
-        private SliderInt _aoeSlider;
+        private SliderInt _radiusSlider;
         private ToggleButtonGroup _buttonGroup;
         private UIDocument _document;
 
@@ -21,8 +21,8 @@ namespace Game.Tools
             _buttonGroup = _document.rootVisualElement.Q<ToggleButtonGroup>();
             _buttonGroup.RegisterValueChangedCallback(HandleToolChanged);
 
-            _aoeSlider = _document.rootVisualElement.Q<SliderInt>();
-            _aoeSlider.RegisterValueChangedCallback(HandleAreaOfEffectChanged);
+            _radiusSlider = _document.rootVisualElement.Q<SliderInt>();
+            _radiusSlider.RegisterValueChangedCallback(HandleRadiusChanged);
             
             _pauseEventBinding = new EventBinding<GamePauseEvent>(HandlePauseEvent);
             _resumeEventBinding = new EventBinding<GameResumeEvent>(HandleResumeEvent);
@@ -36,9 +36,9 @@ namespace Game.Tools
             EventBus<GameResumeEvent>.Deregister(_resumeEventBinding);
         }
 
-        private static void HandleAreaOfEffectChanged(ChangeEvent<int> evt)
+        private static void HandleRadiusChanged(ChangeEvent<int> evt)
         {
-            ServiceLocator.Instance.Get<ToolController>().SetAreaOfEffect(evt.newValue);
+            ServiceLocator.Instance.Get<ToolController>().SetToolRadius(evt.newValue);
         }
 
         private void HandleToolChanged(ChangeEvent<ToggleButtonGroupState> evt)
@@ -47,19 +47,19 @@ namespace Game.Tools
             var toolController = ServiceLocator.Instance.Get<ToolController>();
             toolController.SetActiveTool(toolIndex[0]);
 
-            _aoeSlider.visible = toolController.CurrentTool.AllowAreaOfEffect;
+            _radiusSlider.visible = toolController.CurrentTool.UseRadius;
         }
         
         private void HandlePauseEvent()
         {
             _buttonGroup.SetEnabled(false);
-            _aoeSlider.SetEnabled(false);
+            _radiusSlider.SetEnabled(false);
         }
 
         private void HandleResumeEvent()
         {
             _buttonGroup.SetEnabled(true);
-            _aoeSlider.SetEnabled(true);
+            _radiusSlider.SetEnabled(true);
         }
     }
 }
