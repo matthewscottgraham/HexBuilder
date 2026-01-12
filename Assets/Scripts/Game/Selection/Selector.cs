@@ -27,7 +27,7 @@ namespace Game.Selection
         
         public static SelectionContext Hovered { get; private set; } = BlankSelection;
         public virtual SelectionType SelectionType => SelectionType.None;
-        private static readonly Vector3 GuideOffset = new Vector3(0, 0.1f, 0);
+        private static readonly Vector3 GuideOffset = new Vector3(0, 0.25f, 0);
         
         public void Activate(bool isActive)
         {
