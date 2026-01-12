@@ -127,13 +127,11 @@ namespace Game.Tools
             if (tool.UseRadius && radius > 0)
             {
                 var neighbours = HexGrid.GetHexCoordinatesWithinRadius(center, radius);
-                var delay = 0f;
                 foreach (var neighbour in neighbours)
                 {
                     var hexObject = hexController.GetHexObject(neighbour, tool.CreateHexesAsNeeded);
                     StartCoroutine(
                         UseTool(tool, hexObject, Selector.Hovered, UnityEngine.Random.Range(0, 0.2f)));
-                    delay += 0.05f;
                 }
             }
             else
