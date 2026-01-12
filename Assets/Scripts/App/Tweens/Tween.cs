@@ -24,10 +24,10 @@ namespace App.Tweens
         private bool _pingPong;
         private bool _reversed;
 
-        public Tween(object target, string propertyName, T startValue, T endValue, float duration, Action<T> onComplete)
+        public Tween(object target, T startValue, T endValue, float duration, Action<T> onComplete)
         {
             Target = target;
-            ID = propertyName;
+            ID = Guid.NewGuid().ToString();
             _startValue = startValue;
             _endValue = endValue;
             _duration = duration;
@@ -95,17 +95,26 @@ namespace App.Tweens
 
         public void CompleteTween()
         {
+            if (IsComplete) return;
+            
             IsComplete = true;
             _onUpdate?.Invoke(_endValue);
+            OnComplete?.Invoke();
+            
             _onUpdate = null;
             _onTweenUpdate = null;
             _onPercentComplete = null;
+            OnComplete = null;
         }
 
         public void Kill()
         {
-            CompleteTween();
+            IsComplete = true;
             WasKilled = true;
+            
+            _onUpdate = null;
+            _onTweenUpdate = null;
+            _onPercentComplete = null;
             OnComplete = null;
         }
 

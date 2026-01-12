@@ -34,7 +34,7 @@ namespace App.Tweens
         {
             if (_tweens.ContainsKey(tween.ID))
             {
-                _tweens[tween.ID].CompleteTween();
+                _tweens[tween.ID].Kill();
                 RemoveTween(tween.ID);
             }
 
@@ -57,18 +57,10 @@ namespace App.Tweens
             {
                 var tween = pair.Value;
                 tween.Tick();
-                if (tween.IsComplete && !tween.WasKilled)
+                if (tween.IsComplete || tween.WasKilled)
                 {
-                    if (tween.OnComplete != null)
-                    {
-                        tween.OnComplete.Invoke();
-                        tween.OnComplete = null;
-                    }
-
                     RemoveTween(tween.ID);
                 }
-
-                if (tween.WasKilled) RemoveTween(tween.ID);
             }
         }
 

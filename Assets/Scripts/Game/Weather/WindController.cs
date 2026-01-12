@@ -7,30 +7,28 @@ namespace Game.Weather
 {
     public class WindController : MonoBehaviour
     {
+        private static readonly int Alpha = Shader.PropertyToID("_Alpha");
         [SerializeField] private GameObject[] windPrefabs;
         private const float Radius = 20f;
         private const float CylinderHeight = 5;
+        private const int WindAmount = 8;
         private Quaternion _windRotation;
-        private int _windAmount;
-        
         private readonly Queue<Transform> _windTransforms = new();
+        private Dictionary<Transform, Tween<float>[]> _windTweens = new();
         
         private void Start()
         {
             _windRotation = Quaternion.Euler(new Vector3(30, Random.Range(0, 360), 0));
-            _windAmount = Random.Range(0, 15);
         
-            for (var i = 0; i < _windAmount; i++)
+            for (var i = 0; i < WindAmount; i++)
             {
                 var windTransform = Instantiate(windPrefabs[Random.Range(0, windPrefabs.Length)], transform).transform;
-                windTransform.gameObject.SetActive(false);
+                var meshRenderer = windTransform.GetComponentInChildren<MeshRenderer>();
+                meshRenderer.material = new Material(meshRenderer.sharedMaterial);
                 _windTransforms.Enqueue(windTransform);
             }
-
-            for (var i = 0; i < _windAmount / 2; i++)
-            {
-                ShowWind();
-            }
+            
+            InvokeRepeating(nameof(ShowWind), 0, 2);
         }
 
         private static Vector3 GetRandomPointInCylinder(float radius, float cylinderHeight, float heightOffset)
@@ -47,24 +45,33 @@ namespace Game.Weather
 
         private void ShowWind()
         {
-            if (_windTransforms.Count <= 0) return;
+            if (_windTransforms.Count == 0) return;
             
             var windTransform = _windTransforms.Dequeue();
+                
             windTransform.localPosition = GetRandomPointInCylinder(Radius, CylinderHeight, 4);
             windTransform.localRotation = _windRotation;
             windTransform.localScale = Vector3.one * Random.Range(0.8f, 1.6f);
-            windTransform.gameObject.SetActive(true);
-
-            var lifeTime = Random.Range(3f, 10);
+            
             var material = windTransform.GetComponentInChildren<Renderer>().material;
-            material.TweenAlpha(1, 0, 1).SetDelay(lifeTime - 1); //.OnComplete(HideWind(windTransform));
+            
+            material.SetFloat(Alpha, 0);
+            
+            if (!_windTweens.ContainsKey(windTransform)) 
+                _windTweens[windTransform] = new Tween<float>[2];
+            
+            _windTweens[windTransform][0]?.Kill();
+            _windTweens[windTransform][1]?.Kill();
+                
+            _windTweens[windTransform][0] = material.TweenAlpha(0, 1, 1);
+            _windTweens[windTransform][1] = material.TweenAlpha(1, 0, 1)
+                .SetDelay(2)
+                .SetOnComplete(_ => ReEnqueueWind(windTransform));
         }
 
-        private void HideWind(Transform windTransform)
+        private void ReEnqueueWind(Transform windTransform)
         {
-            windTransform.gameObject.SetActive(false);
             _windTransforms.Enqueue(windTransform);
-            ShowWind();
         }
     }
 }
