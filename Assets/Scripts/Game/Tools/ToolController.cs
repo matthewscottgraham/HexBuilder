@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using App.Audio;
@@ -126,21 +127,30 @@ namespace Game.Tools
             if (tool.UseRadius && radius > 0)
             {
                 var neighbours = HexGrid.GetHexCoordinatesWithinRadius(center, radius);
+                var delay = 0f;
                 foreach (var neighbour in neighbours)
                 {
                     var hexObject = hexController.GetHexObject(neighbour, tool.CreateHexesAsNeeded);
-                    tool.Use(Selector.Hovered, hexObject);
-                    EventBus<PlayVFXBurstEvent>.Raise(new PlayVFXBurstEvent(UseToolVfxID, hexObject.Face.Position, Vector3.zero));
+                    StartCoroutine(
+                        UseTool(tool, hexObject, Selector.Hovered, UnityEngine.Random.Range(0, 0.2f)));
+                    delay += 0.05f;
                 }
             }
             else
             {
                 var hexObject = hexController.GetHexObject(center, tool.CreateHexesAsNeeded);
-                tool.Use(Selector.Hovered, hexObject);
-                EventBus<PlayVFXBurstEvent>.Raise(new PlayVFXBurstEvent(UseToolVfxID, hexObject.Face.Position, Vector3.zero));
+                StartCoroutine(UseTool(tool, hexObject, Selector.Hovered));
             }
-            
-            EventBus<PlaySoundEvent>.Raise(new PlaySoundEvent(UseToolSoundID, true));
+        }
+
+        private IEnumerator UseTool(ITool tool, HexObject hexObject, SelectionContext selectionContext, float delay = 0)
+        {
+            yield return new WaitForSeconds(delay);
+            tool.Use(selectionContext, hexObject);
+            EventBus<PlaySoundEvent>.Raise(
+                new PlaySoundEvent(UseToolSoundID, true));
+            EventBus<PlayVFXBurstEvent>.Raise(
+                new PlayVFXBurstEvent(UseToolVfxID, hexObject.Face.Position, Vector3.zero));
         }
         
         private void SetLevelFromCoordinate(CubicCoordinate coordinate)
