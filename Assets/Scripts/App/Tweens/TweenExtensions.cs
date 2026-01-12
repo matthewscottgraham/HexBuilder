@@ -5,6 +5,8 @@ namespace App.Tweens
 {
     public static class TweenExtensions
     {
+        private static readonly int Alpha = Shader.PropertyToID("_Alpha");
+
         public static Tween<float> TweenSpriteAlpha(this SpriteRenderer spriteRenderer, float startAlpha,
             float endAlpha, float duration)
         {
@@ -39,6 +41,19 @@ namespace App.Tweens
             var id = $"{transform.gameObject.GetInstanceID()}_Scale";
             return new Tween<Vector3>(transform, id, startScale, endScale, duration,
                 value => { if (transform) transform.localScale = value; });
+        }
+
+        public static Tween<float> TweenAlpha(this Material material, float startAlpha, float endAlpha,
+            float duration)
+        {
+            var id = $"{material.GetInstanceID()}_Alpha";
+            return new Tween<float>(
+                material, 
+                "_Alpha",
+                startAlpha, 
+                endAlpha,
+                duration, 
+                value => { if (material) material.SetFloat(Alpha, value); });
         }
 
         public static Tween<float> TweenFloat(Func<float> getFloatToTween, Action<float> setFloatToTween,

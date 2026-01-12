@@ -1,7 +1,7 @@
 using App.Events;
 using UnityEngine;
 
-namespace Game.Lights
+namespace Game.Weather
 {
     public class LightController : MonoBehaviour
     {
