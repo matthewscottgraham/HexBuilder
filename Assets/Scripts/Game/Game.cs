@@ -4,7 +4,6 @@ using System.Linq;
 using App.Events;
 using App.Scenes;
 using App.Services;
-using App.Tweens;
 using App.Utils;
 using Game.Cameras;
 using Game.Grid;
@@ -18,7 +17,6 @@ namespace Game
     public class Game : MonoBehaviour
     {
         [SerializeField] private GridPreset gridPreset;
-        [SerializeField] private Transform ground;
 
         private EventBinding<GameReloadEvent> _gameReloadEventBinding;
         private EventBinding<GameExitEvent> _gameExitEventBinding;
@@ -59,8 +57,6 @@ namespace Game
             
             hexController.Initialize();
             toolController.Initialize();
-
-            ground.transform.localScale = new Vector3(HexGrid.GridRadius * 2 + 3, 1, HexGrid.GridRadius * 2 + 3);
         }
 
         private void HandleGameReload(GameReloadEvent gameReloadEvent)
