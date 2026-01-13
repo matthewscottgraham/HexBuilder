@@ -35,6 +35,9 @@ namespace App
             var serviceLocator = new ServiceLocator();
             serviceLocator.Register(new IOController());
 
+            var configController = new ConfigController();
+            serviceLocator.Register(configController);
+            
             var inputController = gameObject.AddChild<InputController>("InputController");
             var tweenController = gameObject.AddChild<TweenController>("TweenController");
             var audioController = gameObject.AddChild<AudioController>("AudioController");
@@ -43,8 +46,8 @@ namespace App
             _resources = new IDisposable[]
             {
                 new SceneController(),
-                new ConfigController(),
                 new SaveDataController(),
+                configController,
                 tweenController,
                 inputController,
                 audioController,

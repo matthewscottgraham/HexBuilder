@@ -9,6 +9,10 @@
             <ui:Button text="Pause" name="PauseButton" />
             <ui:Button text="Resume" name="ResumeButton" />
         </ui:VisualElement>
+        <ui:VisualElement name="OptionsPanel" style="flex-grow: 1;">
+            <ui:Slider label="Music" value="0.8" high-value="1" name="MusicVolume" />
+            <ui:Slider label="SFX" value="0.8" high-value="1" name="SfxVolume" />
+        </ui:VisualElement>
         <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
         <ui:ToggleButtonGroup value="000010">
             <ui:Button text="Level Terrain" />

@@ -30,7 +30,7 @@ namespace App.SaveData
             var relativeSavePath = Path.Combine(SaveDirectoryName, ConfigController.CurrentSaveSlot.ToString());
             monoBehaviour.StartCoroutine(ioController.SavePng(relativeSavePath, SaveImageFileName));
             
-            Save(relativeSavePath, gameData, ConfigController.CurrentSaveSlot);
+            EnqueueSave(relativeSavePath, gameData, ConfigController.CurrentSaveSlot);
             
         }
 

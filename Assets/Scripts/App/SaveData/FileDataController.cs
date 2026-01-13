@@ -1,5 +1,7 @@
 using App.Services;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using App.Events;
 using UnityEngine;
 
@@ -9,17 +11,38 @@ namespace App.SaveData
     {
         protected string SaveDirectoryName = "UserData";
         protected const string SaveDataFileName = "data";
+
+        private Dictionary<string, SaveData<object>> _enqueuedSaveData = new();
         
         public void Dispose()
         {
             ServiceLocator.Instance.Deregister(this);
         }
 
-        protected static async void Save(string relativeSavePath, object data, int saveId)
+        protected async void EnqueueSave(string relativeSavePath, object objectToSave, int saveId)
         {
+            // Allow the enqueued data to be overridden if it has not already been written to disk.
+            var saveData = CreateSaveData(saveId, objectToSave);
+            if (!_enqueuedSaveData.ContainsKey(relativeSavePath))
+            {
+                _enqueuedSaveData.Add(relativeSavePath, saveData);
+            }
+            else
+            {
+                _enqueuedSaveData[relativeSavePath] = saveData;
+            }
+
+            await Save(relativeSavePath);
+        }
+        
+        private async Task Save(string key)
+        {
+            await Task.Delay(1000);
+            if (!_enqueuedSaveData.ContainsKey(key)) return;
+            
             var ioController = ServiceLocator.Instance.Get<IOController>();
-            var saveData = CreateSaveData(saveId, data);
-            await ioController.WriteJson(saveData, relativeSavePath, SaveDataFileName);
+            var saveData = _enqueuedSaveData[key];
+            await ioController.WriteJson(saveData, key, SaveDataFileName);
             EventBus<FileSaveEvent>.Raise(new FileSaveEvent());
         }
 

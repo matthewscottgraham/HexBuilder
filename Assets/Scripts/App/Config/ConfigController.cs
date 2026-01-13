@@ -18,17 +18,25 @@ namespace App.Config
             else
             {
                 Config = CreateNewConfig();
-                Save(SaveDirectoryName, Config, CurrentSaveSlot);
+                EnqueueSave(SaveDirectoryName, Config, CurrentSaveSlot);
             }
         }
 
         public static int CurrentSaveSlot { get; set; }
         public ConfigData Config { get; private set; }
 
-        private ConfigData CreateNewConfig()
+        public void SetConfig(ConfigData config)
+        {
+            Config = config;
+            EnqueueSave(SaveDirectoryName, Config, CurrentSaveSlot);
+        }
+
+        private static ConfigData CreateNewConfig()
         {
             return new ConfigData()
             {
+                MusicVolume = 0.3f,
+                SfxVolume = 0.5f,
                 IsFullScreen = Screen.fullScreen,
                 ScreenWidth = Screen.width,
                 ScreenHeight = Screen.height

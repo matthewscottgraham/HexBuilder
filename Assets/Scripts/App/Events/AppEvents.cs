@@ -78,6 +78,25 @@ namespace App.Events
 
         public Vector2 Delta;
     }
+
+    public struct SetMusicVolume : IEvent
+    {
+        public SetMusicVolume(float volume)
+        {
+            Volume = volume;
+        }
+
+        public readonly float Volume;
+    }
+    public struct SetSfxVolume : IEvent
+    {
+        public SetSfxVolume(float volume)
+        {
+            Volume = volume;
+        }
+
+        public readonly float Volume;
+    }
     
     public struct PlaySoundEvent : IEvent
     {
