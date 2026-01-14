@@ -13,7 +13,7 @@ namespace App.Tweens
         bool WasKilled { get; }
         float DelayTime { get; }
 
-        Action OnComplete { get; set; }
+        Action OnComplete { get; }
 
         void Tick();
         void CompleteTween();

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using App.Tweens;
 using UnityEngine;
@@ -64,9 +63,9 @@ namespace Game.Weather
             _windTweens[windTransform][1]?.Kill();
                 
             _windTweens[windTransform][0] = material.TweenAlpha(0, 1, 1);
-            _windTweens[windTransform][1] = material.TweenAlpha(1, 0, 1)
-                .SetDelay(1)
-                .SetOnComplete(_ => ReEnqueueWind(windTransform));
+            // _windTweens[windTransform][1] = material.TweenAlpha(1, 0, 1)
+            //     .SetDelay(1)
+            //     .SetOnComplete(() => ReEnqueueWind(windTransform));
         }
 
         private void ReEnqueueWind(Transform windTransform)

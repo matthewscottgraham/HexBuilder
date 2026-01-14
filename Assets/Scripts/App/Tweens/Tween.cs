@@ -17,21 +17,21 @@ namespace App.Tweens
 
         private int _loopsCompleted;
         private Action<T> _onPercentComplete;
+        private Action _onComplete;
         private Action<T> _onTweenUpdate;
-
         private Action<T> _onUpdate;
         private float _percentThreshold = -1f;
         private bool _pingPong;
         private bool _reversed;
 
-        public Tween(object target, T startValue, T endValue, float duration, Action<T> onComplete)
+        public Tween(object target, T startValue, T endValue, float duration, Action<T> onUpdate)
         {
             Target = target;
             ID = Guid.NewGuid().ToString();
             _startValue = startValue;
             _endValue = endValue;
             _duration = duration;
-            _onTweenUpdate = onComplete;
+            _onTweenUpdate = onUpdate;
 
             ServiceLocator.Instance.Get<TweenController>().AddTween(this);
         }
@@ -45,7 +45,7 @@ namespace App.Tweens
         public bool WasKilled { get; private set; }
         public float DelayTime { get; private set; }
 
-        public Action OnComplete { get; set; }
+        public Action OnComplete => _onComplete;
 
         public void Tick()
         {
@@ -104,7 +104,7 @@ namespace App.Tweens
             _onUpdate = null;
             _onTweenUpdate = null;
             _onPercentComplete = null;
-            OnComplete = null;
+            _onComplete = null;
         }
 
         public void Kill()
@@ -115,7 +115,7 @@ namespace App.Tweens
             _onUpdate = null;
             _onTweenUpdate = null;
             _onPercentComplete = null;
-            OnComplete = null;
+            _onComplete = null;
         }
 
         public bool IsTargetDestroyed()
@@ -154,9 +154,9 @@ namespace App.Tweens
             return this;
         }
 
-        public Tween<T> SetOnComplete(Action<T> onComplete)
+        public ITween SetOnComplete(Action onComplete)
         {
-            _onUpdate = onComplete;
+            _onComplete = onComplete;
             return this;
         }
 
