@@ -5,6 +5,7 @@ Label {
 
 Button {
     font-size: 20px;
+    height: 40px;
 }
 
 .spacer {
@@ -40,18 +41,21 @@ Button.unity-button:checked {
 }
 
 .unity-toggle-button-group {
+    align-items: flex-start;
     flex-direction: column;
     flex-grow: 1;
 }
 
 .unity-button-group {
-    flex-direction: column;
+    flex-direction: row;
     flex-grow: 1;
-    width: 100%;
+    flex-wrap: wrap;
+    width: 640px;
 }
 
-.unity-button-group Button {
+.unity-button-group__button {
     flex-grow: 1;
+    margin-right: 2px;
 }
 
 .unity-slider-int__label {

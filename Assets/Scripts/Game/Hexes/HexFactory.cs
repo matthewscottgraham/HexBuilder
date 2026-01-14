@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using App.Utils;
 using Game.Grid;
 using UnityEngine;
@@ -7,11 +8,46 @@ namespace Game.Hexes
 {
     public class HexFactory : IDisposable
     {
-        private Material _material = Resources.Load<Material>("Materials/mat_land");
+        private static readonly int ShaderColourID = Shader.PropertyToID("_Color");
+        public static int MaxHeight => 6;
+        
+        private static Dictionary<int, Material> _materials = new();
+            
+        private Color[] GetLandColours()
+        {
+            return new Color[]
+            {
+                GetColour("#D4C63D"),
+                GetColour("#3DD4CE"),
+                GetColour("#D4C63D"),
+                GetColour("#A6D44F"),
+                GetColour("#BCA64B"),
+                GetColour("#968E62"),
+                GetColour("#82695B")
+            };
+        }
+
+        private Color GetColour(string hexCode)
+        {
+            ColorUtility.TryParseHtmlString(hexCode, out var color);
+            return color;
+        }
+        
+        public HexFactory()
+        {
+            var landColours = GetLandColours();
+            var material = Resources.Load<Material>("Materials/mat_land");
+            for (var i = 0; i < MaxHeight + 1; i++)
+            {
+                var newMat = UnityEngine.Object.Instantiate(material);
+                newMat.SetColor(ShaderColourID, landColours[i]);
+                _materials.Add(i, newMat);
+            }
+        }
 
         public void Dispose()
         {
-            _material = null;
+            _materials = null;
         }
         
         public HexObject CreateHex(CubicCoordinate coordinate, Transform parent)
@@ -26,6 +62,12 @@ namespace Game.Hexes
             hexObject.Initialize(coordinate, meshObject.transform);
             return hexObject;
         }
+
+        public static Material GetMaterialForHeight(int height)
+        {
+            height = Mathf.Clamp(height, 0, MaxHeight);
+            return _materials[height];
+        }
         
         private GameObject CreateMeshObject()
         {
@@ -34,7 +76,7 @@ namespace Game.Hexes
             filter.mesh = CreateMesh();
 
             var renderer = hexMesh.AddComponent<MeshRenderer>();
-            renderer.material = _material;
+            renderer.material = _materials[0];
             return hexMesh;
         }
 

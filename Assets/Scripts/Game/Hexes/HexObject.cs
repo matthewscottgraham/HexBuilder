@@ -7,7 +7,6 @@ namespace Game.Hexes
 {
     public class HexObject : MonoBehaviour
     {
-        private static readonly int MaxTileHeight = 6;
         private Transform _hexMesh;
         
         public static float AnimationDuration => 0.3f;
@@ -34,14 +33,20 @@ namespace Game.Hexes
 
         public void SetHeight(int height)
         {
-            height = Mathf.Clamp(height, 0, MaxTileHeight);
+            height = Mathf.Clamp(height, 0, HexFactory.MaxHeight);
             Height = height;
             _hexMesh.TweenScale(_hexMesh.transform.localScale, new Vector3(1, height, 1), AnimationDuration)
-                .SetEase(AnimationEaseType);
+                .SetEase(AnimationEaseType).SetOnComplete(SetMaterial);
 
             Vertices.SetHeight(height);
             Edges.SetHeight(height);
             Face.SetHeight(height);
+        }
+
+        private void SetMaterial()
+        {
+            var meshRenderer = _hexMesh.GetComponent<MeshRenderer>();
+            meshRenderer.sharedMaterial = HexFactory.GetMaterialForHeight(Height);
         }
         
         private void OnDrawGizmos()
