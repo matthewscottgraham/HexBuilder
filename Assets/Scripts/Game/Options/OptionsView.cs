@@ -1,6 +1,7 @@
 using System;
 using App.Audio;
 using App.Events;
+using App.Screenshots;
 using App.Services;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -10,6 +11,7 @@ namespace Game.Options
     public class OptionsView : MonoBehaviour
     {
         private UIDocument _document;
+        private Button _screenshotButton;
         private Slider _musicVolumeSlider;
         private Slider _sfxVolumeSlider;
 
@@ -17,6 +19,9 @@ namespace Game.Options
         {
             var audioController = ServiceLocator.Instance.Get<AudioController>();
             _document = GetComponent<UIDocument>();
+            
+            _screenshotButton = _document.rootVisualElement.Q<Button>("ScreenshotButton");
+            _screenshotButton.clicked += TakeScreenshot;
             
             _musicVolumeSlider = _document.rootVisualElement.Q<Slider>("MusicVolume");
             _musicVolumeSlider.SetValueWithoutNotify(audioController.MusicVolume);
@@ -29,8 +34,15 @@ namespace Game.Options
 
         private void OnDestroy()
         {
+            if (_screenshotButton == null) return;
+            _screenshotButton.clicked -= TakeScreenshot;
             _musicVolumeSlider.UnregisterValueChangedCallback(HandleMusicVolumeChanged);
             _sfxVolumeSlider.UnregisterValueChangedCallback(HandleSfxVolumeChanged);
+        }
+
+        private void TakeScreenshot()
+        {
+            ServiceLocator.Instance.Get<ScreenshotController>().TakeScreenshot();
         }
 
         private static void HandleMusicVolumeChanged(ChangeEvent<float> value)

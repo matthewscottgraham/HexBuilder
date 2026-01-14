@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
@@ -57,43 +56,17 @@ namespace App
             return tex;
         }
 
-        public IEnumerator SavePng(string relativePath, string fileName)
+        public string SaveImage(byte[] imageData, string relativePath, string fileName, string fileExtension)
         {
-            if (DoesFileExist(relativePath, fileName + ".png")) DeleteFile(relativePath, fileName + ".png");
+            CreateDirectory(relativePath);
+            if (DoesFileExist(relativePath, $"{fileName}.{fileExtension}"))
+            {
+                fileName = GetUniqueFilename(Path.Combine(_appDataPath, relativePath), fileName, fileExtension);
+            }
 
-            var fullFileName = Path.Combine(Path.Combine(_appDataPath, relativePath, fileName + ".png"));
-
-            yield return new WaitForEndOfFrame();
-
-            var renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
-            ScreenCapture.CaptureScreenshotIntoRenderTexture(renderTexture);
-            var tex = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
-            tex.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
-            tex.Apply();
-
-            tex = ResizeTexture(tex, tex.width / 4, tex.height / 4);
-
-            var bytes = tex.EncodeToPNG();
-            File.WriteAllBytes(fullFileName, bytes);
-        }
-
-        private static Texture2D ResizeTexture(Texture2D source, int width, int height)
-        {
-            var rt = RenderTexture.GetTemporary(width, height);
-            RenderTexture.active = rt;
-
-            // Copy texture to RT (GPU scaling)
-            Graphics.Blit(source, rt);
-
-            // Read RT back into a new Texture2D
-            var result = new Texture2D(width, height, source.format, false);
-            result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-            result.Apply();
-
-            RenderTexture.active = null;
-            RenderTexture.ReleaseTemporary(rt);
-
-            return result;
+            var fullFileName = Path.Combine(Path.Combine(_appDataPath, relativePath, $"{fileName}.{fileExtension}"));
+            File.WriteAllBytes(fullFileName, imageData);
+            return fullFileName;
         }
 
         private bool DoesRelativeDirectoryExist(string relativePath)
@@ -118,6 +91,23 @@ namespace App
         private bool DoesFileExist(string relativePath, string fileName)
         {
             return File.Exists(Path.Combine(_appDataPath, relativePath, fileName));
+        }
+
+        private string GetUniqueFilename(string folderPath, string fileName, string extension)
+        {
+            var fullPath = Path.Combine(folderPath, $"{fileName}.{extension}");
+            var uniqueFileName = $"{fileName}";
+            var counter = 1;
+
+            while (File.Exists(fullPath))
+            {
+                var newFileName = $"{fileName}_{counter}";
+                fullPath = Path.Combine(folderPath, $"{newFileName}.{extension}");
+                uniqueFileName = $"{fileName}_{counter}";
+                counter++;
+            }
+
+            return uniqueFileName;
         }
     }
 }

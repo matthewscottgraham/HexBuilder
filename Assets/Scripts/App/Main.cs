@@ -7,6 +7,7 @@ using App.Events;
 using App.Input;
 using App.SaveData;
 using App.Scenes;
+using App.Screenshots;
 using App.Services;
 using App.Tweens;
 using App.Utils;
@@ -45,6 +46,7 @@ namespace App
 
             _resources = new IDisposable[]
             {
+                new ScreenshotController(),
                 new SceneController(),
                 new SaveDataController(),
                 configController,

@@ -1,6 +1,7 @@
 #nullable enable
 using System.IO;
 using App.Config;
+using App.Screenshots;
 using App.Services;
 using UnityEngine;
 
@@ -26,9 +27,9 @@ namespace App.SaveData
 
         public void SaveWithScreenshot(MonoBehaviour monoBehaviour, object gameData)
         {
-            var ioController = ServiceLocator.Instance.Get<IOController>();
+            var screenshotController = ServiceLocator.Instance.Get<ScreenshotController>();
             var relativeSavePath = Path.Combine(SaveDirectoryName, ConfigController.CurrentSaveSlot.ToString());
-            monoBehaviour.StartCoroutine(ioController.SavePng(relativeSavePath, SaveImageFileName));
+            screenshotController.TakeGamePreviewImage(relativeSavePath, SaveImageFileName);
             
             EnqueueSave(relativeSavePath, gameData, ConfigController.CurrentSaveSlot);
             

@@ -12,6 +12,8 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
+        <ui:Button text="Picture" name="ScreenshotButton" style="height: 100%;" />
+        <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
         <ui:VisualElement name="OptionsPanel" style="flex-grow: 1; width: 300px;">
             <ui:Slider label="Music" value="0.8" high-value="1" name="MusicVolume" />
             <ui:Slider label="SFX" value="0.8" high-value="1" name="SfxVolume" />
