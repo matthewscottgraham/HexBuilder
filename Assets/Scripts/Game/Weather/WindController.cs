@@ -4,73 +4,32 @@ using UnityEngine;
 
 namespace Game.Weather
 {
-    public class WindController : MonoBehaviour
+    public class WindController : WeatherController
     {
-        private static readonly int Alpha = Shader.PropertyToID("_Alpha");
-        [SerializeField] private GameObject[] windPrefabs;
-        private const float Radius = 20f;
-        private const float CylinderHeight = 5;
-        private const int WindAmount = 8;
-        private Quaternion _windRotation;
-        private readonly Queue<Transform> _windTransforms = new();
-        private Dictionary<Transform, Tween<float>[]> _windTweens = new();
-        
-        private void Start()
-        {
-            _windRotation = Quaternion.Euler(new Vector3(30, Random.Range(0, 360), 0));
-        
-            for (var i = 0; i < WindAmount; i++)
-            {
-                var windTransform = Instantiate(windPrefabs[Random.Range(0, windPrefabs.Length)], transform).transform;
-                var meshRenderer = windTransform.GetComponentInChildren<MeshRenderer>();
-                meshRenderer.material = new Material(meshRenderer.sharedMaterial);
-                _windTransforms.Enqueue(windTransform);
-            }
-            
-            InvokeRepeating(nameof(ShowWind), 0, 2);
-        }
+        protected override float HeightOffset => 6f;
+        protected override float CylinderHeight => 6f;
+        protected override float SpawnCadence => 9f;
+        protected override float Radius => 30f;
+        protected override Vector2 LifetimeRange => new Vector2(20f, 30f);
 
-        private static Vector3 GetRandomPointInCylinder(float radius, float cylinderHeight, float heightOffset)
+        protected override void OnGetObject(GameObject obj)
         {
-            var angle = Random.value * Mathf.PI * 2;
-            var distance = Mathf.Sqrt(Random.value) * radius;
+            var meshRenderer = obj.GetComponentInChildren<MeshRenderer>();
+            obj.transform.localScale = Vector3.one * Random.Range(0.8f, 2f);
+            var tween = meshRenderer.material.TweenAlpha(0, 1, 3f);
+            SetObjectAnimation(obj);
+        }
         
-            return new Vector3(
-                Mathf.Cos(angle) * distance,
-                Random.Range(heightOffset, heightOffset + cylinderHeight),
-                Mathf.Sin(angle) * distance
-            );
-        }
-
-        private void ShowWind()
+        protected override void SetObjectAnimation(GameObject obj)
         {
-            if (_windTransforms.Count == 0) return;
+            var position = GetRandomPointInCylinder(Radius, CylinderHeight, HeightOffset);
+            var lifeTime = Random.Range(LifetimeRange.x, LifetimeRange.y);
+            obj.transform.position = position;
             
-            var windTransform = _windTransforms.Dequeue();
-                
-            windTransform.localPosition = GetRandomPointInCylinder(Radius, CylinderHeight, 4);
-            windTransform.localRotation = _windRotation;
-            windTransform.localScale = Vector3.one * Random.Range(0.8f, 1.6f);
-            
-            var material = windTransform.GetComponentInChildren<Renderer>().material;
-            
-            material.SetFloat(Alpha, 0);
-            
-            if (!_windTweens.ContainsKey(windTransform)) 
-                _windTweens[windTransform] = new Tween<float>[2];
-            
-            _windTweens[windTransform][0]?.Kill();
-            _windTweens[windTransform][1]?.Kill();
-                
-            _windTweens[windTransform][0] = material.TweenAlpha(0, 1, 1);
-            // _windTweens[windTransform][1] = material.TweenAlpha(1, 0, 1)
-            //     .SetDelay(1)
-            //     .SetOnComplete(() => ReEnqueueWind(windTransform));
-        }
-
-        private void ReEnqueueWind(Transform windTransform)
-        {
-            _windTransforms.Enqueue(windTransform);
+            var meshRenderer = obj.GetComponentInChildren<MeshRenderer>();
+            var tween = meshRenderer.material.TweenAlpha(1, 0, 3f).SetDelay(lifeTime - 3)
+                .SetOnComplete(() => HandleTweenComplete(obj));
+            _tweens[obj] = tween;
         }
     }
 }

@@ -75,6 +75,7 @@ namespace Game.Selection
         protected virtual Transform CreateGuide()
         {
             var guide = gameObject.AddChild<SpriteRenderer>("FaceGuide");
+            guide.gameObject.layer = 6;
             guide.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
             guide.transform.localScale = Vector3.one * 1.7f;
             guide.sprite = Resources.Load<Sprite>("Sprites/FaceGuide");

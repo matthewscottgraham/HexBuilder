@@ -11,6 +11,7 @@ namespace Game.Selection
         protected override Transform CreateHighlighter()
         {
             var highlighter = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
+            highlighter.gameObject.layer = 6;
             highlighter.SetParent(transform);
             Destroy(highlighter.GetComponent<Collider>());
             highlighter.SetParent(transform);

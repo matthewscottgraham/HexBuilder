@@ -41,6 +41,7 @@ namespace Game.Weather
         protected virtual GameObject OnCreateObject()
         {
             var obj = Instantiate(prefabs[Random.Range(0, prefabs.Length)], transform);
+            obj.layer = 6;
             return obj;
         }
 

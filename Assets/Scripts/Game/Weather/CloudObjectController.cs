@@ -9,19 +9,20 @@ namespace Game.Weather
         protected override float CylinderHeight => 1f;
         protected override float SpawnCadence => 9f;
         protected override float Radius => 40f;
-        protected override Vector2 LifetimeRange => new Vector2(20f, 30f);
+        protected override Vector2 LifetimeRange => new Vector2(30f, 40f);
 
         protected override void OnGetObject(GameObject obj)
         {
             var meshRenderer = obj.GetComponentInChildren<MeshRenderer>();
+            obj.transform.localScale = Vector3.one * Random.Range(0.5f, 1f);
             var tween = meshRenderer.material.TweenAlpha(0, 1, 3f);
             SetObjectAnimation(obj);
         }
         
         protected override void SetObjectAnimation(GameObject obj)
         {
-            var startPos = GetRandomPointInCylinder(Radius, CylinderHeight, HeightOffset);
-            var endPos = GetRandomPointInCylinder(Radius, CylinderHeight, HeightOffset);
+            var startPos = GetRandomPointOnEdge(Radius, CylinderHeight, HeightOffset, -1);
+            var endPos = GetRandomPointOnEdge(Radius, CylinderHeight, HeightOffset, 1);
             var lifeTime = Random.Range(LifetimeRange.x, LifetimeRange.y);
             obj.transform.position = startPos;
             
@@ -32,15 +33,14 @@ namespace Game.Weather
             var meshRenderer = obj.GetComponentInChildren<MeshRenderer>();
             var tween2 = meshRenderer.material.TweenAlpha(1, 0, 3f).SetDelay(lifeTime - 3);
         }
-        
-        protected override Vector3 GetRandomPointInCylinder(float radius, float cylinderHeight, float heightOffset)
+
+
+        private Vector3 GetRandomPointOnEdge(float radius, float height, float offset, int direction)
         {
-            var angle = Random.value * Mathf.PI * 2;
-        
             return new Vector3(
-                Mathf.Cos(angle) * radius,
-                Random.Range(heightOffset, heightOffset + cylinderHeight),
-                Mathf.Sin(angle) * radius
+                radius * direction,
+                Random.Range(offset, offset + height),
+                Random.Range(-radius, radius)
             );
         }
     }

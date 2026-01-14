@@ -1453,7 +1453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 329ef9d22147042478126cc99fa7cb28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game::WindController
-  windPrefabs:
+  prefabs:
   - {fileID: 6966950425194429054, guid: e76d0d6a5c49c47cd87291e3d36e78f4, type: 3}
   - {fileID: 7785507915167698807, guid: 64e7a8e85084d47278493e35d0e83f74, type: 3}
   - {fileID: 7746484672808481590, guid: eb0539313bd7c4810a4330f885b80e75, type: 3}
