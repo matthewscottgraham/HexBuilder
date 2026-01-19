@@ -28,7 +28,7 @@ namespace Game.Hexes
             
             var vfx = waterfall.AddChild<VisualEffect>();
             vfx.visualEffectAsset = _visualEffectAsset;
-            vfx.transform.localPosition = new Vector3(-1.74f, -height, 0);
+            vfx.transform.localPosition = new Vector3(-2f, -height, 0);
             
             return waterfall.transform;
         }

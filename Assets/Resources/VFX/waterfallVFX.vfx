@@ -299,7 +299,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614662}
   - {fileID: 8926484042661614681}
   dataType: 0
-  capacity: 12
+  capacity: 8
   stripCapacity: 1
   particlePerStripCount: 32
   needsComputeBounds: 0
@@ -772,7 +772,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.AABox, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"center":{"x":0.0,"y":1.0,"z":0.0},"size":{"x":3.0,"y":4.0,"z":3.5}}'
+      m_SerializableObject: '{"center":{"x":0.0,"y":0.0,"z":0.0},"size":{"x":3.0,"y":4.0,"z":3.5}}'
     m_Space: 0
   m_Property:
     name: bounds
@@ -1489,7 +1489,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.Line, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"start":{"x":0.0,"y":0.0,"z":-0.30000001192092898},"end":{"x":0.0,"y":0.0,"z":0.30000001192092898}}'
+      m_SerializableObject: '{"start":{"x":0.15000000596046449,"y":0.0,"z":-0.30000001192092898},"end":{"x":0.15000000596046449,"y":0.0,"z":0.30000001192092898}}'
     m_Space: 0
   m_Property:
     name: line
