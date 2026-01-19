@@ -11,11 +11,27 @@ namespace Game.Hexes.Features
         public override FeatureType FeatureType { get; protected set; }
         protected override string Name => nameof(EdgeFeatures);
         
+        private Transform[] _waterfalls = new Transform[6];
+        
         public EdgeFeatures(HexObject owner) : base(owner)
         {
         }
 
         public Vector3 Position(int edgeIndex) => Owner.Face.Position + HexGrid.GetLocalEdgePosition(edgeIndex);
+
+        public void AddWaterfall(Transform waterfall, int edgeIndex)
+        {
+            waterfall.SetParent(FeatureParent, false);
+            // Add 120 degrees because it is misaligned when it was generated to make the maths easier.
+            waterfall.localRotation = Quaternion.Euler(0, edgeIndex * 60 + 120, 0);
+            RemoveWaterfall(edgeIndex);
+            _waterfalls[edgeIndex] = waterfall;
+        }
+
+        public void RemoveWaterfall(int edgeIndex)
+        {
+            if (_waterfalls[edgeIndex]) Object.Destroy(_waterfalls[edgeIndex].gameObject);
+        }
         
         public override QuarticCoordinate? GetClosestFeatureCoordinate(Vector3 position)
         {
@@ -39,12 +55,20 @@ namespace Game.Hexes.Features
             FeatureType = HasFeatures.Any(t=> t) ? FeatureType.River : FeatureType.None;
         }
 
+        protected override void Remove(int index)
+        {
+            base.Remove(index);
+            RemoveWaterfall(index);
+        }
+
         protected override void UpdateMesh()
         {
             if (Feature) Object.Destroy(Feature);
             
             if (FeatureType == FeatureType.None || HasFeatures.All(t=> !t)) return;
+            
             var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
+            
             var edgeObject = featureFactory.GetRiverMesh(FeaturesPresent());
             edgeObject.transform.SetParent(FeatureParent, false);
             edgeObject.transform.SetLocalHeight(0.01f);

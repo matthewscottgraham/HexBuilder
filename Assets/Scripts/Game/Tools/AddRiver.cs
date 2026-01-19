@@ -10,26 +10,37 @@ namespace Game.Tools
         bool ITool.UseRadius => false;
         SelectionType ITool.SelectionType => SelectionType.Edge;
         
+        private HexController _hexController;
+        
         public void Use(SelectionContext selection, HexObject hex)
         {
             if (selection.SelectionType != SelectionType.Edge) return;
-            if (hex == null) return;
+            if (!hex) return;
 
             hex.Edges.Toggle(selection.ComponentIndex);
             
+            if (!_hexController) _hexController = ServiceLocator.Instance.Get<HexController>();
+            
             var neighbourCoordinate = HexGrid.GetNeighbourSharingEdge(selection.Coordinate, selection.ComponentIndex);
             var neighbourEdgeIndex = HexGrid.GetNeighboursSharedEdgeIndex(selection.ComponentIndex);
-            var neighbourHex = ServiceLocator.Instance.Get<HexController>().GetHexObject(neighbourCoordinate);
-            if (neighbourHex == null) return;
+            var neighbourHex = _hexController.GetHexObject(neighbourCoordinate);
+            if (!neighbourHex) return;
 
             var active = hex.Edges.Exists(selection.ComponentIndex);
-            if( hex.Height == neighbourHex.Height)
+            
+            neighbourHex.Edges.Set(neighbourEdgeIndex, active);
+            if (hex.Height != neighbourHex.Height && active)
             {
-                neighbourHex.Edges.Set(neighbourEdgeIndex, active);     
+                var waterfall = _hexController.WaterfallFactory.CreateWaterFall(
+                    hex, 
+                    neighbourHex, 
+                    selection.ComponentIndex,
+                    neighbourEdgeIndex);
+                hex.Edges.AddWaterfall(waterfall, selection.ComponentIndex);
             }
-            else
+            else if (hex.Height != neighbourHex.Height)
             {
-                // TODO: waterfall
+                hex.Edges.RemoveWaterfall(selection.ComponentIndex);
             }
         }
     }

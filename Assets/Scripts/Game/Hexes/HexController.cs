@@ -14,10 +14,13 @@ namespace Game.Hexes
         private const int AutoSaveFrequency = 60;
         private HexFactory _hexFactory;
         private Dictionary<CubicCoordinate, HexObject> _map;
-
+        
+        public WaterfallFactory WaterfallFactory { get; private set; }
+        
         public void Initialize()
         {
             _hexFactory = new HexFactory();
+            WaterfallFactory = new WaterfallFactory();
             
             LoadData();
             InvokeRepeating(nameof(SaveData), AutoSaveFrequency, AutoSaveFrequency);

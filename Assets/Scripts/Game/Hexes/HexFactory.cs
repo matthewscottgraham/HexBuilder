@@ -13,7 +13,7 @@ namespace Game.Hexes
         
         private static Dictionary<int, Material> _materials = new();
             
-        private Color[] GetLandColours()
+        private static Color[] GetLandColours()
         {
             return new Color[]
             {
@@ -27,7 +27,7 @@ namespace Game.Hexes
             };
         }
 
-        private Color GetColour(string hexCode)
+        private static Color GetColour(string hexCode)
         {
             ColorUtility.TryParseHtmlString(hexCode, out var color);
             return color;

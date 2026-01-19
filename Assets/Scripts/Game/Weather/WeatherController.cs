@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using App.Tweens;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -38,7 +39,7 @@ namespace Game.Weather
         private void OnDestroy()
         {
             CancelInvoke();
-            foreach (var pair in Tweens)
+            foreach (var pair in Tweens.ToArray())
             {
                 pair.Value.Kill();
                 _pool.Release(pair.Key);
