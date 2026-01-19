@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using App.Tweens;
 using UnityEngine;
 using UnityEngine.Pool;
+using Random = UnityEngine.Random;
 
 namespace Game.Weather
 {
@@ -10,7 +12,7 @@ namespace Game.Weather
         [SerializeField] protected GameObject[] prefabs;
         
         private ObjectPool<GameObject> _pool;
-        protected readonly Dictionary<GameObject, ITween> _tweens = new();
+        protected readonly Dictionary<GameObject, ITween> Tweens = new();
 
         protected virtual int PoolSize => 8;
         protected virtual float Radius => 20f;
@@ -26,22 +28,37 @@ namespace Game.Weather
                 OnGetObject, 
                 OnReleaseObject, 
                 OnDestroyObject,
-                false,
+                true,
                 PoolSize,
                 PoolSize
                 );
             InvokeRepeating(nameof(SpawnEffect), 0, SpawnCadence);
         }
 
+        private void OnDestroy()
+        {
+            CancelInvoke();
+            foreach (var pair in Tweens)
+            {
+                pair.Value.Kill();
+                _pool.Release(pair.Key);
+            }
+        }
+
         private void SpawnEffect()
         {
-            _pool.Get();
+            if (_pool.CountActive < PoolSize)
+                _pool.Get();
         }
 
         protected virtual GameObject OnCreateObject()
         {
             var obj = Instantiate(prefabs[Random.Range(0, prefabs.Length)], transform);
-            obj.layer = 6;
+            var renderableChildren = obj.GetComponentsInChildren<MeshRenderer>();
+            foreach (var child in renderableChildren)
+            {
+                child.gameObject.layer = 6;
+            }
             return obj;
         }
 
@@ -53,10 +70,10 @@ namespace Game.Weather
 
         protected virtual void OnReleaseObject(GameObject obj)
         {
-            if (_tweens.TryGetValue(obj, out var tween))
+            if (Tweens.TryGetValue(obj, out var tween))
             {
                 tween.Kill();
-                _tweens.Remove(obj);
+                Tweens.Remove(obj);
             }
             
             obj.SetActive(false);
@@ -69,12 +86,11 @@ namespace Game.Weather
 
         protected void HandleTweenComplete(GameObject obj)
         {
-            if (_tweens.ContainsKey(obj))
+            if (Tweens.ContainsKey(obj))
             {
-                _tweens.Remove(obj);
+                Tweens.Remove(obj);
             }
             
-            obj.SetActive(false);
             _pool.Release(obj);
         }
         
@@ -99,7 +115,7 @@ namespace Game.Weather
             var tween = obj.transform.TweenPosition(startPos, endPos, lifeTime)
                 .SetOnComplete(() => HandleTweenComplete(obj));
             
-            _tweens[obj] = tween;
+            Tweens[obj] = tween;
         }
     }
 }

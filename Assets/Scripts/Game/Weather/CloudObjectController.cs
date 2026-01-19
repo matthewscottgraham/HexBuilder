@@ -16,6 +16,7 @@ namespace Game.Weather
             var meshRenderer = obj.GetComponentInChildren<MeshRenderer>();
             obj.transform.localScale = Vector3.one * Random.Range(0.5f, 1f);
             var tween = meshRenderer.material.TweenAlpha(0, 1, 3f);
+            obj.SetActive(true);
             SetObjectAnimation(obj);
         }
         
@@ -28,7 +29,7 @@ namespace Game.Weather
             
             var tween = obj.transform.TweenPosition(startPos, endPos, lifeTime)
                 .SetOnComplete(() => HandleTweenComplete(obj));
-            _tweens[obj] = tween;
+            Tweens[obj] = tween;
             
             var meshRenderer = obj.GetComponentInChildren<MeshRenderer>();
             var tween2 = meshRenderer.material.TweenAlpha(1, 0, 3f).SetDelay(lifeTime - 3);

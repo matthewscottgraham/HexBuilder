@@ -43,12 +43,13 @@ namespace App
             var tweenController = gameObject.AddChild<TweenController>("TweenController");
             var audioController = gameObject.AddChild<AudioController>("AudioController");
             var vfxController = gameObject.AddChild<VFXController>("VFXController");
+            var screenshotController = gameObject.AddChild<ScreenshotController>("ScreenshotController");
 
             _resources = new IDisposable[]
             {
-                new ScreenshotController(),
                 new SceneController(),
                 new SaveDataController(),
+                screenshotController,
                 configController,
                 tweenController,
                 inputController,

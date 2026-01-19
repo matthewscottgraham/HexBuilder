@@ -1,12 +1,12 @@
 using System;
-using System.Diagnostics;
+using System.Collections;
 using System.IO;
 using App.Services;
 using UnityEngine;
 
 namespace App.Screenshots
 {
-    public class ScreenshotController : IDisposable
+    public class ScreenshotController : MonoBehaviour, IDisposable
     {
         private const string ScreenshotDirectory = "Screenshots";
         private IOController _ioController = ServiceLocator.Instance.Get<IOController>();
@@ -18,25 +18,40 @@ namespace App.Screenshots
 
         public void TakeScreenshot()
         {
-            var texture = ScreenCapture.CaptureScreenshotAsTexture(1);
-            var fileData = texture.EncodeToJPG();
-             var imagePath = _ioController.SaveImage(
-                 fileData, ScreenshotDirectory, "screenshot", "jpg");
-             Application.OpenURL(Path.GetDirectoryName(imagePath));
+            StartCoroutine(TakeScreenshotCoroutine(
+                ScreenshotDirectory, 
+                "screenshot", 
+                false, 
+                true
+                ));
         }
         
         public void TakeGamePreviewImage(string relativePath, string fileName)
         {
-            var renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
-            ScreenCapture.CaptureScreenshotIntoRenderTexture(renderTexture);
-            var tex = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
-            tex.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
-            tex.Apply();
+            StartCoroutine(TakeScreenshotCoroutine(
+                relativePath, 
+                fileName, 
+                true, 
+                false));
+        }
 
-            tex = ResizeTexture(tex, tex.width / 4, tex.height / 4);
+        private IEnumerator TakeScreenshotCoroutine(string relativePath, string fileName, bool resize = false, bool openDirectory = false)
+        {
+            yield return new WaitForEndOfFrame();
+            
+            var texture = ScreenCapture.CaptureScreenshotAsTexture(1);
+            if (resize)
+            {
+                texture = ResizeTexture(texture, texture.width / 4, texture.height / 4);
+            }
 
-            var bytes = tex.EncodeToJPG();
-            _ioController.SaveImage(bytes, relativePath, fileName, "jpg");
+            var fileData = texture.EncodeToJPG();
+            var imagePath = _ioController.SaveImage(fileData, relativePath, fileName, "jpg");
+
+            if (openDirectory)
+            {
+                Application.OpenURL(Path.GetDirectoryName(imagePath));
+            }
         }
         
         private static Texture2D ResizeTexture(Texture2D source, int width, int height)

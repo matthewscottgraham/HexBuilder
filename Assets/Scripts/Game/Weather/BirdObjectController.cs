@@ -1,3 +1,4 @@
+using App.Tweens;
 using UnityEngine;
 
 namespace Game.Weather
@@ -6,7 +7,7 @@ namespace Game.Weather
     {
         protected override float HeightOffset => 10f;
         protected override float CylinderHeight => 3f;
-        protected override float SpawnCadence => 9f;
+        protected override float SpawnCadence => 5f;
         protected override float Radius => 40f;
         protected override Vector2 LifetimeRange => new Vector2(20f, 30f);
         
@@ -19,6 +20,20 @@ namespace Game.Weather
                 Random.Range(heightOffset, heightOffset + cylinderHeight),
                 Mathf.Sin(angle) * radius
             );
+        }
+        
+        protected override void SetObjectAnimation(GameObject obj)
+        {
+            var startPos = GetRandomPointInCylinder(Radius, CylinderHeight, HeightOffset);
+            var endPos = GetRandomPointInCylinder(Radius, CylinderHeight, HeightOffset);
+            var lifeTime = Random.Range(LifetimeRange.x, LifetimeRange.y);
+            obj.transform.position = startPos;
+            obj.transform.LookAt(endPos);
+            
+            var tween = obj.transform.TweenPosition(startPos, endPos, lifeTime)
+                .SetOnComplete(() => HandleTweenComplete(obj));
+            
+            Tweens[obj] = tween;
         }
     }
 }

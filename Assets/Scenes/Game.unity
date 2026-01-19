@@ -1357,7 +1357,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Game::BirdController
   prefabs:
-  - {fileID: 3376854280305911493, guid: ff08318a78f1a4a558e7f4943b963d8d, type: 3}
+  - {fileID: 2315156609244163758, guid: b176419fa9cbe4f08b9696eed9be66b1, type: 3}
+  - {fileID: 2766115606692622774, guid: 0659f5626be3f43d1bc98068f7facefd, type: 3}
+  - {fileID: 7952178839042291254, guid: beb9047bda1bd4bcba26296efc8f6793, type: 3}
+  - {fileID: 2777365685917186243, guid: 52ffae4b19b57430592680db213865ff, type: 3}
 --- !u!1001 &1636457066
 PrefabInstance:
   m_ObjectHideFlags: 0
