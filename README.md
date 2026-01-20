@@ -23,8 +23,6 @@ Hex Builder is a focused reimplementation of that idea:
 - Cleaner architecture
 - Built with reuse and iteration in mind
 
-Rather than forcing a game design on top, this project intentionally leaves space for experimentation and extension.
-
 ## Dependencies
 - **Unity 6.2**
   - Other Unity 6.x versions may work but are untested
@@ -33,7 +31,7 @@ Rather than forcing a game design on top, this project intentionally leaves spac
   - macOS
   - WebGL (with limitations)
 
-_No external Unity packages or plugins are required beyond the standard Unity install._
+No external Unity packages or plugins are required beyond the standard Unity install.
 
 ## Project Structure
 This repository is a complete Unity project.
@@ -64,12 +62,15 @@ Prebuilt binaries and a WebGL version are available on Itch.io:
 - Tools for manual terrain manipulation, using an area of effect.
 - Placement of features on faces, edges or vertices
 - Serialization / Deserialization of game data.
+- particle effects
+- day/night cycle
+- audio
 
 ## Roadmap
-- **v0.1** - Current - Working prototype
-- **v0.2** - Visual polish and rendering improvements
-- **v0.3** - Landscape presets and procedural terrain generation
-- **v0.4** - Quality-of-life improvements, user options etc
+- **v0.1** - Working prototype
+- **v0.2** - Current - Visual polish and rendering improvements
+- **v0.3** - Quality-of-life improvements, bugfixes, user options etc
+- **v0.4** - Landscape presets and procedural terrain generation
 
 ## References
 - Screen Based outline shader based on this tutorial by Digvijaysinh Gohil: https://www.youtube.com/watch?v=nc3a3THBFrg

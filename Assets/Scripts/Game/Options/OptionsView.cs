@@ -30,6 +30,10 @@ namespace Game.Options
             _sfxVolumeSlider = _document.rootVisualElement.Q<Slider>("SfxVolume");
             _sfxVolumeSlider.SetValueWithoutNotify(audioController.SfxVolume);
             _sfxVolumeSlider.RegisterValueChangedCallback(HandleSfxVolumeChanged);
+            
+            #if UNITY_WEBGL
+            _screenshotButton.style.display = DisplayStyle.None;
+            #endif
         }
 
         private void OnDestroy()
