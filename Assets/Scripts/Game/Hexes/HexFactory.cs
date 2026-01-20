@@ -35,6 +35,7 @@ namespace Game.Hexes
         
         public HexFactory()
         {
+            _materials = new Dictionary<int, Material>();
             var landColours = GetLandColours();
             var material = Resources.Load<Material>("Materials/mat_land");
             for (var i = 0; i < MaxHeight + 1; i++)

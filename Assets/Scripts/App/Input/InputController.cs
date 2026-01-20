@@ -12,13 +12,13 @@ namespace App.Input
         private EventSystem _eventSystem;
         private InputSystem_Actions _inputSystem;
         
-        private const float DragThreshold = 0.2f;
+        private const float DragThreshold = 4f;
         
         private Vector2 _clickStartPosition;
         private bool _clicking;
         private bool _wasDragged;
         private bool _moving;
-
+        
         public static bool PointerHasMovedThisFrame { get; private set; }
         public static Vector2 PointerPosition => Pointer.current.position.ReadValue();
         private static Vector2 LastMousePosition { get; set; }
@@ -34,6 +34,8 @@ namespace App.Input
             _inputSystem.Player.Interact.started += HandleInteractStart;
             _inputSystem.Player.Interact.canceled += HandleInteractEnd;
             _inputSystem.Player.Zoom.performed += HandleZoom;
+            
+            LastMousePosition = PointerPosition;
         }
 
         public void Dispose()
@@ -80,7 +82,10 @@ namespace App.Input
             return results.Count > 0;
         }
 
-        private void HandleMoveStart(InputAction.CallbackContext ctx) => _moving = true;
+        private void HandleMoveStart(InputAction.CallbackContext ctx)
+        {
+            _moving = true;
+        }
 
         private void HandleMoveEnd(InputAction.CallbackContext ctx) => _moving = false;
 
@@ -91,7 +96,6 @@ namespace App.Input
 
         private void HandleInteractStart(InputAction.CallbackContext ctx)
         {
-            if (IsPointerOverUI()) return;
             _clicking = true;
             _clickStartPosition = PointerPosition;
         }

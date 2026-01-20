@@ -102,6 +102,12 @@ namespace Game.Hexes
         private void LoadData()
         {
             _map = new Dictionary<CubicCoordinate, HexObject>();
+            
+#if UNITY_WEBGL
+            CreateEmptyMap();
+            return;
+#endif
+            
             var loadedData = ServiceLocator.Instance.Get<SaveDataController>().LoadSaveSlot<GameData>(ConfigController.CurrentSaveSlot);
             if (loadedData == null)
             {

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine.UIElements;
 
 namespace App.Utils
@@ -7,6 +8,14 @@ namespace App.Utils
         public static VisualElement AddSpacer(this VisualElement parentElement)
         {
             return parentElement.AddNew<VisualElement>(new VisualElement(), "spacer");
+        }
+
+        public static Button AddButton(this VisualElement parentElement, string text, Action onClick)
+        {
+            var button = parentElement.AddNew(new Button());
+            button.text = text;
+            button.clicked += onClick;
+            return button;
         }
 
         public static T AddNew<T>(this VisualElement parentElement, T childElement) where T : VisualElement

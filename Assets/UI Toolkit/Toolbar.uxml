@@ -1,16 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement picking-mode="Ignore" name="ToolPanel" class="tool-panel">
-        <ui:VisualElement style="flex-grow: 1;">
-            <ui:VisualElement name="GamePanel" class="game-panel">
-                <ui:Button text="New" name="NewGameButton" />
-                <ui:Button text="Load" name="LoadGameButton" />
-                <ui:Button text="Exit" name="ExitGameButton" class="exit-button" />
-            </ui:VisualElement>
-            <ui:VisualElement name="TimePanel" class="game-panel">
-                <ui:Button text="Pause" name="PauseButton" />
-                <ui:Button text="Resume" name="ResumeButton" />
-            </ui:VisualElement>
-        </ui:VisualElement>
+    <ui:VisualElement name="ToolPanel" class="tool-panel">
+        <ui:VisualElement name="MenuPanel" style="flex-grow: 1;" />
         <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
         <ui:Button text="Picture" name="ScreenshotButton" style="height: 100%;" />
         <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
@@ -20,14 +10,13 @@
         </ui:VisualElement>
         <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
         <ui:ToggleButtonGroup value="000010">
-            <ui:Button text="Level Terrain" />
-            <ui:Button text="Raise Terrain" />
-            <ui:Button text="Lower Terrain" />
-            <ui:Button text="Add Mountain" />
-            <ui:Button text="Add River" />
-            <ui:Button text="Plant Trees" />
-            <ui:Button text="Add Farm" />
-            <ui:Button text="Add Path" />
+            <ui:Button text="Level" />
+            <ui:Button text="Raise" />
+            <ui:Button text="Lower" />
+            <ui:Button text="Mountain" />
+            <ui:Button text="River" />
+            <ui:Button text="Vegetation" />
+            <ui:Button text="Settlement" />
         </ui:ToggleButtonGroup>
         <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
         <ui:VisualElement style="flex-grow: 1; width: 200px; align-self: center;">

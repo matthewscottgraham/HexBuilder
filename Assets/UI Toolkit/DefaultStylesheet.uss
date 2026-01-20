@@ -16,7 +16,8 @@ Button {
 .unity-button {
     background-color: cadetblue;
     border-radius: 12px;
-    border-width: 0;
+    border-width: 2px;
+    border-color: transparent;
     color: white;
 }
 
@@ -30,7 +31,6 @@ Button.unity-button:focus:enabled {
 
 Button.unity-button:checked {
     background-color: darkslategrey;
-    -unity-font-style: bold;
     border-color: goldenrod;
     border-width: 2px;
 }
@@ -50,7 +50,7 @@ Button.unity-button:checked {
     flex-direction: row;
     flex-grow: 1;
     flex-wrap: wrap;
-    width: 640px;
+    width: 400px;
 }
 
 .unity-button-group__button {
@@ -58,7 +58,8 @@ Button.unity-button:checked {
     margin-right: 2px;
 }
 
-.unity-slider-int__label {
+.unity-base-slider__label {
+    -unity-text-align: middle-right;
     min-width: 50px;
 }
 

@@ -1,12 +1,18 @@
 using App.Events;
+using App.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.VFX;
 
 namespace Game.Menu
 {
     public class MenuView : MonoBehaviour
     {
         private UIDocument _document;
+        private VisualElement _menuPanel;
+        private VisualElement _gamePanel;
+        private VisualElement _timePanel;
+        private Button _clearBoardButton;
         private Button _exitButton;
         private Button _loadButton;
         private Button _newGameButton;
@@ -19,21 +25,23 @@ namespace Game.Menu
         private void Start()
         {
             _document = GetComponent<UIDocument>();
-
-            _loadButton = _document.rootVisualElement.Q<Button>("LoadGameButton");
-            _loadButton.clicked += HandleLoadButtonClicked;
-
-            _newGameButton = _document.rootVisualElement.Q<Button>("NewGameButton");
-            _newGameButton.clicked += HandleNewGameButtonClicked;
-
-            _exitButton = _document.rootVisualElement.Q<Button>("ExitGameButton");
-            _exitButton.clicked += HandleExitButtonClicked;
             
-            _pauseButton = _document.rootVisualElement.Q<Button>("PauseButton");
-            _pauseButton.clicked += HandlePauseButtonClicked;
+            _menuPanel = _document.rootVisualElement.Q<VisualElement>("MenuPanel");
+            _gamePanel = _menuPanel.AddNew<VisualElement>(new VisualElement(), "game-panel");
+            _timePanel = _menuPanel.AddNew<VisualElement>(new VisualElement(), "game-panel");
             
-            _resumeButton = _document.rootVisualElement.Q<Button>("ResumeButton");
-            _resumeButton.clicked += HandleResumeButtonClicked;
+#if UNITY_WEBGL
+            _clearBoardButton = _gamePanel.AddButton("Clear", HandleClearBoardButtonCLicked);
+#else
+            _newGameButton = _gamePanel.AddButton("New", HandleNewGameButtonClicked);
+            _loadButton = _gamePanel.AddButton("Load", HandleLoadButtonClicked);
+#endif
+            _exitButton = _gamePanel.AddButton("Exit", HandleExitButtonClicked);
+            _exitButton.AddToClassList("exit-button");
+            
+            _pauseButton = _timePanel.AddButton("Pause", HandlePauseButtonClicked);
+            
+            _resumeButton = _timePanel.AddButton("Resume", HandleResumeButtonClicked);
             _resumeButton.visible = false;
             
             _pauseEventBinding = new EventBinding<GamePauseEvent>(HandlePauseEvent);
@@ -44,12 +52,16 @@ namespace Game.Menu
 
         private void OnDestroy()
         {
-            if (_loadButton == null) return;
-            _loadButton.clicked -= HandleLoadButtonClicked;
-            _newGameButton.clicked -= HandleNewGameButtonClicked;
-            _exitButton.clicked -= HandleExitButtonClicked;
-            _pauseButton.clicked -= HandlePauseButtonClicked;
-            _resumeButton.clicked -= HandleResumeButtonClicked;
+#if UNITY_EDITOR
+            if (_clearBoardButton != null) _clearBoardButton.clicked -= HandleClearBoardButtonCLicked;
+#else
+            if (_loadButton != null) _loadButton.clicked -= HandleLoadButtonClicked;
+            if (_newGameButton != null) _newGameButton.clicked -= HandleNewGameButtonClicked;
+#endif
+            
+            if (_exitButton != null) _exitButton.clicked -= HandleExitButtonClicked;
+            if (_pauseButton != null) _pauseButton.clicked -= HandlePauseButtonClicked;
+            if (_resumeButton != null) _resumeButton.clicked -= HandleResumeButtonClicked;
             
             EventBus<GamePauseEvent>.Deregister(_pauseEventBinding);
             EventBus<GameResumeEvent>.Deregister(_resumeEventBinding);
@@ -65,6 +77,11 @@ namespace Game.Menu
             _document.rootVisualElement.Add(new SaveGameChooser(false));
         }
 
+        private void HandleClearBoardButtonCLicked()
+        {
+            EventBus<GameReloadEvent>.Raise(new GameReloadEvent());
+        }
+
         private static void HandleExitButtonClicked()
         {
             EventBus<GameExitEvent>.Raise(new GameExitEvent());
@@ -73,7 +90,6 @@ namespace Game.Menu
         private void HandlePauseButtonClicked()
         {
             EventBus<GamePauseEvent>.Raise(new GamePauseEvent());
-            
         }
 
         private void HandleResumeButtonClicked()

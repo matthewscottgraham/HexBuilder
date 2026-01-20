@@ -9,7 +9,7 @@
     margin: 12px;
     padding: 12px;
     position: absolute;
-    height: 120px;
+    height: 122px;
 }
 
 .game-panel {
