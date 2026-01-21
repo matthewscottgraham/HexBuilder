@@ -7,7 +7,7 @@ namespace Game.Hexes
     public class HexInfo
     {
         public readonly CubicCoordinate Coordinate;
-        public readonly int Height;
+        public int Height;
         public readonly FeatureType FeatureType;
         public readonly int FeatureVariation;
         public readonly bool[] VertexFeatures;

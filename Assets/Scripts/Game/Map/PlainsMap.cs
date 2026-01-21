@@ -1,28 +1,30 @@
 using System.Collections.Generic;
-using Game.Grid;
 using Game.Hexes;
-using Game.Hexes.Features;
 using UnityEngine;
 
 namespace Game.Map
 {
     public class PlainsMap : IMapStrategy
     {
+        private const float NoiseScale = 25f;
+        private const int Octaves = 1;
+        private const int MinimumHeight = 2;
+        private readonly float _heightScale = 3;
+        private readonly Vector2 _noiseOffset = new (Random.value * 1000, Random.value * 1000);
+        
         public List<HexInfo> GenerateMap()
         {
-            var weights = new[] { 3, 2, 2, 2, 1, 0, 1, 2, 2, 2, 3 };
-            var hexInfos = new List<HexInfo>();
-
-            var radius = HexGrid.GridRadius;
+            var hexInfos = IMapStrategy.CreateBlankMap();
+            var dictionary = IMapStrategy.CreateHexInfoDictionary(hexInfos);
             
-            for (var x = -radius; x <= radius; x++)
+            foreach (var (coordinate, value) in dictionary)
             {
-                for (var z = Mathf.Max(-radius, -x - radius); z <= Mathf.Min(radius, -x + radius); z++)
-                {
-                    var height = weights[UnityEngine.Random.Range(0, weights.Length)];
-                    hexInfos.Add(new HexInfo(new CubicCoordinate(x, z), height, FeatureType.None, 0));
-                }
+                var noisePosition = IMapStrategy.CubicTo2DSpace(coordinate) * NoiseScale + _noiseOffset;
+                var noise = IMapStrategy.FractalBrownianMotion(noisePosition, Octaves) * 0.8f;
+                var height = Mathf.RoundToInt(Mathf.Lerp(MinimumHeight, _heightScale, noise));
+                value.Height = Mathf.Clamp(height, MinimumHeight, HexFactory.MaxHeight);
             }
+            
             return hexInfos;
         }
     }

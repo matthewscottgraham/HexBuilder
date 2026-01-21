@@ -28,7 +28,7 @@ namespace Game.Map
                 var mapType = values[Random.Range(0, values.Length)];
                 if (mapType != MapType.Random) return mapType;
             }
-            return MapType.ManyIslands;
+            return MapType.Peninsula;
         }
     }
 }

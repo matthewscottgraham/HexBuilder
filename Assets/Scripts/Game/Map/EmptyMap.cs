@@ -10,16 +10,7 @@ namespace Game.Map
     {
         public List<HexInfo> GenerateMap()
         {
-            var hexInfos = new List<HexInfo>();
-            var radius = HexGrid.GridRadius;
-            for (var x = -radius; x <= radius; x++)
-            {
-                for (var z = Mathf.Max(-radius, -x - radius); z <= Mathf.Min(radius, -x + radius); z++)
-                {
-                    hexInfos.Add(new HexInfo(new CubicCoordinate(x, z), 0, FeatureType.None, 0));
-                }
-            }
-            return hexInfos;
+            return IMapStrategy.CreateBlankMap();
         }
     }
 }
