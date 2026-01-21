@@ -14,7 +14,7 @@ namespace App.SaveData
         public (Texture2D, string) GetMetaData(int saveID)
         {
             var ioController = ServiceLocator.Instance.Get<IOController>();
-            var tex = ioController.LoadPng(Path.Combine(SaveDirectoryName, saveID.ToString()), SaveImageFileName);
+            var tex = ioController.LoadJpg(Path.Combine(SaveDirectoryName, saveID.ToString()), SaveImageFileName);
             var saveTime =
                 ioController.GetFileSaveTime(Path.Combine(SaveDirectoryName, saveID.ToString()), SaveDataFileName);
             return (tex, saveTime);

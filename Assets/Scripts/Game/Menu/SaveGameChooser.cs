@@ -1,10 +1,12 @@
+using System;
+using System.Linq;
 using App.Config;
 using App.Events;
 using App.SaveData;
-using App.Scenes;
 using App.Services;
 using App.Utils;
 using Game.Hexes;
+using Game.Map;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -12,23 +14,28 @@ namespace Game.Menu
 {
     public class SaveGameChooser : VisualElement
     {
+        private const int SaveSlotCount = 3; // TODO: the max save slots should be added to the config
         private readonly bool _isNewGame;
+        private MapType _mapType = MapType.Random;
 
         public SaveGameChooser(bool isNewGame)
         {
             _isNewGame = isNewGame;
-
+            
             CreateHeader();
             CreateSlots();
+            
+            var dropdownField = this.AddNew<DropdownField>(new DropdownField());
+            dropdownField.label = "Map Type";
+            dropdownField.choices = Enum.GetNames(typeof(MapType)).ToList();
+            dropdownField.value = _mapType.ToString();
+            dropdownField.RegisterValueChangedCallback((evt)=>HandleMapTypeChanged(evt.newValue));
         }
 
         private void CreateSlots()
         {
             var slotContainer = this.AddNew<VisualElement>(new VisualElement(), "save-slot-container");
-
-            // TODO: the max save slots should be added to the config
-            const int saveSlotCount = 3;
-            for (var i = 0; i < saveSlotCount; i++)
+            for (var i = 0; i < SaveSlotCount; i++)
             {
                 var index = i;
                 CreateSlotButton(slotContainer, index);
@@ -51,7 +58,6 @@ namespace Game.Menu
         private void CreateSlotButton(VisualElement parentContainer, int index)
         {
             var saveData = ServiceLocator.Instance.Get<SaveDataController>().GetMetaData(index);
-
             parentContainer.Add(CreateSlotButton(index, saveData.Item1, saveData.Item2));
         }
 
@@ -67,7 +73,12 @@ namespace Game.Menu
             if (string.IsNullOrEmpty(labelText)) labelText = "New Game";
             saveSlot.AddNew<Label>(new Label(labelText), "save-info-label");
 
-            return saveSlot;
+            return  saveSlot;
+        }
+
+        private void HandleMapTypeChanged(string mapTypeName)
+        {
+            _mapType = Enum.Parse<MapType>(mapTypeName);
         }
 
         private void CloseWindow()
@@ -79,11 +90,15 @@ namespace Game.Menu
         {
             if (ConfigController.CurrentSaveSlot != index)
                 ServiceLocator.Instance.Get<HexController>().SaveData();
-            
-            if (_isNewGame) 
+
+            if (_isNewGame)
+            {
                 ServiceLocator.Instance.Get<SaveDataController>().DeleteSaveData(index);
-            
+                HexController.SetNewMapType(_mapType);
+            }
+
             ConfigController.CurrentSaveSlot = index;
+            
             CloseWindow();
             EventBus<GameReloadEvent>.Raise(new GameReloadEvent());
         }

@@ -5,21 +5,32 @@ using App.SaveData;
 using App.Services;
 using Game.Grid;
 using Game.Hexes.Features;
+using Game.Map;
 using UnityEngine;
 
 namespace Game.Hexes
 {
     public class HexController : MonoBehaviour, IDisposable
     {
+        private static MapType _newMapType = MapType.Random;
+        
         private const int AutoSaveFrequency = 60;
         private HexFactory _hexFactory;
+        private MapFactory _mapFactory;
         private Dictionary<CubicCoordinate, HexObject> _map;
         
         public WaterfallFactory WaterfallFactory { get; private set; }
+
+        public static void SetNewMapType(MapType mapType)
+        {
+            _newMapType = mapType;
+        }
         
         public void Initialize()
         {
             _hexFactory = new HexFactory();
+            _mapFactory = new MapFactory();
+            
             WaterfallFactory = new WaterfallFactory();
             
             LoadData();
@@ -102,58 +113,22 @@ namespace Game.Hexes
         private void LoadData()
         {
             _map = new Dictionary<CubicCoordinate, HexObject>();
-            
+            List<HexInfo> hexInfos;
 #if UNITY_WEBGL
-            CreateEmptyMap();
-            return;
-#endif
+            hexInfos = _mapFactory.CreateMap(MapType.Empty);
+#else
             
             var loadedData = ServiceLocator.Instance.Get<SaveDataController>().LoadSaveSlot<GameData>(ConfigController.CurrentSaveSlot);
             if (loadedData == null)
             {
-                //CreateRandomMap();
-                CreateEmptyMap();
+                hexInfos = _mapFactory.CreateMap(_newMapType);
             }
             else
             {
                 var gameData = loadedData.Value.Data;
-                CreateHexes(gameData.Map);
+                hexInfos = gameData.Map;
             }
-        }
-
-        private void CreateEmptyMap()
-        {
-            var hexInfos = new List<HexInfo>();
-
-            var radius = HexGrid.GridRadius;
-            
-            for (var x = -radius; x <= radius; x++)
-            {
-                for (var z = Mathf.Max(-radius, -x - radius); z <= Mathf.Min(radius, -x + radius); z++)
-                {
-                    hexInfos.Add(new HexInfo(new CubicCoordinate(x, z), 0, FeatureType.None, 0));
-                }
-            }
-
-            CreateHexes(hexInfos);
-        }
-
-        private void CreateRandomMap()
-        {
-            var weights = new[] { 3, 2, 2, 2, 1, 0, 1, 2, 2, 2, 3 };
-            var hexInfos = new List<HexInfo>();
-
-            var radius = HexGrid.GridRadius;
-            
-            for (var x = -radius; x <= radius; x++)
-            {
-                for (var z = Mathf.Max(-radius, -x - radius); z <= Mathf.Min(radius, -x + radius); z++)
-                {
-                    var height = weights[UnityEngine.Random.Range(0, weights.Length)];
-                    hexInfos.Add(new HexInfo(new CubicCoordinate(x, z), height, FeatureType.None, 0));
-                }
-            }
-
+#endif
             CreateHexes(hexInfos);
         }
     }

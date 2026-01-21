@@ -8,6 +8,26 @@ Button {
     height: 40px;
 }
 
+.unity-scroll-view {
+    background-color: darkslategrey;
+    min-width: 200px;
+}
+
+DropdownField {
+    height: 50px;
+    border-radius: 12px;
+    max-width: 400px;
+}
+
+DropdownField .unity-popup-field__input {
+    background-color: darkslategrey;
+    border-radius: 12px;
+}
+
+DropdownField:hover .unity-popup-field__input{
+    background-color: cadetblue;
+}
+
 .spacer {
     min-height: 12px;
     min-width: 12px;

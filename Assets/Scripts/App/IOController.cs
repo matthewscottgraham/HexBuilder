@@ -46,12 +46,12 @@ namespace App
             return fileInfo.LastWriteTimeUtc.ToString(CultureInfo.InvariantCulture);
         }
 
-        public Texture2D LoadPng(string relativePath, string fileName)
+        public Texture2D LoadJpg(string relativePath, string fileName)
         {
             var tex = new Texture2D(2, 2);
-            if (!DoesFileExist(relativePath, fileName + ".png")) return tex;
+            if (!DoesFileExist(relativePath, fileName + ".jpg")) return tex;
 
-            var bytes = File.ReadAllBytes(Path.Combine(_appDataPath, relativePath, fileName + ".png"));
+            var bytes = File.ReadAllBytes(Path.Combine(_appDataPath, relativePath, fileName + ".jpg"));
             tex.LoadImage(bytes);
             return tex;
         }
