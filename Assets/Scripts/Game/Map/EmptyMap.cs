@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace Game.Map
 {
-    public class EmptyMap : IMapStrategy
+    public class EmptyMap : MapStrategy
     {
-        public List<HexInfo> GenerateMap()
+        public override List<HexInfo> GenerateMap()
         {
-            return IMapStrategy.CreateBlankMap();
+            return CreateBlankMap();
         }
     }
 }

@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 namespace Game.Map
 {
-    public class RandomMap : IMapStrategy
+    public class RandomMap : MapStrategy
     {
         private readonly MapFactory _owner;
 
@@ -14,13 +14,13 @@ namespace Game.Map
             _owner = owner;
         }
         
-        public List<HexInfo> GenerateMap()
+        public override List<HexInfo> GenerateMap()
         {
             var strategy = _owner.GetStrategy(GetRandomMapType());
             return strategy.GenerateMap();
         }
         
-        private MapType GetRandomMapType()
+        private static MapType GetRandomMapType()
         {
             var values = (MapType[])Enum.GetValues(typeof(MapType));
             for (var i = 0; i < 10; i++)

@@ -1,32 +1,16 @@
-using System.Collections.Generic;
-using Game.Grid;
-using Game.Hexes;
+using Game.Map.Falloff;
+using Game.Map.Noise;
 using UnityEngine;
 
 namespace Game.Map
 {
-    public class PlainsMap : IMapStrategy
+    public class PlainsMap : MapStrategy
     {
-        private const float NoiseScale = 25f;
-        private const int Octaves = 1;
-        private const int MinimumHeight = 2;
-        private readonly float _heightScale = 3;
-        private readonly Vector2 _noiseOffset = new (Random.value * 1000, Random.value * 1000);
-        
-        public List<HexInfo> GenerateMap()
+        public PlainsMap()
         {
-            var hexInfos = IMapStrategy.CreateBlankMap();
-            var dictionary = IMapStrategy.CreateHexInfoDictionary(hexInfos);
-            
-            foreach (var (coordinate, value) in dictionary)
-            {
-                var noisePosition = HexGrid.CubicTo2DSpace(coordinate) * NoiseScale + _noiseOffset;
-                var noise = IMapStrategy.FractalBrownianMotion(noisePosition, Octaves) * 0.8f;
-                var height = Mathf.RoundToInt(Mathf.Lerp(MinimumHeight, _heightScale, noise));
-                value.Height = Mathf.Clamp(height, MinimumHeight, HexFactory.MaxHeight);
-            }
-            
-            return hexInfos;
+            HeightRange = new Vector2Int(2, 3);
+            Noise = new FractalBrownianMotion(25, 1);
+            Falloff = new NoFalloff();
         }
     }
 }

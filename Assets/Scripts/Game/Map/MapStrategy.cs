@@ -1,0 +1,56 @@
+using System.Collections.Generic;
+using System.Linq;
+using Game.Grid;
+using Game.Hexes;
+using Game.Hexes.Features;
+using Game.Map.Falloff;
+using Game.Map.Noise;
+using UnityEngine;
+
+namespace Game.Map
+{
+    public class MapStrategy
+    {
+        protected Vector2Int HeightRange;
+        
+        protected INoise Noise;
+        protected IFalloff Falloff;
+        
+        public virtual List<HexInfo> GenerateMap()
+        {
+            var hexInfos = MapStrategy.CreateBlankMap();
+            var dictionary = MapStrategy.CreateHexInfoDictionary(hexInfos);
+            
+            foreach (var (coordinate, value) in dictionary)
+            {
+                var worldPosition = HexGrid.GetWorldPosition(coordinate);
+                var noise = Noise.GetValueAtWorldPosition(worldPosition);
+                var height01 = noise * Falloff.GetFalloffAtWorldPosition(worldPosition);
+                
+                var height = Mathf.RoundToInt(Mathf.Lerp(HeightRange.x, HeightRange.y, height01));
+                value.Height = Mathf.Clamp(height, HeightRange.x, HexFactory.MaxHeight);
+            }
+            
+            return hexInfos;
+        }
+
+        protected static List<HexInfo> CreateBlankMap()
+        {
+            var hexInfos = new List<HexInfo>();
+            var radius = HexGrid.GridRadius;
+            for (var x = -radius; x <= radius; x++)
+            {
+                for (var z = Mathf.Max(-radius, -x - radius); z <= Mathf.Min(radius, -x + radius); z++)
+                {
+                    hexInfos.Add(new HexInfo(new CubicCoordinate(x, z), 0, FeatureType.None, 0));
+                }
+            }
+            return hexInfos;
+        }
+        
+        protected static Dictionary<CubicCoordinate, HexInfo> CreateHexInfoDictionary(List<HexInfo> hexInfos)
+        {
+            return hexInfos.ToDictionary(hexInfo => hexInfo.Coordinate);
+        }
+    }
+}

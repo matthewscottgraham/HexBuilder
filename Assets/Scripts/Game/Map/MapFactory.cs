@@ -5,7 +5,7 @@ namespace Game.Map
 {
     public class MapFactory
     {
-        private readonly Dictionary<MapType, IMapStrategy> _strategies = new();
+        private readonly Dictionary<MapType, MapStrategy> _strategies = new();
 
         public MapFactory()
         {
@@ -22,7 +22,7 @@ namespace Game.Map
             return _strategies[mapType].GenerateMap();
         }
 
-        public IMapStrategy GetStrategy(MapType mapType)
+        public MapStrategy GetStrategy(MapType mapType)
         {
             return _strategies[mapType];
         }
