@@ -24,12 +24,6 @@ namespace Game.Menu
             
             CreateHeader();
             CreateSlots();
-            
-            var dropdownField = this.AddNew<DropdownField>(new DropdownField());
-            dropdownField.label = "Map Type";
-            dropdownField.choices = Enum.GetNames(typeof(MapType)).ToList();
-            dropdownField.value = _mapType.ToString();
-            dropdownField.RegisterValueChangedCallback((evt)=>HandleMapTypeChanged(evt.newValue));
         }
 
         private void CreateSlots()
@@ -48,6 +42,14 @@ namespace Game.Menu
 
             var labelText = _isNewGame ? "Choose Slot for New Game" : "Choose Game to Load";
             header.AddNew<Label>(new Label(labelText), "header-bar-label");
+
+            header.AddSpacer();
+            
+            var dropdownField = header.AddNew<DropdownField>(new DropdownField(), "map-type-selector");
+            dropdownField.label = "Map Type";
+            dropdownField.choices = Enum.GetNames(typeof(MapType)).ToList();
+            dropdownField.value = _mapType.ToString();
+            dropdownField.RegisterValueChangedCallback((evt)=>HandleMapTypeChanged(evt.newValue));
 
             header.AddSpacer();
 

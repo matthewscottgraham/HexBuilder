@@ -38,14 +38,6 @@ namespace Game.Map
                 Mathf.Abs(coordinate.z)
             );
         }
-
-        protected static Vector2 CubicTo2DSpace(CubicCoordinate coordinate)
-        {
-            return new Vector2(
-                coordinate.x + coordinate.z * 0.5f,
-                coordinate.z * 0.866f // This magic number is the square root of 3 / 2
-            );
-        }
         
         protected static float FractalBrownianMotion(Vector2 position, int octaves)
         {

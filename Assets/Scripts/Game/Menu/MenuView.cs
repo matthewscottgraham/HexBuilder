@@ -2,7 +2,6 @@ using App.Events;
 using App.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEngine.VFX;
 
 namespace Game.Menu
 {

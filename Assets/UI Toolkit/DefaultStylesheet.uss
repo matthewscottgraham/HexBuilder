@@ -13,19 +13,30 @@ Button {
     min-width: 200px;
 }
 
+PopupTextElement {
+    color: white;
+    font-size: 20px;
+}
+
 DropdownField {
     height: 50px;
     border-radius: 12px;
     max-width: 400px;
 }
 
-DropdownField .unity-popup-field__input {
+DropdownField .unity-base-field__input {
     background-color: darkslategrey;
     border-radius: 12px;
 }
 
-DropdownField:hover .unity-popup-field__input{
-    background-color: cadetblue;
+.map-type-selector.unity-base-field:hover > .unity-base-field__input {
+    background-image: none;
+    background-color: goldenrod;
+}
+
+unity-popup-menu__item:hover {
+    background-image: none;
+    background-color: goldenrod;
 }
 
 .spacer {

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Grid;
 using Game.Hexes;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ namespace Game.Map
             
             foreach (var (coordinate, value) in dictionary)
             {
-                var noisePosition = IMapStrategy.CubicTo2DSpace(coordinate) * NoiseScale + _noiseOffset;
+                var noisePosition = HexGrid.CubicTo2DSpace(coordinate) * NoiseScale + _noiseOffset;
                 var noise = IMapStrategy.FractalBrownianMotion(noisePosition, Octaves) * 0.8f;
                 var height = Mathf.RoundToInt(Mathf.Lerp(MinimumHeight, _heightScale, noise));
                 value.Height = Mathf.Clamp(height, MinimumHeight, HexFactory.MaxHeight);

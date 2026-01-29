@@ -7,12 +7,20 @@ namespace Game.Grid
     public class HexGrid
     {
         public static int GridRadius { get; private set; }
-        private static float HexRadius => 2;
+        public static float HexRadius => 2;
         private const float Sqrt3 = 1.7320508f; // Square root of 3
 
         public HexGrid(int gridRadius)
         {
             GridRadius = gridRadius;
+        }
+        
+        public static Vector2 CubicTo2DSpace(CubicCoordinate coordinate)
+        {
+            return new Vector2(
+                coordinate.x + coordinate.z * 0.5f,
+                coordinate.z * 0.866f // This magic number is the square root of 3 / 2
+            );
         }
         
         public static Vector3 GetLocalVertexPosition(int cornerIndex)
