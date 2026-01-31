@@ -8,8 +8,8 @@ namespace Game.Map
     {
         public PlainsMap()
         {
-            HeightRange = new Vector2Int(2, 3);
-            Noise = new FractalBrownianMotion(25, 1);
+            HeightRange = new Vector2Int(2, 4);
+            Noise = new FractalBrownianMotion(50, 1);
             Falloff = new NoFalloff();
         }
     }

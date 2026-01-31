@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace Game.Map
 {
-    public class PeninsulasMap : MapStrategy
+    public class ArchipelagoMap : MapStrategy
     {
-        public PeninsulasMap()
+        public ArchipelagoMap()
         {
-            HeightRange = new Vector2Int(0, 4);
+            HeightRange = new Vector2Int(0, 3);
             Noise = new FractalBrownianMotion(0.6f, 3);
-            Falloff = new VoronoiFalloff(3,6);
+            Falloff = new VoronoiFalloff(12,24);
         }
     }
 }

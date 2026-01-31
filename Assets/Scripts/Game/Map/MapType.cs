@@ -6,7 +6,7 @@ namespace Game.Map
         Random,
         SmallIsland,
         BigIsland,
-        Peninsula,
+        Archipelago,
         Plains
     }
 }

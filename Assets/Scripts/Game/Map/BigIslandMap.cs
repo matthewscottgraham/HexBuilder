@@ -8,9 +8,9 @@ namespace Game.Map
     {
         public BigIslandMap()
         {
-            HeightRange = new Vector2Int(0, 3);
+            HeightRange = new Vector2Int(0, 4);
             Noise = new FractalBrownianMotion(10, 5);
-            Falloff = new RadialFalloff(6);
+            Falloff = new RadialFalloff(8);
         }
     }
 }

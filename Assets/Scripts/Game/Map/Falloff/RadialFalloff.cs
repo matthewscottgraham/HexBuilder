@@ -18,7 +18,7 @@ namespace Game.Map.Falloff
         {
             var t = Vector3.Distance(worldPosition, _worldCenter) / _worldRadius;
             t = Mathf.Clamp01(t);
-            return 1f / (1f + Mathf.Exp(_power * (t - 0.6f))); // This is a S curve style falloff
+            return 1f / (1f + Mathf.Exp(_power * (t - _power / 10f))); // This is a S curve style falloff
         }
     }
 }

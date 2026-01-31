@@ -10,7 +10,7 @@ namespace Game.Map
         {
             HeightRange = new Vector2Int(0, 3);
             Noise = new FractalBrownianMotion(8, 3);
-            Falloff = new RadialFalloff(10);
+            Falloff = new RadialFalloff(4);
         }
     }
 }

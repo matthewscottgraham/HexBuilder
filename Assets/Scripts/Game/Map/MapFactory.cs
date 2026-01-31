@@ -13,7 +13,7 @@ namespace Game.Map
             _strategies.Add(MapType.Random, new RandomMap(this));
             _strategies.Add(MapType.SmallIsland, new SmallIslandMap());
             _strategies.Add(MapType.BigIsland, new BigIslandMap());
-            _strategies.Add(MapType.Peninsula, new PeninsulasMap());
+            _strategies.Add(MapType.Archipelago, new ArchipelagoMap());
             _strategies.Add(MapType.Plains, new PlainsMap());
         }
         

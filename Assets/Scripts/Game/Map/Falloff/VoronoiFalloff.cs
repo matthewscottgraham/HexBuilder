@@ -12,7 +12,7 @@ namespace Game.Map.Falloff
             _centres = new Vector3[Random.Range(min, max)];
             for (var i = 0; i < _centres.Length; i++)
             {
-                var c = Random.insideUnitCircle * HexGrid.GridRadius * 0.8f;
+                var c = Random.insideUnitCircle * HexGrid.GridRadius * 2;
                 _centres[i] = new Vector3(c.x, 0, c.y);
             }
         }
