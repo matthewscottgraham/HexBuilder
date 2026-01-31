@@ -5,10 +5,8 @@
     border-bottom-width: 6px;
     border-radius: 12px;
     flex-direction: row;
-    flex-grow: 1;
     margin: 12px;
     padding: 12px;
-    position: absolute;
     height: 122px;
 }
 
