@@ -45,9 +45,9 @@ namespace App
             var screenshotController = gameObject.AddChild<ScreenshotController>("ScreenshotController");
             
 #if UNITY_EDITOR
-            VFXController vfxController = gameObject.AddChild<GpuVfxController>("VFXController");
+            VFXController vfxController = gameObject.AddChild<CpuVfxController>("VFXController");
 #else
-            var vfxController = gameObject.AddChild<CpuVfxController>("VFXController");
+            var vfxController = gameObject.AddChild<GpuVfxController>("VFXController");
 #endif
             _resources = new IDisposable[]
             {

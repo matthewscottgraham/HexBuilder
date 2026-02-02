@@ -43,7 +43,14 @@ namespace App.VFX
             VisualEffectPool.Clear();
             ServiceLocator.Instance.Deregister(this);
         }
-        public virtual void RegisterVFX(string vfxID, object prefab)
+
+        public virtual GameObject GetPersistentVFX(string vfxID)
+        {
+            //NOOP
+            return null;
+        }
+        
+        public virtual void RegisterVFX(string vfxID)
         {
             // NOOP
         }

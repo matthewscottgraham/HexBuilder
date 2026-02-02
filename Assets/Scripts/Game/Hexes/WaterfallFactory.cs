@@ -1,18 +1,22 @@
 using System.Collections.Generic;
-using App.Utils;
+using App.Services;
 using App.VFX;
 using Game.Grid;
 using UnityEngine;
-using UnityEngine.VFX;
 
 namespace Game.Hexes
 {
     public class WaterfallFactory
     {
+        public const string WaterfallVfxID = "waterfallVFX";
         private const float WaterfallWidth = 0.333f;
-        private readonly VisualEffectAsset _visualEffectAsset = Resources.Load<VisualEffectAsset>("VFX/waterfallVFX");
         private readonly Material _waterfallMaterial = Resources.Load<Material>("Materials/mat_river");
         private readonly Dictionary<int, Mesh> _meshes = new Dictionary<int, Mesh>();
+        
+        public WaterfallFactory()
+        {
+            ServiceLocator.Instance.Get<VFXController>().RegisterVFX(WaterfallVfxID);
+        }
         
         public Transform CreateWaterFall(HexObject hexA, HexObject hexB, int edgeA, int edgeB)
         {
@@ -26,8 +30,8 @@ namespace Game.Hexes
             var renderer = waterfall.AddComponent<MeshRenderer>();
             renderer.sharedMaterial = _waterfallMaterial;
             
-            var vfx = waterfall.AddChild<VisualEffect>();
-            vfx.visualEffectAsset = _visualEffectAsset;
+            var vfx = ServiceLocator.Instance.Get<VFXController>().GetPersistentVFX(WaterfallVfxID);
+            vfx.transform.SetParent(waterfall.transform);
             vfx.transform.localPosition = new Vector3(-2f, -height, 0);
             
             return waterfall.transform;

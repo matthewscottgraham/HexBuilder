@@ -20,7 +20,7 @@ namespace Game.Tools
     public class ToolController : MonoBehaviour, IDisposable
     {
         private const string UseToolSoundID = "Audio/SFX/place";
-        private const string UseToolVfxID = "VFX/useTool";
+        private const string UseToolVfxID = "useTool";
         
         private int _radius;
         private ITool[] _tools;
@@ -71,7 +71,7 @@ namespace Game.Tools
             SetActiveTool(1);
             
             ServiceLocator.Instance.Get<AudioController>().RegisterSound(UseToolSoundID, Resources.Load<AudioClip>(UseToolSoundID));
-            ServiceLocator.Instance.Get<VFXController>().RegisterVFX(UseToolVfxID, Resources.Load<VisualEffectAsset>(UseToolVfxID));
+            ServiceLocator.Instance.Get<VFXController>().RegisterVFX(UseToolVfxID);
         }
 
         public void Dispose()

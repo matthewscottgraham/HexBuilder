@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using App.Events;
 using App.Utils;
 using UnityEngine;
-using UnityEngine.VFX;
 
 namespace App.VFX
 {
-    public class GpuVfxController : VFXController
+    public class CpuVfxController : VFXController
     {
-        private readonly Dictionary<string, VisualEffectAsset> _visualEffectAssets = new();
+        private readonly Dictionary<string, ParticleSystem> _visualEffectAssets = new();
 
         public override void Dispose()
         {
@@ -18,17 +17,17 @@ namespace App.VFX
         }
         public override void RegisterVFX(string vfxID)
         {
-            var prefab = Resources.Load<VisualEffectAsset>($"VFX/{vfxID}");
+            var prefab = Resources.Load<ParticleSystem>($"VFX/{vfxID}");
             if (!prefab) return;
             _visualEffectAssets.TryAdd(vfxID, prefab);
         }
-        
+
         public override GameObject GetPersistentVFX(string vfxID)
         {
             if (!_visualEffectAssets.TryGetValue(vfxID, out var vfxPrefab)) return null;
             var vfxObject = CreateVisualEffect();
-            var vfx = vfxObject.GetComponent<VisualEffect>();
-            vfx.visualEffectAsset = vfxPrefab;
+            var vfx = vfxObject.GetComponent<ParticleSystem>();
+            ParticleSystemCopier.CopyParticleSystem(vfxPrefab, vfx);
             vfx.Play();
             return vfxObject;
         }
@@ -37,8 +36,8 @@ namespace App.VFX
         {
             if (VisualEffectPool.CountInactive == 0 && VisualEffectPool.CountAll >= MaxPoolSize) return;
             var vfxObject = VisualEffectPool.Get();
-            var vfx = vfxObject.GetComponent<VisualEffect>();
-            vfx.visualEffectAsset = _visualEffectAssets[evt.EffectID];
+            var vfx = vfxObject.GetComponent<ParticleSystem>();
+            ParticleSystemCopier.CopyParticleSystem(_visualEffectAssets[evt.EffectID], vfx);
             vfx.transform.position = evt.Position;
             vfx.transform.rotation = Quaternion.Euler(evt.Rotation);
             vfx.Play();
@@ -49,27 +48,29 @@ namespace App.VFX
         {
             foreach (var vfxObject in ActiveVisualEffects)
             {
-                vfxObject.GetComponent<VisualEffect>().enabled = isPaused;
+                var ps = vfxObject.GetComponent<ParticleSystem>();
+                if (isPaused) ps.Pause();
+                else ps.Play();
             }
         }
 
         protected override GameObject CreateVisualEffect()
         {
-            var visualEffect = gameObject.AddChild<VisualEffect>("VFX");
+            var visualEffect = gameObject.AddChild<ParticleSystem>("VFX");
             return visualEffect.gameObject;
         }
 
         protected override void ReleaseVisualEffect(GameObject vfxObject)
         {
-            var visualEffect = vfxObject.GetComponent<VisualEffect>();
-            visualEffect.visualEffectAsset = null;
+            var ps = vfxObject.GetComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             if (ActiveVisualEffects.Contains(vfxObject))
                 ActiveVisualEffects.Remove(vfxObject);
         }
 
-        private IEnumerator ReleaseVFXWhenFinished(VisualEffect vfx)
+        private IEnumerator ReleaseVFXWhenFinished(ParticleSystem vfx)
         {
-            yield return new WaitUntil(() => vfx.aliveParticleCount == 0);
+            yield return new WaitUntil(() => !vfx.IsAlive(true));
             VisualEffectPool.Release(vfx.gameObject);
         }
     }
