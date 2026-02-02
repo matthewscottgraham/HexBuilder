@@ -42,9 +42,13 @@ namespace App
             var inputController = gameObject.AddChild<InputController>("InputController");
             var tweenController = gameObject.AddChild<TweenController>("TweenController");
             var audioController = gameObject.AddChild<AudioController>("AudioController");
-            var vfxController = gameObject.AddChild<VFXController>("VFXController");
             var screenshotController = gameObject.AddChild<ScreenshotController>("ScreenshotController");
-
+            
+#if UNITY_EDITOR
+            VFXController vfxController = gameObject.AddChild<GpuVfxController>("VFXController");
+#else
+            var vfxController = gameObject.AddChild<CpuVfxController>("VFXController");
+#endif
             _resources = new IDisposable[]
             {
                 new SceneController(),
@@ -66,8 +70,11 @@ namespace App
             foreach (var resource in _resources)
             {
                 if (resource.GetType() == typeof(ServiceLocator)) continue;
+                if (resource.GetType() == typeof(VFXController)) continue;
                 serviceLocator.Register(resource);
             }
+            
+            serviceLocator.RegisterAsType(vfxController, typeof(VFXController));
 
             ServiceLocator.Instance.Get<SceneController>().LoadGameScene();
         }

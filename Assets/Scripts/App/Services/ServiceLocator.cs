@@ -37,6 +37,12 @@ namespace App.Services
             if (!_services.TryAdd(service.GetType(), service))
                 Debug.Log($"Service type already registered: {service.GetType().Name}");
         }
+        
+        public void RegisterAsType<T>(T service, Type serviceType)
+        {
+            if (!_services.TryAdd(serviceType, service))
+                Debug.Log($"Service type already registered: {service.GetType().Name}");
+        }
 
         public void Deregister<T>(T service)
         {
