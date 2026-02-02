@@ -48,12 +48,17 @@ namespace App.Screenshots
             var fileData = texture.EncodeToJPG();
             var imagePath = _ioController.SaveImage(fileData, relativePath, fileName, "jpg");
 
-            if (openDirectory)
-            {
-                Application.OpenURL(Path.GetDirectoryName(imagePath));
-            }
+            if (openDirectory) OpenDirectory(imagePath);
         }
-        
+
+        private static void OpenDirectory(string imagePath)
+        {
+            var imageDirectory = new FileInfo(imagePath).Directory;
+            if (imageDirectory == null || !imageDirectory.Exists) return;
+            var directoryUrl = new Uri(imageDirectory.FullName).AbsoluteUri;
+            Application.OpenURL(directoryUrl);
+        }
+
         private static Texture2D ResizeTexture(Texture2D source, int width, int height)
         {
             var rt = RenderTexture.GetTemporary(width, height);
