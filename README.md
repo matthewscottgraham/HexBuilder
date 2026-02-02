@@ -1,13 +1,7 @@
 # Hex Builder
 
 ## Overview
-**Hex Builder** is a Unity-based hex tile building sandbox.  
-It is designed primarily as a **tool and technical foundation** rather than a traditional game, with an emphasis on grid logic, tile placement, and extensibility.
-
-The project can be used as:
-- A standalone creative toy
-- A reference implementation for hex-grid systems in Unity
-- A starting point for building hex-tile-based games or editors
+Years ago, when I was first learning Unity, I attempted an mostly failed to make a game that was a mashup of the board games Catan, Carcassonne and Scrabble. I found that the most enjoyable part of that project, was the "Level Editor". This is a toy that mostly scratches that same itch, while being a much better made program, that could reasonably be extended to create other Hex Tile based games in the future.
 
 <p align="center">
 	<img src="images/ScreenshotA.jpg" alt="Screenshot A" height="250"/>
@@ -15,13 +9,13 @@ The project can be used as:
 	<img src="images/ScreenshotC.jpg" alt="Screenshot C" height="250"/>
 </p>
 
-## Motivation
-This project grew out of an earlier Unity prototype that attempted to combine mechanics from **Catan**, **Carcassonne**, and **Scrabble**. While the original game was unsuccessful, the most compelling part turned out to be the level editor and tile manipulation systems.
-
-Hex Builder is a focused reimplementation of that idea:
-- Smaller scope
-- Cleaner architecture
-- Built with reuse and iteration in mind
+## Current Features
+- Tools for manual terrain manipulation, using an area of effect.
+- Placement of features on faces, edges or vertices
+- Serialization / Deserialization of game data.
+- particle effects - gpu or cpu particles, dependent on platform
+- day/night cycle
+- audio
 
 ## Dependencies
 - **Unity 6.2**
@@ -57,20 +51,11 @@ Prebuilt binaries and a WebGL version are available on Itch.io:
 - Click-Drag to move the camera
 - Left Click to use the selected tool on the face/edge/vertex under the mouse.
 
-## Current Features
-- Cubic Coordinates and a radial playspace.
-- Tools for manual terrain manipulation, using an area of effect.
-- Placement of features on faces, edges or vertices
-- Serialization / Deserialization of game data.
-- particle effects
-- day/night cycle
-- audio
-
 ## Roadmap
 - **v0.1** - Working prototype
-- **v0.2** - Current - Visual polish and rendering improvements
-- **v0.3** - Quality-of-life improvements, bugfixes, user options etc
-- **v0.4** - Landscape presets and procedural terrain generation
+- **v0.2** - Visual polish and rendering improvements
+- **v0.3** - Current - Landscape presets and procedural terrain generation
+- **v0.4** - UI styling, better music, Smarter feature placement and more feature options.
 
 ## References
 - Screen Based outline shader based on this tutorial by Digvijaysinh Gohil: https://www.youtube.com/watch?v=nc3a3THBFrg

@@ -44,7 +44,7 @@ namespace App
             var audioController = gameObject.AddChild<AudioController>("AudioController");
             var screenshotController = gameObject.AddChild<ScreenshotController>("ScreenshotController");
             
-#if UNITY_EDITOR
+#if UNITY_WEBGL
             VFXController vfxController = gameObject.AddChild<CpuVfxController>("VFXController");
 #else
             var vfxController = gameObject.AddChild<GpuVfxController>("VFXController");

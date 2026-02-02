@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using App.Config;
 using App.SaveData;
 using App.Services;
 using Game.Grid;
@@ -115,7 +114,7 @@ namespace Game.Hexes
             _map = new Dictionary<CubicCoordinate, HexObject>();
             List<HexInfo> hexInfos;
 #if UNITY_WEBGL
-            hexInfos = _mapFactory.CreateMap(MapType.Empty);
+            hexInfos = _mapFactory.CreateMap(_newMapType);
 #else
             
             var loadedData = ServiceLocator.Instance.Get<SaveDataController>().LoadSaveSlot<GameData>(ConfigController.CurrentSaveSlot);

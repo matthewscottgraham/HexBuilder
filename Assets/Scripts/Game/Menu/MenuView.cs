@@ -37,8 +37,8 @@ namespace Game.Menu
             _gamePanel = _menuPanel.AddNew<VisualElement>(new VisualElement(), "game-panel");
             _timePanel = _menuPanel.AddNew<VisualElement>(new VisualElement(), "game-panel");
             
-//#if UNITY_WEBGL
-#if UNITY_EDITOR
+
+#if UNITY_WEBGL
             _newGameButton = _gamePanel.AddButton("New", HandleNewGamePanelToggled);
 #else
             _newGameButton = _gamePanel.AddButton("New", HandleNewGameButtonClicked);
