@@ -18,17 +18,19 @@ namespace Game.Map
         
         public virtual List<HexInfo> GenerateMap()
         {
-            var hexInfos = MapStrategy.CreateBlankMap();
-            var dictionary = MapStrategy.CreateHexInfoDictionary(hexInfos);
+            var hexInfos = CreateBlankMap();
+            var dictionary = CreateHexInfoDictionary(hexInfos);
             
-            foreach (var (coordinate, value) in dictionary)
+            foreach (var (coordinate, hexInfo) in dictionary)
             {
                 var worldPosition = HexGrid.GetWorldPosition(coordinate);
                 var noise = Noise.GetValueAtWorldPosition(worldPosition);
                 var height01 = noise * Falloff.GetFalloffAtWorldPosition(worldPosition);
                 
                 var height = Mathf.RoundToInt(Mathf.Lerp(HeightRange.x, HeightRange.y, height01));
-                value.Height = Mathf.Clamp(height, HeightRange.x, HexFactory.MaxHeight);
+                hexInfo.Height = Mathf.Clamp(height, HeightRange.x, HexFactory.MaxHeight);
+
+                AddRandomFaceFeature(hexInfo);
             }
             
             return hexInfos;
@@ -48,9 +50,29 @@ namespace Game.Map
             return hexInfos;
         }
         
-        protected static Dictionary<CubicCoordinate, HexInfo> CreateHexInfoDictionary(List<HexInfo> hexInfos)
+        private static Dictionary<CubicCoordinate, HexInfo> CreateHexInfoDictionary(List<HexInfo> hexInfos)
         {
             return hexInfos.ToDictionary(hexInfo => hexInfo.Coordinate);
+        }
+
+        private static void AddRandomFaceFeature(HexInfo hexInfo)
+        {
+            var featureType = hexInfo.Height switch
+            {
+                2 => FeatureType.Wilderness,
+                3 => FeatureType.Wilderness,
+                4 => FeatureType.Mountain,
+                5 => FeatureType.Mountain,
+                _ => FeatureType.None
+            };
+
+            var threshold = featureType == FeatureType.Mountain ? 0.75f : 0.4f;
+            
+            if (Random.value < threshold) return;
+            
+            hexInfo.FeatureType = featureType;
+            hexInfo.FeatureVariation = Random.Range(0, 10);
+
         }
     }
 }

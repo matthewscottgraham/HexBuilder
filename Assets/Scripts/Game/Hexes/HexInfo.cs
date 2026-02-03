@@ -8,8 +8,8 @@ namespace Game.Hexes
     {
         public readonly CubicCoordinate Coordinate;
         public int Height;
-        public readonly FeatureType FeatureType;
-        public readonly int FeatureVariation;
+        public FeatureType FeatureType;
+        public int FeatureVariation;
         public readonly bool[] VertexFeatures;
         public readonly bool[] EdgeFeatures;
 

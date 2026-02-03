@@ -18,9 +18,17 @@ MonoBehaviour:
     allowRotation: 1
   - prefab: {fileID: 5555531297610830704, guid: e8009b9299de240bfa8eb4e864787ad2, type: 3}
     allowRotation: 1
-  - prefab: {fileID: 8990615044491715202, guid: 97928d45441b74405b7fa2bf26098161, type: 3}
+  - prefab: {fileID: 3423569949406378619, guid: 8c4e94e09d207476fa03e4bcf7d6e4f4, type: 3}
     allowRotation: 1
-  - prefab: {fileID: 4761989921967398516, guid: 3d6117a42c88441ebbce0fe5053208fd, type: 3}
+  - prefab: {fileID: 8842882956654768499, guid: 96b99a8c8f08349c3912cbbd577f31e1, type: 3}
     allowRotation: 1
-  - prefab: {fileID: 4482441511970881630, guid: 7582c446b1a80435abbd1405fe8cf954, type: 3}
+  - prefab: {fileID: 3194378718631944948, guid: 7db1db8cb80d54f66b5d9eba3fe1f3fd, type: 3}
+    allowRotation: 1
+  - prefab: {fileID: 831953927116441052, guid: ef491136b3051448a9d96508bda700e2, type: 3}
+    allowRotation: 1
+  - prefab: {fileID: 1886922969708501385, guid: 292947c4534e045b6ae415fba6040632, type: 3}
+    allowRotation: 1
+  - prefab: {fileID: 3691120038027415904, guid: 82764101b7cc64b08a5a22324bfa04d4, type: 3}
+    allowRotation: 1
+  - prefab: {fileID: 7242123426955003390, guid: 5ffabf0dd151344ceac5e3cf60c5e508, type: 3}
     allowRotation: 1

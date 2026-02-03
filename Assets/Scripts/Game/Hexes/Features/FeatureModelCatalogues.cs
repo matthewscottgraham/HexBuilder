@@ -15,8 +15,8 @@ namespace Game.Hexes.Features
         public (FeaturePrefab, int) GetPrefab(bool useRandom = true, int variation = -1)
         {
             if (useRandom) return GetRandomPrefab();
-            
-            variation = Mathf.Clamp(variation, 0, prefabs.Length);
+
+            variation %= prefabs.Length;
             return (prefabs[variation], variation);
         }
         private (FeaturePrefab, int) GetRandomPrefab()

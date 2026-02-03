@@ -23,12 +23,7 @@ namespace Game.Map
         private static MapType GetRandomMapType()
         {
             var values = (MapType[])Enum.GetValues(typeof(MapType));
-            for (var i = 0; i < 10; i++)
-            {
-                var mapType = values[Random.Range(0, values.Length)];
-                if (mapType != MapType.Random) return mapType;
-            }
-            return MapType.Archipelago;
+            return values[Random.Range(2, values.Length)]; // skip empty and random type
         }
     }
 }

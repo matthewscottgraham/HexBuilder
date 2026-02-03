@@ -16,9 +16,21 @@ MonoBehaviour:
   prefabs:
   - prefab: {fileID: 2021093281289282885, guid: 73e0f4d1f73954b0fa0f9138ea4949d7, type: 3}
     allowRotation: 1
-  - prefab: {fileID: 8240358770881312597, guid: 7f9d0a37c827b47e08f8c8bf78e6faef, type: 3}
-    allowRotation: 0
-  - prefab: {fileID: 5242125084442541436, guid: d650c321760d941b9aff9a703c2f69d7, type: 3}
-    allowRotation: 1
   - prefab: {fileID: 2096918973143824915, guid: e6530ff4432ee48149ee421479bc035a, type: 3}
-    allowRotation: 1
+    allowRotation: 0
+  - prefab: {fileID: 6142636613007321832, guid: b31b6eec6e44348cd921466871354ad3, type: 3}
+    allowRotation: 0
+  - prefab: {fileID: 3514548753929725200, guid: d7785bdfca04c4b45b41385c870b53cf, type: 3}
+    allowRotation: 0
+  - prefab: {fileID: 6152733883645897609, guid: 112ca37ca6b434022adb44da3e683c76, type: 3}
+    allowRotation: 0
+  - prefab: {fileID: 7739790541399446232, guid: fc4dd14303d4d4640a323244b0e18378, type: 3}
+    allowRotation: 0
+  - prefab: {fileID: 2565627944150942992, guid: b2106e4934583420bb13ba92b96bc9e3, type: 3}
+    allowRotation: 0
+  - prefab: {fileID: 7177215328050730565, guid: 02ac40d562c914501b9526bc8fee5ee7, type: 3}
+    allowRotation: 0
+  - prefab: {fileID: 3418513067279663885, guid: 0f23610ff8daf479ab37ffc09f155661, type: 3}
+    allowRotation: 0
+  - prefab: {fileID: 5512701113124954922, guid: 40ef7493addc846ccbff7cc0382501cd, type: 3}
+    allowRotation: 0

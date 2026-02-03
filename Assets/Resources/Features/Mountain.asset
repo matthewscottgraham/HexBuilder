@@ -18,3 +18,7 @@ MonoBehaviour:
     allowRotation: 1
   - prefab: {fileID: 709745925262384342, guid: 5726ac7906d3f475bbd82ddf83ac7397, type: 3}
     allowRotation: 1
+  - prefab: {fileID: 5503285346483269088, guid: f2cb05aecc27740739ed1c108dcadb71, type: 3}
+    allowRotation: 1
+  - prefab: {fileID: 6603863637631324799, guid: 6c77ff325a90e44acb6abc08743f069a, type: 3}
+    allowRotation: 1
