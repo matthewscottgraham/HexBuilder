@@ -84,7 +84,8 @@ namespace Game.Hexes.Features
             
             if (featurePrefab.AllowRotation)
             {
-                instance.transform.localRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360f), 0);
+                var rot = 60 * UnityEngine.Random.Range(0, 6);
+                instance.transform.localRotation = Quaternion.Euler(0, rot, 0);
             }
 
             return instance;
