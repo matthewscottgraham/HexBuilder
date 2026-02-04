@@ -13,7 +13,6 @@ using Game.Selection;
 using Game.Tools.Paths;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.VFX;
 
 namespace Game.Tools
 {
@@ -23,15 +22,24 @@ namespace Game.Tools
         private const string UseToolVfxID = "useTool";
         
         private int _radius;
-        private ITool[] _tools;
         private Dictionary<SelectionType, Selector> _selectors;
         private EventBinding<SelectionEvent> _selectionEventBinding;
         private EventBinding<GamePauseEvent> _pauseEventBinding;
         private EventBinding<GameResumeEvent> _resumeEventBinding;
         private Selector _currentSelector;
-
+        
+        public ITool[] Tools { get; private set; }
         public ITool CurrentTool { get; private set; }
 
+        public int GetCurrentToolIndex()
+        {
+            for (var i = 0; i < Tools.Length; i++)
+            {
+                if (Tools[i] == CurrentTool) return i;
+            }
+            return -1;
+        }
+        
         public void Initialize()
         {
             _pauseEventBinding = new EventBinding<GamePauseEvent>(HandlePauseEvent);
@@ -42,7 +50,7 @@ namespace Game.Tools
             _selectionEventBinding = new EventBinding<SelectionEvent>(HandleInteractEvent);
             EventBus<SelectionEvent>.Register(_selectionEventBinding);
             
-            _tools = new ITool[]
+            Tools = new ITool[]
             {
                 new LevelTerrain(),
                 new RaiseTerrain(),
@@ -76,7 +84,7 @@ namespace Game.Tools
 
         public void Dispose()
         {
-            _tools = null;
+            Tools = null;
             CurrentTool = null;
             _currentSelector = null;
             EventBus<SelectionEvent>.Deregister(_selectionEventBinding);
@@ -92,8 +100,8 @@ namespace Game.Tools
 
         public void SetActiveTool(int toolIndex)
         {
-            Assert.IsTrue(toolIndex >= 0 && toolIndex < _tools.Length);
-            CurrentTool = _tools[toolIndex];
+            Assert.IsTrue(toolIndex >= 0 && toolIndex < Tools.Length);
+            CurrentTool = Tools[toolIndex];
 
             SetActiveSelector(CurrentTool.SelectionType);
         }
@@ -154,7 +162,7 @@ namespace Game.Tools
         private void SetLevelFromCoordinate(CubicCoordinate coordinate)
         {
             var height = ServiceLocator.Instance.Get<HexController>().GetHexHeight(coordinate);
-            foreach (var tool in _tools)
+            foreach (var tool in Tools)
             {
                 if (tool.GetType() != typeof(LevelTerrain)) continue;
 

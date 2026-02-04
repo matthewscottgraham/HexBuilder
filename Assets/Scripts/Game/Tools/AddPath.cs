@@ -2,11 +2,13 @@ using App.Services;
 using Game.Grid;
 using Game.Hexes;
 using Game.Selection;
+using UnityEngine;
 
 namespace Game.Tools.Paths
 {
     public class AddPath : ITool
     {
+        Sprite ITool.Icon => Resources.Load<Sprite>("Sprites/path");
         bool ITool.UseRadius => false;
         SelectionType ITool.SelectionType => SelectionType.Vertex;
         

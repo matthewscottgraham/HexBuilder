@@ -1,29 +1,2 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1;">
-        <ui:VisualElement name="ToolPanel" class="tool-panel" style="position: relative;">
-            <ui:VisualElement name="MenuPanel" style="flex-grow: 1;" />
-            <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
-            <ui:Button text="Picture" name="ScreenshotButton" style="height: 100%;" />
-            <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
-            <ui:VisualElement name="OptionsPanel" style="flex-grow: 1; width: 300px;">
-                <ui:Slider label="Music" value="0.8" high-value="1" name="MusicVolume" />
-                <ui:Slider label="SFX" value="0.8" high-value="1" name="SfxVolume" />
-            </ui:VisualElement>
-            <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
-            <ui:ToggleButtonGroup value="000010">
-                <ui:Button text="Level" />
-                <ui:Button text="Raise" />
-                <ui:Button text="Lower" />
-                <ui:Button text="Mountain" />
-                <ui:Button text="River" />
-                <ui:Button text="Vegetation" />
-                <ui:Button text="Settlement" />
-            </ui:ToggleButtonGroup>
-            <ui:VisualElement name="Spacer" class="spacer" style="flex-grow: 1;" />
-            <ui:VisualElement style="flex-grow: 1; width: 200px; align-self: center;">
-                <ui:SliderInt label="Radius" value="0" high-value="2" low-value="0" name="RadiusSlider" />
-            </ui:VisualElement>
-        </ui:VisualElement>
-        <ui:VisualElement name="NewGamePanel" class="tool-panel" />
-    </ui:VisualElement>
 </ui:UXML>

@@ -2,11 +2,13 @@ using App.Services;
 using Game.Grid;
 using Game.Hexes;
 using Game.Selection;
+using UnityEngine;
 
 namespace Game.Tools
 {
     public class AddRiver : ITool
     {
+        Sprite ITool.Icon => Resources.Load<Sprite>("Sprites/river");
         bool ITool.UseRadius => false;
         SelectionType ITool.SelectionType => SelectionType.Edge;
         

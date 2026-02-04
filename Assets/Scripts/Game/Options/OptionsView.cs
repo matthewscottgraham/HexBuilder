@@ -1,8 +1,9 @@
-using System;
 using App.Audio;
 using App.Events;
 using App.Screenshots;
 using App.Services;
+using App.Utils;
+using Game.Menu;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -10,41 +11,47 @@ namespace Game.Options
 {
     public class OptionsView : MonoBehaviour
     {
-        private UIDocument _document;
-        private Button _screenshotButton;
         private Slider _musicVolumeSlider;
         private Slider _sfxVolumeSlider;
 
         private void Start()
         {
             var audioController = ServiceLocator.Instance.Get<AudioController>();
-            _document = GetComponent<UIDocument>();
+            var menuBarController = GetComponent<MenuBarController>();
+
+#if !UNITY_WEBGL
+            var screenshotIcon = Resources.Load<Sprite>("Sprites/screenshot"); 
+            menuBarController.RegisterButton("screenshot", screenshotIcon, TakeScreenshot);
+#endif
             
-            _screenshotButton = _document.rootVisualElement.Q<Button>("ScreenshotButton");
-            _screenshotButton.clicked += TakeScreenshot;
+            var optionsIcon = Resources.Load<Sprite>("Sprites/options"); 
+            var tabContent = menuBarController.RegisterTab("options", optionsIcon);
             
-            _musicVolumeSlider = _document.rootVisualElement.Q<Slider>("MusicVolume");
-            _musicVolumeSlider.SetValueWithoutNotify(audioController.MusicVolume);
+            _musicVolumeSlider = MakeSlider(tabContent, "Music", audioController.MusicVolume);
             _musicVolumeSlider.RegisterValueChangedCallback(HandleMusicVolumeChanged);
             
-            _sfxVolumeSlider = _document.rootVisualElement.Q<Slider>("SfxVolume");
-            _sfxVolumeSlider.SetValueWithoutNotify(audioController.SfxVolume);
+            _sfxVolumeSlider = MakeSlider(tabContent, "SFX", audioController.SfxVolume);
             _sfxVolumeSlider.RegisterValueChangedCallback(HandleSfxVolumeChanged);
-            
-            #if UNITY_WEBGL
-            _screenshotButton.style.display = DisplayStyle.None;
-            #endif
         }
 
         private void OnDestroy()
         {
-            if (_screenshotButton == null) return;
-            _screenshotButton.clicked -= TakeScreenshot;
+            if (_musicVolumeSlider == null) return;
             _musicVolumeSlider.UnregisterValueChangedCallback(HandleMusicVolumeChanged);
             _sfxVolumeSlider.UnregisterValueChangedCallback(HandleSfxVolumeChanged);
         }
 
-        private void TakeScreenshot()
+        private static Slider MakeSlider(VisualElement parentElement, string label, float value)
+        {
+            var slider = parentElement.AddNew(new Slider());
+            slider.label = label;
+            slider.SetValueWithoutNotify(value);
+            slider.lowValue = 0;
+            slider.highValue = 1;
+            return slider;
+        }
+
+        private static void TakeScreenshot()
         {
             ServiceLocator.Instance.Get<ScreenshotController>().TakeScreenshot();
         }

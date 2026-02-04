@@ -1,13 +1,8 @@
-using System;
 using System.Linq;
-using App.Config;
 using App.Events;
-using App.SaveData;
-using App.Services;
 using App.Utils;
-using Game.Hexes;
-using Game.Map;
 using UnityEngine;
+using UnityEngine.U2D;
 using UnityEngine.UIElements;
 
 namespace Game.Menu
@@ -15,10 +10,6 @@ namespace Game.Menu
     public class MenuView : MonoBehaviour
     {
         private UIDocument _document;
-        private VisualElement _menuPanel;
-        private VisualElement _newGamePanel;
-        private VisualElement _gamePanel;
-        private VisualElement _timePanel;
         private Button _exitButton;
         private Button _loadButton;
         private Button _newGameButton;
@@ -32,27 +23,23 @@ namespace Game.Menu
         {
             _document = GetComponent<UIDocument>();
             
-            _menuPanel = _document.rootVisualElement.Q<VisualElement>("MenuPanel");
-            _newGamePanel = _document.rootVisualElement.Q<VisualElement>("NewGamePanel");
-            _gamePanel = _menuPanel.AddNew<VisualElement>(new VisualElement(), "game-panel");
-            _timePanel = _menuPanel.AddNew<VisualElement>(new VisualElement(), "game-panel");
+            var menuBarController = GetComponent<MenuBarController>();
+            var menuIcon = Resources.Load<Sprite>("Sprites/menu");
+            var tabContent = menuBarController.RegisterTab("menu", menuIcon);
+            tabContent.AddToClassList("horizontal");
             
+            var pauseIcon = Resources.Load<Sprite>("Sprites/pause");
+            _pauseButton = menuBarController.RegisterButton("Pause", pauseIcon, HandlePauseButtonClicked);
+            
+            var resumeIcon = Resources.Load<Sprite>("Sprites/play");
+            _resumeButton = menuBarController.RegisterButton("Resume", resumeIcon, HandleResumeButtonClicked);
+            _resumeButton.Hide();
 
-#if UNITY_WEBGL
-            _newGameButton = _gamePanel.AddButton("New", HandleNewGamePanelToggled);
-#else
-            _newGameButton = _gamePanel.AddButton("New", HandleNewGameButtonClicked);
-            _loadButton = _gamePanel.AddButton("Load", HandleLoadButtonClicked);
-#endif
-            SetUpNewGamePanel();
-            
-            _exitButton = _gamePanel.AddButton("Exit", HandleExitButtonClicked);
+            _newGameButton = tabContent.AddButton("New", HandleNewGameButtonClicked);
+            _loadButton = tabContent.AddButton("Load", HandleLoadButtonClicked);
+            _exitButton = tabContent.AddButton("", HandleExitButtonClicked);
             _exitButton.AddToClassList("exit-button");
-            
-            _pauseButton = _timePanel.AddButton("Pause", HandlePauseButtonClicked);
-            
-            _resumeButton = _timePanel.AddButton("Resume", HandleResumeButtonClicked);
-            _resumeButton.visible = false;
+            _exitButton.iconImage = Resources.Load<Sprite>("Sprites/exit")?.texture;
             
             _pauseEventBinding = new EventBinding<GamePauseEvent>(HandlePauseEvent);
             _resumeEventBinding = new EventBinding<GameResumeEvent>(HandleResumeEvent);
@@ -77,24 +64,6 @@ namespace Game.Menu
             EventBus<GameResumeEvent>.Deregister(_resumeEventBinding);
         }
 
-        private void SetUpNewGamePanel()
-        {
-            var mapTypeNames = Enum.GetNames(typeof(MapType)).ToList();
-            foreach (var mapTypeName in mapTypeNames)
-            {
-                _newGamePanel.AddButton(mapTypeName, ()=> HandleNewMapTypeChosen(mapTypeName));
-            }
-            _newGamePanel.style.display = DisplayStyle.None;
-        }
-
-        private static void HandleNewMapTypeChosen(string mapTypeName)
-        {
-            var mapType = Enum.Parse<MapType>(mapTypeName);
-            HexController.SetNewMapType(mapType);
-            ServiceLocator.Instance.Get<SaveDataController>().DeleteSaveData(ConfigController.CurrentSaveSlot);
-            EventBus<GameReloadEvent>.Raise(new GameReloadEvent());
-        }
-
         private void HandleNewGameButtonClicked()
         {
             _document.rootVisualElement.Add(new SaveGameChooser(true));
@@ -105,37 +74,31 @@ namespace Game.Menu
             _document.rootVisualElement.Add(new SaveGameChooser(false));
         }
 
-        private void HandleNewGamePanelToggled()
-        {
-            var currentDisplayStyle = _newGamePanel.style.display;
-            _newGamePanel.style.display = currentDisplayStyle == DisplayStyle.None ? DisplayStyle.Flex : DisplayStyle.None;
-        }
-
         private static void HandleExitButtonClicked()
         {
             EventBus<GameExitEvent>.Raise(new GameExitEvent());
         }
 
-        private void HandlePauseButtonClicked()
+        private static void HandlePauseButtonClicked()
         {
             EventBus<GamePauseEvent>.Raise(new GamePauseEvent());
         }
 
-        private void HandleResumeButtonClicked()
+        private static void HandleResumeButtonClicked()
         {
             EventBus<GameResumeEvent>.Raise(new GameResumeEvent());
         }
 
         private void HandlePauseEvent()
         {
-            _pauseButton.visible = false;
-            _resumeButton.visible = true;
+            _pauseButton.Hide();
+            _resumeButton.Show();
         }
 
         private void HandleResumeEvent()
         {
-            _pauseButton.visible = true;
-            _resumeButton.visible = false;
+            _pauseButton.Show();
+            _resumeButton.Hide();
         }
     }
 }

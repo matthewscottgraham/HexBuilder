@@ -10,6 +10,7 @@ Years ago, when I was first learning Unity, I attempted an mostly failed to make
 </p>
 
 ## Current Features
+- Random terrain generation using FBM and falloffs.
 - Tools for manual terrain manipulation, using an area of effect.
 - Placement of features on faces, edges or vertices
 - Serialization / Deserialization of game data.
@@ -54,8 +55,8 @@ Prebuilt binaries and a WebGL version are available on Itch.io:
 ## Roadmap
 - **v0.1** - Working prototype
 - **v0.2** - Visual polish and rendering improvements
-- **v0.3** - Current - Landscape presets and procedural terrain generation
-- **v0.4** - UI styling, better music, Smarter feature placement and more feature options.
+- **v0.3** - Landscape presets and procedural terrain generation
+- **v0.4** - UI styling, better music, more feature options.
 
 ## References
 - Screen Based outline shader based on this tutorial by Digvijaysinh Gohil: https://www.youtube.com/watch?v=nc3a3THBFrg

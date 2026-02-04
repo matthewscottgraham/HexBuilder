@@ -37,5 +37,17 @@ namespace App.Utils
             element.AddToClassList(classNameA);
             element.AddToClassList(classNameB);
         }
+
+        public static void Hide(this VisualElement element, bool collapse = true)
+        {
+            var className = collapse ? "hidden-and-collapsed" : "hidden";
+            element.AddToClassList(className);
+        }
+
+        public static void Show(this VisualElement element)
+        {
+            element.RemoveFromClassList("hidden-and-collapsed");
+            element.RemoveFromClassList("hidden");
+        }
     }
 }

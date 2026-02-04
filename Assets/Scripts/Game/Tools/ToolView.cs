@@ -1,5 +1,7 @@
 using App.Events;
 using App.Services;
+using App.Utils;
+using Game.Menu;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -7,21 +9,30 @@ namespace Game.Tools
 {
     public class ToolView : MonoBehaviour
     {
+        private ToolController _toolController;
         private SliderInt _radiusSlider;
         private ToggleButtonGroup _buttonGroup;
-        private UIDocument _document;
 
         private EventBinding<GamePauseEvent> _pauseEventBinding;
         private EventBinding<GameResumeEvent> _resumeEventBinding;
         
         private void Start()
         {
-            _document = GetComponent<UIDocument>();
-
-            _buttonGroup = _document.rootVisualElement.Q<ToggleButtonGroup>();
+            _toolController = ServiceLocator.Instance.Get<ToolController>();
+            var menuBarController = GetComponent<MenuBarController>();
+            _buttonGroup = menuBarController.RegisterCustomElement<ToggleButtonGroup>(new ToggleButtonGroup());
+            
+            foreach (var tool in _toolController.Tools)
+            {
+                var button = _buttonGroup.AddNew(new Button());
+                button.iconImage = tool.Icon?.texture;
+            }
+            
             _buttonGroup.RegisterValueChangedCallback(HandleToolChanged);
 
-            _radiusSlider = _document.rootVisualElement.Q<SliderInt>();
+            _radiusSlider = menuBarController.RegisterCustomElement<SliderInt>(new SliderInt());
+            _radiusSlider.lowValue = 0;
+            _radiusSlider.highValue = 2;
             _radiusSlider.RegisterValueChangedCallback(HandleRadiusChanged);
             
             _pauseEventBinding = new EventBinding<GamePauseEvent>(HandlePauseEvent);
