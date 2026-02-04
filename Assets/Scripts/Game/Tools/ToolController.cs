@@ -52,9 +52,9 @@ namespace Game.Tools
             
             Tools = new ITool[]
             {
-                new LevelTerrain(),
                 new RaiseTerrain(),
                 new LowerTerrain(),
+                new LevelTerrain(),
                 new AddMountain(),
                 new AddRiver(),
                 new AddTrees(),
@@ -76,7 +76,7 @@ namespace Game.Tools
                 selector.Initialize(hexController);
             }
             
-            SetActiveTool(1);
+            SetActiveTool(0);
             
             ServiceLocator.Instance.Get<AudioController>().RegisterSound(UseToolSoundID, Resources.Load<AudioClip>(UseToolSoundID));
             ServiceLocator.Instance.Get<VFXController>().RegisterVFX(UseToolVfxID);
