@@ -64,6 +64,7 @@ namespace Game.Menu
             _headerCustomElements = _headerContainer.AddNew<VisualElement>(new VisualElement(), "horizontal");
             
             _contentContainer = mainContainer.AddNew(new VisualElement());
+            _contentContainer.pickingMode = PickingMode.Ignore;
         }
 
         private void ShowTab(string tabId)

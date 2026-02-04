@@ -49,13 +49,8 @@ namespace Game.Menu
 
         private void OnDestroy()
         {
-#if UNITY_WEBGL
-            if (_newGameButton != null) _newGameButton.clicked -= HandleNewGamePanelToggled;
-#else
             if (_loadButton != null) _loadButton.clicked -= HandleLoadButtonClicked;
             if (_newGameButton != null) _newGameButton.clicked -= HandleNewGameButtonClicked;
-#endif
-            
             if (_exitButton != null) _exitButton.clicked -= HandleExitButtonClicked;
             if (_pauseButton != null) _pauseButton.clicked -= HandlePauseButtonClicked;
             if (_resumeButton != null) _resumeButton.clicked -= HandleResumeButtonClicked;
