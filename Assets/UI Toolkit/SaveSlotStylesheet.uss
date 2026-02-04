@@ -1,63 +1,54 @@
 SaveGameChooser {
-    background-color: darkslategrey;
-    border-width: 1px;
-    border-color: white;
-    border-radius: 12px;
-    padding: 24px;
+    background-color: #343434;
+    border-radius: 6px;
     position: absolute;
-    width: 80%;
-    height: 60%;
+    width: 95%;
+    height: 90%;
     align-self: center;
-    top: 20%
+    top: 5%
 }
 
 .header-bar {
-    flex-direction: row;
-    height: 64px;
     align-items: center;
+    background-color: #121212;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    flex-direction: row;
+    padding: 12px 24px;
+    height: 80px;
 }
 
 .header-bar-label {
     color: white;
     -unity-font-style: bold;
+    font-size: 24px;
 }
 
 .spacer {
     flex-grow: 1;
 }
 
-.cancel-button {
-    background-color: coral;
-    border-color: white;
-    border-radius: 24px;
-    border-width: 0;
-    flex-grow: 0;
-    flex-shrink: 0;
-    height: 48px;
-    width: 48px;
-    -unity-font-style: bold;
-    font-size: 24px;
-}
-
-.cancel-button:hover {
-    background-color: brown;
-    border-width: 1px;
-}
-
 .save-slot-container {
+    justify-content: center;
+    align-items: center;
     flex-direction: row;
-    height: 100%;
-    padding: 12px;
+    padding: 24px;
+}
+
+.save-slot-container Button {
+    min-width: 150px;
+    min-height: 60px;
 }
 
 .save-slot {
-    border-width: 1px;
-    border-color: white;
-    border-radius: 12px;
     flex-grow: 1;
     flex-shrink: 1;
     padding: 48px;
     height: 100%;
+}
+
+Button.save-slot {
+    background-color: transparent;
 }
 
 .save-icon {

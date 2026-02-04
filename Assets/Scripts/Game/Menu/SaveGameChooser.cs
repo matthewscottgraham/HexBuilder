@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using App.Config;
 using App.Events;
@@ -14,16 +15,33 @@ namespace Game.Menu
 {
     public class SaveGameChooser : VisualElement
     {
+        private static MapType _mapType = MapType.Random;
         private const int SaveSlotCount = 3; // TODO: the max save slots should be added to the config
         private readonly bool _isNewGame;
-        private MapType _mapType = MapType.Random;
-
+        private Dictionary<MapType, Button> _mapTypeButtons = new();
+        
         public SaveGameChooser(bool isNewGame)
         {
             _isNewGame = isNewGame;
             
             CreateHeader();
+            CreateMapChooser();
             CreateSlots();
+        }
+
+        private void CreateMapChooser()
+        {
+            var container = this.AddNew<VisualElement>(new VisualElement(), "save-slot-container");
+            
+            container.AddNew(new Label("Map Type: "));
+            
+            for (var i = 0; i < Enum.GetValues(typeof(MapType)).Length; i++)
+            {
+                var mapType = (MapType)i;
+                var button = container.AddButton(Enum.GetName(typeof(MapType), i), () => HandleMapTypeChanged(mapType));
+                _mapTypeButtons.Add(mapType, button);
+            }
+            HandleMapTypeChanged(_mapType);
         }
 
         private void CreateSlots()
@@ -42,14 +60,6 @@ namespace Game.Menu
 
             var labelText = _isNewGame ? "Choose Slot for New Game" : "Choose Game to Load";
             header.AddNew<Label>(new Label(labelText), "header-bar-label");
-
-            header.AddSpacer();
-            
-            var dropdownField = header.AddNew<DropdownField>(new DropdownField(), "map-type-selector");
-            dropdownField.label = "Map Type";
-            dropdownField.choices = Enum.GetNames(typeof(MapType)).ToList();
-            dropdownField.value = _mapType.ToString();
-            dropdownField.RegisterValueChangedCallback((evt)=>HandleMapTypeChanged(evt.newValue));
 
             header.AddSpacer();
 
@@ -72,15 +82,20 @@ namespace Game.Menu
             var icon = saveSlot.AddNew<Image>(new Image(), "save-icon");
             icon.image = screenshot;
 
-            if (string.IsNullOrEmpty(labelText)) labelText = "New Game";
+            labelText = string.IsNullOrEmpty(labelText) ? $"Slot {index + 1} - New Game" : $"Slot {index + 1} - {labelText}";
             saveSlot.AddNew<Label>(new Label(labelText), "save-info-label");
 
             return  saveSlot;
         }
 
-        private void HandleMapTypeChanged(string mapTypeName)
+        private void HandleMapTypeChanged(MapType mapType)
         {
-            _mapType = Enum.Parse<MapType>(mapTypeName);
+            _mapType = mapType;
+            foreach (var pair in _mapTypeButtons)
+            {
+                if (pair.Key == _mapType) pair.Value.AddToClassList("active-tab");
+                else pair.Value.RemoveFromClassList("active-tab");
+            }
         }
 
         private void CloseWindow()

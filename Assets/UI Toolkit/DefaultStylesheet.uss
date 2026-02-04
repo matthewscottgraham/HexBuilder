@@ -68,6 +68,8 @@ Button.unity-button:checked {
 .exit-button {
     background-color: coral;
     color: black;
+    -unity-font-style: bold;
+    border-radius: 6px;
 }
 
 .unity-toggle-button-group {

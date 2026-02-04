@@ -51,10 +51,12 @@ namespace App.Input
         private void Update()
         {
             if (_moving) EventBus<MoveEvent>.Raise(new MoveEvent(_inputSystem.Player.Move.ReadValue<Vector2>()));
+
+            var pointerOverUi = IsPointerOverUI();
             
             if (_clicking)
             {
-                if (IsPointerOverUI())
+                if (pointerOverUi)
                 {
                     CancelClick();
                     return;
@@ -67,6 +69,7 @@ namespace App.Input
                 }
             }
 
+            if (pointerOverUi) return;
             PointerHasMovedThisFrame = Vector2.Distance(LastMousePosition, PointerPosition) > Mathf.Epsilon;
             LastMousePosition = PointerPosition;
         }
