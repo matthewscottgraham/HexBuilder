@@ -7,6 +7,7 @@ Years ago, when I was first learning Unity, I attempted an mostly failed to make
 	<img src="images/ScreenshotA.jpg" alt="Screenshot A" height="250"/>
 	<img src="images/ScreenshotB.jpg" alt="Screenshot B" height="250"/>
 	<img src="images/ScreenshotC.jpg" alt="Screenshot C" height="250"/>
+  <img src="images/ScreenshotC.jpg" alt="Screenshot D" height="250"/>
 </p>
 
 ## Current Features
@@ -57,6 +58,7 @@ Prebuilt binaries and a WebGL version are available on Itch.io:
 - **v0.2** - Visual polish and rendering improvements
 - **v0.3** - Landscape presets and procedural terrain generation
 - **v0.4** - UI styling, better music, more feature options.
+- **v0.5** - Fixing edge and vertex object placement, and wave function collapse for choosing face objects.
 
 ## References
 - Screen Based outline shader based on this tutorial by Digvijaysinh Gohil: https://www.youtube.com/watch?v=nc3a3THBFrg
