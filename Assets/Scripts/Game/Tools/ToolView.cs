@@ -22,6 +22,12 @@ namespace Game.Tools
         {
             _toolController = ServiceLocator.Instance.Get<ToolController>();
             var menuBarController = GetComponent<MenuBarController>();
+            
+            _radiusSlider = menuBarController.RegisterCustomElement<SliderInt>(new SliderInt());
+            _radiusSlider.lowValue = 0;
+            _radiusSlider.highValue = 2;
+            _radiusSlider.RegisterValueChangedCallback(HandleRadiusChanged);
+            
             _buttonGroup = menuBarController.RegisterCustomElement<ToggleButtonGroup>(new ToggleButtonGroup());
             
             foreach (var tool in _toolController.Tools)
@@ -32,11 +38,6 @@ namespace Game.Tools
             }
             
             _buttonGroup.RegisterValueChangedCallback(HandleToolChanged);
-
-            _radiusSlider = menuBarController.RegisterCustomElement<SliderInt>(new SliderInt());
-            _radiusSlider.lowValue = 0;
-            _radiusSlider.highValue = 2;
-            _radiusSlider.RegisterValueChangedCallback(HandleRadiusChanged);
             
             _pauseEventBinding = new EventBinding<GamePauseEvent>(HandlePauseEvent);
             _resumeEventBinding = new EventBinding<GameResumeEvent>(HandleResumeEvent);

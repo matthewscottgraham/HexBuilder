@@ -8,19 +8,6 @@ namespace Game.Selection
     {
         public override SelectionType SelectionType => SelectionType.Vertex;
         
-        protected override Transform CreateHighlighter()
-        {
-            var highlighter = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
-            highlighter.gameObject.layer = 6;
-            highlighter.SetParent(transform);
-            Destroy(highlighter.GetComponent<Collider>());
-            highlighter.SetParent(transform);
-            highlighter.localPosition = new Vector3(0, 0.125f, 0);
-            highlighter.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-            highlighter.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/mat_highlight");
-            return highlighter;
-        }
-        
         protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 cursorPosition)
         {
             var vertex = hexObject.Vertices.GetClosestFeatureCoordinate(cursorPosition);

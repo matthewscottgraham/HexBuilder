@@ -8,11 +8,13 @@ namespace Game.Hexes
 {
     public class HexFactory : IDisposable
     {
+        private readonly Color _highlightColour = Color.white;
         private static readonly int ShaderColourID = Shader.PropertyToID("_Color");
         public static int MaxHeight => 6;
         
         private static Dictionary<int, Material> _materials = new();
-            
+        public static Material HighlightMaterial { get; private set; }
+        
         private static Color[] GetLandColours()
         {
             return new Color[]
@@ -44,6 +46,8 @@ namespace Game.Hexes
                 newMat.SetColor(ShaderColourID, landColours[i]);
                 _materials.Add(i, newMat);
             }
+            HighlightMaterial = UnityEngine.Object.Instantiate(material);
+            HighlightMaterial.SetColor(ShaderColourID, _highlightColour);
         }
 
         public void Dispose()

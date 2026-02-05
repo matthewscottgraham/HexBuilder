@@ -1,9 +1,3 @@
-#AOESlider:focus > .unity-base-field__label {
-    color: white;
-}
-
-
-
 .menu-bar {
     margin: 12px;
 }

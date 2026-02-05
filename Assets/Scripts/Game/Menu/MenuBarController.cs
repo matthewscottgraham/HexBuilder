@@ -58,6 +58,8 @@ namespace Game.Menu
             var uiDocument = GetComponent<UIDocument>();
             var root = uiDocument.rootVisualElement;
             var mainContainer = root.AddNew<VisualElement>(new VisualElement(), "menu-bar");
+            mainContainer.pickingMode = PickingMode.Ignore;
+            
             _headerContainer = mainContainer.AddNew<VisualElement>(new VisualElement(), "menu-bar-header");
             _headerTabButtons = _headerContainer.AddNew<VisualElement>(new VisualElement(), "horizontal");
             _headerContainer.AddSpacer();

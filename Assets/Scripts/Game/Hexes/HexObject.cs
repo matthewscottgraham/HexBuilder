@@ -1,4 +1,6 @@
+using App.Events;
 using App.Tweens;
+using Game.Events;
 using Game.Grid;
 using Game.Hexes.Features;
 using UnityEngine;
@@ -7,7 +9,10 @@ namespace Game.Hexes
 {
     public class HexObject : MonoBehaviour
     {
+        private bool _hovered = false;
         private Transform _hexMesh;
+        private MeshRenderer _meshRenderer;
+        private EventBinding<HoverEvent> _hoverEventBinding;
         
         public static float AnimationDuration => 0.3f;
         public static EaseType AnimationEaseType => EaseType.BounceOut;
@@ -29,6 +34,36 @@ namespace Game.Hexes
             Face = new FaceFeatures(this);
             Edges = new EdgeFeatures(this);
             Vertices = new VertexFeatures(this);
+            
+            _meshRenderer = _hexMesh.GetComponent<MeshRenderer>();
+            
+            _hoverEventBinding = new EventBinding<HoverEvent>(HandleHoverEvent);
+            EventBus<HoverEvent>.Register(_hoverEventBinding);
+        }
+
+        private void HandleHoverEvent(HoverEvent evt)
+        {
+            if (evt.HoverSelection.Coordinate.Equals(Coordinate))
+            {
+                Hover();
+            }
+            else
+            {
+                DeHover();
+            }
+        }
+        
+        private void Hover()
+        {
+            _hovered = true;
+            SetMaterial(HexFactory.HighlightMaterial);
+        }
+
+        private void DeHover()
+        {
+            if (!_hovered) return;
+            _hovered = false;
+            SetMaterialBasedOnHeight();
         }
 
         public void SetHeight(int height)
@@ -36,49 +71,20 @@ namespace Game.Hexes
             height = Mathf.Clamp(height, 0, HexFactory.MaxHeight);
             Height = height;
             _hexMesh.TweenScale(_hexMesh.transform.localScale, new Vector3(1, height, 1), AnimationDuration)
-                .SetEase(AnimationEaseType).SetOnComplete(SetMaterial);
+                .SetEase(AnimationEaseType).SetOnComplete(SetMaterialBasedOnHeight);
 
             Vertices.SetHeight(height);
             Edges.SetHeight(height);
             Face.SetHeight(height);
         }
 
-        private void SetMaterial()
+        private void SetMaterialBasedOnHeight()
         {
-            var meshRenderer = _hexMesh.GetComponent<MeshRenderer>();
-            meshRenderer.sharedMaterial = HexFactory.GetMaterialForHeight(Height);
+            SetMaterial(HexFactory.GetMaterialForHeight(Height));
         }
-        
-        private void OnDrawGizmos()
+        private void SetMaterial(Material material)
         {
-            // var vertices = new Vector3[6];
-            // for (var i = 0; i < 6; i++)
-            // {
-            //     vertices[i] = GetVertexPosition(i);
-            // }
-            //
-            // // Face
-            // Gizmos.color = Color.yellow;
-            // Gizmos.DrawWireSphere(GetFacePosition(), 1.8f);
-            // for (var i = 0; i < 6; i++)
-            // {
-            //     Gizmos.DrawLine(vertices[i], vertices[(i + 1) % 6]);
-            // }
-            //
-            // // Vertices
-            // Gizmos.color = Color.red;
-            // for (var i = 0; i < 6; i++)
-            // {
-            //     Gizmos.DrawWireSphere(vertices[i], 0.6f);
-            // }
-            //
-            // // Edges
-            // Gizmos.color = Color.blue;
-            // for (var i = 0; i < 6; i++)
-            // {
-            //     var pos = Vector3.Lerp(vertices[i], vertices[(i + 1) % 6], 0.5f);
-            //     Gizmos.DrawWireSphere(pos, 0.8f);
-            // }
+            _meshRenderer.sharedMaterial = material;
         }
     }
 }

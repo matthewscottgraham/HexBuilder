@@ -60,9 +60,8 @@ Button.unity-button:focus:enabled {
 }
 
 Button.unity-button:checked {
-    background-color: darkslategrey;
-    border-color: goldenrod;
-    border-width: 2px;
+    background-color: coral;
+
 }
 
 .exit-button {
@@ -97,22 +96,33 @@ Button.unity-button:checked {
 Slider {
     min-width: 200px;
 }
+Slider:focus > .unity-base-field__label {
+    color: white;
+}
 
 SliderInt {
     min-width: 150px;
 }
+SliderInt.unity-base-field{
+    margin-right: 20px;
+}
+SliderInt:focus > .unity-base-field__label {
+    color: white;
+}
+
 .unity-base-slider__label {
     -unity-text-align: middle-right;
     min-width: 50px;
 }
 
 #unity-dragger {
-    background-color: cadetblue;
     border-radius: 12px;
     height: 24px;
     width: 24px;
 }
 
 #unity-tracker {
+    align-items: center;
     background-color: black;
+    border-width: 0;
 }
