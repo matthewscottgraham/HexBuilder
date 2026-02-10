@@ -1,7 +1,4 @@
-using App.Services;
-using Game.Grid;
 using Game.Hexes;
-using Game.Selection;
 using UnityEngine;
 
 namespace Game.Tools
@@ -11,19 +8,9 @@ namespace Game.Tools
         Sprite ITool.Icon => Resources.Load<Sprite>("Sprites/raise");
         public bool CreateHexesAsNeeded => true;
         
-        public void Use(SelectionContext selection, HexObject hex)
+        public void Use(HexObject hex)
         {
-            var hexController = ServiceLocator.Instance.Get<HexController>();
-
-            if (!HexGrid.InBounds(selection.Coordinate)) return;
-
-            if (hex == null)
-            {
-                hexController.CreateNewHex(selection.Coordinate);
-                return;
-            }
-
-            hex.SetHeight(hex.Height + 1);
+            hex?.SetHeight(hex.Height + 1);
         }
     }
 }

@@ -1,27 +1,29 @@
 using System;
+using System.Collections.Generic;
 using Game.Grid;
-using UnityEngine;
 
 namespace Game.Selection
 {
     public struct SelectionContext : IEquatable<SelectionContext>
     {
         public readonly SelectionType SelectionType;
-        public Vector3 Position;
-        public CubicCoordinate Coordinate;
-        public readonly int ComponentIndex;
+        public readonly HashSet<CubicCoordinate> Coordinates;
 
-        public SelectionContext(SelectionType selectionType, Vector3? position, CubicCoordinate? coordinate, int? componentIndex)
+        public SelectionContext(SelectionType selectionType, CubicCoordinate coordinate = new() )
         {
             SelectionType = selectionType;
-            Position = position ?? Vector3.zero;
-            Coordinate = coordinate ?? new CubicCoordinate();
-            ComponentIndex = componentIndex ?? 0;
+            Coordinates = new HashSet<CubicCoordinate> { coordinate };
+        }
+
+        public SelectionContext(SelectionType selectionType, IEnumerable<CubicCoordinate> coordinates)
+        {
+            SelectionType = selectionType;
+            Coordinates = new HashSet<CubicCoordinate>(coordinates);
         }
         
         public bool Equals(SelectionContext other)
         {
-            return SelectionType == other.SelectionType && Coordinate.Equals(other.Coordinate) && ComponentIndex == other.ComponentIndex;
+            return SelectionType == other.SelectionType && Coordinates.Equals(other.Coordinates);
         }
 
         public override bool Equals(object obj)
@@ -34,8 +36,7 @@ namespace Game.Selection
             unchecked
             {
                 var hashCode = (int)SelectionType;
-                hashCode = (hashCode * 397) ^ Coordinate.GetHashCode();
-                hashCode = (hashCode * 397) ^ ComponentIndex;
+                hashCode = (hashCode * 397) ^ Coordinates.GetHashCode();
                 return hashCode;
             }
         }

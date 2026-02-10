@@ -1,8 +1,10 @@
+using System;
 using System.Linq;
 using App.Services;
 using App.Utils;
 using Game.Grid;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Game.Hexes.Features
 {
@@ -33,21 +35,25 @@ namespace Game.Hexes.Features
             if (_waterfalls[edgeIndex]) Object.Destroy(_waterfalls[edgeIndex].gameObject);
         }
         
-        public override QuarticCoordinate? GetClosestFeatureCoordinate(Vector3 position)
+        public override CubicCoordinate[] GetCellsClosestToPosition(Vector3 cursorPosition)
         {
-            var closestVertex = Owner.Vertices.GetClosestFeatureCoordinate(position);
-            if (!closestVertex.HasValue) return null;
+            cursorPosition -= Owner.Face.Position;
+            cursorPosition.y = 0;
             
-            var cubicCoordinate = closestVertex.Value.CubicCoordinate;
-            var componentIndex = closestVertex.Value.W;
+            var closestEdgeIndex = -1;
+            var closestEdgeDistance = float.MaxValue;
+            for (var i = 0; i < 6; i++)
+            {
+                var edgePos = HexGrid.GetLocalEdgePosition(i);
+                var distance = Vector3.Distance(cursorPosition, edgePos);
+                if (!(distance < 1f) || !(distance < closestEdgeDistance)) continue;
+                closestEdgeIndex = i;
+                closestEdgeDistance = distance;
+            }
             
-            var prev = Owner.Vertices.Position((componentIndex + 5) % 6);
-            var current = Owner.Vertices.Position(componentIndex);
-            var next = Owner.Vertices.Position((componentIndex + 1) % 6);
-
-            return Vector3.Distance(prev, current) < Vector3.Distance(current, next) 
-                ? new QuarticCoordinate(cubicCoordinate, (componentIndex + 5) % 6) 
-                : new QuarticCoordinate(cubicCoordinate, componentIndex);
+            if (closestEdgeIndex < 0) return Array.Empty<CubicCoordinate>();
+            var closestNeighbour = HexGrid.GetNeighbourSharingEdge(Owner.Coordinate, closestEdgeIndex);
+            return new[] { Owner.Coordinate, closestNeighbour };
         }
         
         protected override void UpdateFeatureType()

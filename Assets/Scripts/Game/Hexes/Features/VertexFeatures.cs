@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using App.Services;
 using App.Utils;
@@ -16,20 +17,25 @@ namespace Game.Hexes.Features
 
         public Vector3 Position(int vertexIndex) => HexGrid.GetLocalVertexPosition(vertexIndex) + Owner.Face.Position;
 
-        public override QuarticCoordinate? GetClosestFeatureCoordinate(Vector3 position)
+        public override CubicCoordinate[] GetCellsClosestToPosition(Vector3 cursorPosition)
         {
-            var closestIndex = -1;
-            var closestSquaredDistance = 1f;
+            cursorPosition -= Owner.Face.Position;
+            cursorPosition.y = 0;
             
+            var closestVertexIndex = -1;
+            var closestVertexDistance = float.MaxValue;
             for (var i = 0; i < 6; i++)
             {
-                var squaredDistance = (Position(i) - position).sqrMagnitude;
-                if (!(squaredDistance < closestSquaredDistance)) continue;
-                closestIndex = i;
-                closestSquaredDistance = squaredDistance;
+                var edgePos = HexGrid.GetLocalEdgePosition(i);
+                var distance = Vector3.Distance(cursorPosition, edgePos);
+                if (!(distance < 1f) || !(distance < closestVertexDistance)) continue;
+                closestVertexIndex = i;
+                closestVertexDistance = distance;
             }
             
-            return closestIndex >= 0 ? new QuarticCoordinate(Owner.Coordinate, closestIndex) : null;
+            if (closestVertexIndex < 0) return Array.Empty<CubicCoordinate>();
+            var closestNeighbour = HexGrid.GetNeighboursSharingVertex(Owner.Coordinate, closestVertexIndex);
+            return new[] { Owner.Coordinate, closestNeighbour.A, closestNeighbour.B };
         }
         
         protected override void UpdateFeatureType()

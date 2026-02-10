@@ -43,7 +43,7 @@ namespace Game.Hexes
             return HasFeatures;
         }
 
-        public virtual QuarticCoordinate? GetClosestFeatureCoordinate(Vector3 position)
+        public virtual CubicCoordinate[] GetCellsClosestToPosition(Vector3 cursorPosition)
         {
             return null;
         }

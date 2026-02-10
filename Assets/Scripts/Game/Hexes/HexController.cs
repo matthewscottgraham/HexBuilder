@@ -72,8 +72,22 @@ namespace Game.Hexes
             }
             return _map[coordinate];
         }
+        public HexObject[] GetHexObjects(IEnumerable<CubicCoordinate> coordinates, bool createIfMissing = false)
+        {
+            var hexObjects = new List<HexObject>();
+            foreach (var coordinate in coordinates)
+            {
+                if (!HexGrid.InBounds(coordinate)) continue;
+                if (!_map.ContainsKey(coordinate) && createIfMissing)
+                {
+                    CreateNewHex(coordinate);
+                }
+                hexObjects.Add(_map[coordinate]);
+            }
+            return hexObjects.ToArray();
+        }
 
-        public HexObject CreateNewHex(CubicCoordinate coordinate)
+        private HexObject CreateNewHex(CubicCoordinate coordinate)
         {
             if (!HexGrid.InBounds(coordinate)) return null;
             if (!_map.ContainsKey(coordinate))

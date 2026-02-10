@@ -10,6 +10,6 @@ namespace Game.Tools
         public bool CreateHexesAsNeeded => false;
         public bool UseRadius => true;
         public SelectionType SelectionType => SelectionType.Face;
-        public void Use(SelectionContext selection, HexObject hex);
+        public void Use(HexObject hex);
     }
 }

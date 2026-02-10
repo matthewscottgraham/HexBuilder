@@ -43,14 +43,13 @@ namespace Game.Hexes
 
         private void HandleHoverEvent(HoverEvent evt)
         {
-            if (evt.HoverSelection.Coordinate.Equals(Coordinate))
+            foreach (var coordinate in evt.HoverSelection.Coordinates)
             {
+                if (!coordinate.Equals(Coordinate)) continue;
                 Hover();
+                return;
             }
-            else
-            {
-                DeHover();
-            }
+            DeHover();
         }
         
         private void Hover()

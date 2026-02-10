@@ -1,7 +1,5 @@
-using App.Services;
 using Game.Hexes;
 using Game.Hexes.Features;
-using Game.Selection;
 using UnityEngine;
 
 namespace Game.Tools
@@ -11,10 +9,9 @@ namespace Game.Tools
         Sprite ITool.Icon => Resources.Load<Sprite>("Sprites/wilderness");
         bool ITool.UseRadius => false;
         
-        public void Use(SelectionContext selection, HexObject hex)
+        public void Use(HexObject hex)
         {
-            if (hex == null) return;
-            hex.Face.Add(FeatureType.Wilderness);
+            hex?.Face.Add(FeatureType.Wilderness);
         }
     }
 }

@@ -3,7 +3,6 @@ using App.Events;
 using App.Services;
 using App.Utils;
 using Game.Menu;
-using Game.Tools.Paths;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -32,7 +31,6 @@ namespace Game.Tools
             
             foreach (var tool in _toolController.Tools)
             {
-                if (tool.GetType() == typeof(AddPath)) continue;
                 var button = _buttonGroup.AddNew(new Button());
                 button.iconImage = tool.Icon?.texture;
             }

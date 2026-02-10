@@ -10,7 +10,6 @@ using Game.Events;
 using Game.Grid;
 using Game.Hexes;
 using Game.Selection;
-using Game.Tools.Paths;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -27,7 +26,7 @@ namespace Game.Tools
         private EventBinding<GamePauseEvent> _pauseEventBinding;
         private EventBinding<GameResumeEvent> _resumeEventBinding;
         private Selector _currentSelector;
-        
+        private HexController _hexController;
         public ITool[] Tools { get; private set; }
         public ITool CurrentTool { get; private set; }
 
@@ -56,9 +55,9 @@ namespace Game.Tools
                 new LowerTerrain(),
                 new LevelTerrain(),
                 new AddMountain(),
-                new AddRiver(),
                 new AddTrees(),
                 new AddFarm(),
+                new AddRiver(),
                 new AddPath()
             };
             
@@ -69,11 +68,11 @@ namespace Game.Tools
                 { SelectionType.Face, gameObject.AddComponent<FaceSelector>() }
             };
             
-            var hexController = ServiceLocator.Instance.Get<HexController>();
+            _hexController = ServiceLocator.Instance.Get<HexController>();
             
             foreach (var selector in _selectors.Values)
             {
-                selector.Initialize(hexController);
+                selector.Initialize(_hexController);
             }
             
             SetActiveTool(0);
@@ -114,7 +113,7 @@ namespace Game.Tools
         private void HandleInteractEvent()
         {
             Assert.IsNotNull(CurrentTool);
-            UseToolOnCoordinatePlusRadius(Selector.Hovered.Coordinate, _radius, CurrentTool);
+            UseToolOnCoordinatePlusRadius(Selector.Hovered.Coordinates, _radius, CurrentTool);
         }
 
         private void SetActiveSelector(SelectionType selectionType)
@@ -127,36 +126,36 @@ namespace Game.Tools
             }
         }
 
-        private void UseToolOnCoordinatePlusRadius(CubicCoordinate center, int radius, ITool tool)
+        private void UseToolOnCoordinatePlusRadius(HashSet<CubicCoordinate> coordinates, int radius, ITool tool)
         {
-            SetLevelFromCoordinate(center);
-            var hexController = ServiceLocator.Instance.Get<HexController>();
+            if (coordinates.Count == 0) return;
+            var firstSelected = coordinates.FirstOrDefault();
+            SetLevelFromCoordinate(firstSelected);
             
-            if (tool.UseRadius && radius > 0)
+            if (tool.UseRadius && radius > 0) // This will only happen with face selection ie. raise / lower / level tools
             {
-                var neighbours = HexGrid.GetHexCoordinatesWithinRadius(center, radius);
-                foreach (var neighbour in neighbours)
-                {
-                    var hexObject = hexController.GetHexObject(neighbour, tool.CreateHexesAsNeeded);
-                    StartCoroutine(
-                        UseTool(tool, hexObject, Selector.Hovered, UnityEngine.Random.Range(0, 0.2f)));
-                }
+                var neighbourCoordinates = HexGrid.GetHexCoordinatesWithinRadius(firstSelected, radius);
+                var hexes = _hexController.GetHexObjects(neighbourCoordinates, tool.CreateHexesAsNeeded);
+                StartCoroutine(UseTool(tool, hexes, UnityEngine.Random.Range(0, 0.2f)));
             }
             else
             {
-                var hexObject = hexController.GetHexObject(center, tool.CreateHexesAsNeeded);
-                StartCoroutine(UseTool(tool, hexObject, Selector.Hovered));
+                var hexObjects = _hexController.GetHexObjects(coordinates, tool.CreateHexesAsNeeded);
+                StartCoroutine(UseTool(tool, hexObjects));
             }
         }
 
-        private IEnumerator UseTool(ITool tool, HexObject hexObject, SelectionContext selectionContext, float delay = 0)
+        private IEnumerator UseTool(ITool tool, HexObject[] hexObjects, float delay = 0)
         {
             yield return new WaitForSeconds(delay);
-            tool.Use(selectionContext, hexObject);
-            EventBus<PlaySoundEvent>.Raise(
-                new PlaySoundEvent(UseToolSoundID, true));
-            EventBus<PlayVFXBurstEvent>.Raise(
-                new PlayVFXBurstEvent(UseToolVfxID, hexObject.Face.Position, Vector3.zero));
+            foreach (var hexObject in hexObjects)
+            {
+                tool.Use(hexObject);
+                EventBus<PlaySoundEvent>.Raise(
+                    new PlaySoundEvent(UseToolSoundID, true));
+                EventBus<PlayVFXBurstEvent>.Raise(
+                    new PlayVFXBurstEvent(UseToolVfxID, hexObject.Face.Position, Vector3.zero));
+            }
         }
         
         private void SetLevelFromCoordinate(CubicCoordinate coordinate)
