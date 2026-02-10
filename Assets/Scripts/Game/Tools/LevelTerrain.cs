@@ -5,6 +5,7 @@ namespace Game.Tools
 {
     public class LevelTerrain : ITool
     {
+        public int RadiusIncrement => 1;
         Sprite ITool.Icon => Resources.Load<Sprite>("Sprites/level");
         public bool CreateHexesAsNeeded => true;
         public int Level { get; set; }

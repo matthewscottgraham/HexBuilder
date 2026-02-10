@@ -7,6 +7,7 @@ namespace Game.Tools
 {
     public interface ITool
     {
+        public int RadiusIncrement => 0;
         public Sprite Icon { get; }
         public bool CreateHexesAsNeeded => false;
         public bool UseRadius => true;

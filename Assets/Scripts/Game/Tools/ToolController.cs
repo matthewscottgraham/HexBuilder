@@ -113,7 +113,8 @@ namespace Game.Tools
         private void HandleInteractEvent()
         {
             Assert.IsNotNull(CurrentTool);
-            UseToolOnCoordinatePlusRadius(Selector.Hovered.Coordinates, _radius, CurrentTool);
+            var radius = _radius + CurrentTool.RadiusIncrement;
+            UseToolOnCoordinatePlusRadius(Selector.Hovered.Coordinates, radius, CurrentTool);
         }
 
         private void SetActiveSelector(SelectionType selectionType)
