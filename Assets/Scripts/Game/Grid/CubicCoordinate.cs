@@ -53,17 +53,38 @@ namespace Game.Grid
 
         public override string ToString() => $"({x}, {y}, {z})";
 
+        private static readonly CubicCoordinate[] NeighboursRelative =
+        {
+            new (0, 1, -1), // NW
+            new (-1, 1, 0), // W
+            new (-1, 0, 1), // SW
+            new (0, -1, 1), // SE
+            new (1, -1, 0), // E
+            new (1, 0, -1), // NE
+        };
+        
+        public static CubicCoordinate[] GetNeighboursRelative() { return NeighboursRelative; }
+        
         public static CubicCoordinate operator +(CubicCoordinate a, CubicCoordinate b)
             => new (a.x + b.x, a.y + b.y, a.z + b.z);
 
+        public static CubicCoordinate operator -(CubicCoordinate a, CubicCoordinate b)
+            => new (a.x - b.x, a.y - b.y, a.z - b.z);
+
+        public static bool operator ==(CubicCoordinate a, CubicCoordinate b)
+            => a.x == b.x && a.y == b.y && a.z == b.z;
+
+        public static bool operator !=(CubicCoordinate a, CubicCoordinate b)
+            => a.x != b.x || a.y != b.y || a.z != b.z;
+        
         public bool Equals(CubicCoordinate other)
         {
-            return x == other.x && y == other.y && z == other.z;
+            return this == other;
         }
 
         public override bool Equals(object obj)
         {
-            return obj is CubicCoordinate other && Equals(other);
+            return obj is CubicCoordinate other && this == other;
         }
 
         public override int GetHashCode()

@@ -13,10 +13,12 @@ namespace Game.Hexes.Features
         public override FeatureType FeatureType { get; protected set; }
         protected override string Name => nameof(EdgeFeatures);
         
-        private Transform[] _waterfalls = new Transform[6];
+        private readonly Transform[] _waterfalls = new Transform[6];
+        private readonly FeatureFactory _factory;
         
         public EdgeFeatures(HexObject owner) : base(owner)
         {
+            _factory = ServiceLocator.Instance.Get<FeatureFactory>();
         }
 
         public Vector3 Position(int edgeIndex) => Owner.Face.Position + HexGrid.GetLocalEdgePosition(edgeIndex);
@@ -72,10 +74,7 @@ namespace Game.Hexes.Features
             if (Feature) Object.Destroy(Feature);
             
             if (FeatureType == FeatureType.None || HasFeatures.All(t=> !t)) return;
-            
-            var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
-            
-            var edgeObject = featureFactory.GetRiverMesh(FeaturesPresent());
+            var edgeObject = _factory.GetRiverMesh(FeaturesPresent());
             edgeObject.transform.SetParent(FeatureParent, false);
             edgeObject.transform.SetLocalHeight(0.01f);
             Feature = edgeObject;

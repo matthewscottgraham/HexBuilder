@@ -148,14 +148,31 @@ namespace Game.Tools
         private IEnumerator UseTool(ITool tool, HexObject[] hexObjects, float delay = 0)
         {
             yield return new WaitForSeconds(delay);
-            foreach (var hexObject in hexObjects)
+            var selectionType = Selector.Hovered.SelectionType;
+            if (selectionType is SelectionType.Vertex or SelectionType.Edge)
             {
-                tool.Use(hexObject);
-                EventBus<PlaySoundEvent>.Raise(
-                    new PlaySoundEvent(UseToolSoundID, true));
-                EventBus<PlayVFXBurstEvent>.Raise(
-                    new PlayVFXBurstEvent(UseToolVfxID, hexObject.Face.Position, Vector3.zero));
+                tool.Use(hexObjects);
+                foreach (var hexObject in hexObjects)
+                {
+                    PlayEffects(hexObject);
+                }
             }
+            else
+            {
+                foreach (var hexObject in hexObjects)
+                {
+                    tool.Use(hexObject);
+                    PlayEffects(hexObject);
+                }
+            }
+        }
+
+        private static void PlayEffects(HexObject hexObject)
+        {
+            EventBus<PlaySoundEvent>.Raise(
+                new PlaySoundEvent(UseToolSoundID, true));
+            EventBus<PlayVFXBurstEvent>.Raise(
+                new PlayVFXBurstEvent(UseToolVfxID, hexObject.Face.Position, Vector3.zero));
         }
         
         private void SetLevelFromCoordinate(CubicCoordinate coordinate)

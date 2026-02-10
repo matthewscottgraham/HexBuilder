@@ -109,6 +109,17 @@ namespace Game.Grid
             };
         }
 
+        public static int GetSharedEdgeIndex(CubicCoordinate a, CubicCoordinate b)
+        {
+            var neighbours = CubicCoordinate.GetNeighboursRelative();
+            var diff = a - b;
+            for (var i = 0; i < 6; i++)
+            {
+                if (neighbours[i] == diff) return i;
+            }
+            return -1;
+        }
+
         public static CubicCoordinate GetNeighbourSharingEdge(CubicCoordinate center, int edgeIndex)
         {
             var neighbours = center.GetNeighbours();

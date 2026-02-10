@@ -68,7 +68,6 @@ namespace Game.Hexes
             }
             
             UpdateConnections();
-            UpdateFeatureType();
         }
 
         protected virtual void UpdateFeatureType()
@@ -80,12 +79,14 @@ namespace Game.Hexes
         {
             if (Feature) Object.Destroy(Feature);
             HasFeatures[index] = true;
+            UpdateFeatureType();
             UpdateMesh();
         }
 
         protected virtual void Remove(int index)
         {
             HasFeatures[index] = false;
+            UpdateFeatureType();
             UpdateMesh();
         }
 

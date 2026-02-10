@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+using Game.Grid;
 using Game.Hexes;
 using Game.Selection;
 using UnityEngine;
@@ -11,25 +14,24 @@ namespace Game.Tools
         SelectionType ITool.SelectionType => SelectionType.Edge;
         
         private HexController _hexController;
-        
+
         public void Use(HexObject hex)
         {
-            // if (selection.SelectionType != SelectionType.Edge) return;
-            // if (!hex) return;
-            //
-            // hex.Edges.Toggle(selection.ComponentIndex);
-            //
-            // if (!_hexController) _hexController = ServiceLocator.Instance.Get<HexController>();
-            //
-            // var neighbourCoordinate = HexGrid.GetNeighbourSharingEdge(selection.Coordinate, selection.ComponentIndex);
-            // var neighbourEdgeIndex = HexGrid.GetNeighboursSharedEdgeIndex(selection.ComponentIndex);
-            // var neighbourHex = _hexController.GetHexObject(neighbourCoordinate);
-            // if (!neighbourHex) return;
-            //
-            // var active = hex.Edges.Exists(selection.ComponentIndex);
-            //
-            // neighbourHex.Edges.Set(neighbourEdgeIndex, active);
-            // if (hex.Height != neighbourHex.Height && active)
+            // Noop
+        }
+
+        public void Use(HexObject[] hexes)
+        {
+            if (hexes == null || hexes.Length != 2) return;
+
+            var sharedEdgeA = HexGrid.GetSharedEdgeIndex(hexes[0].Coordinate, hexes[1].Coordinate);
+            if (sharedEdgeA < 0) return;
+            var sharedEdgeB = (sharedEdgeA + 3) % 6;
+            
+            hexes[0].Edges.Set(sharedEdgeA, true);
+            hexes[1].Edges.Set(sharedEdgeB, true);
+
+        // if (hex.Height != neighbourHex.Height && active)
             // {
             //     var waterfall = _hexController.WaterfallFactory.CreateWaterFall(
             //         hex, 
