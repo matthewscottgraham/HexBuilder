@@ -11,7 +11,7 @@ namespace Game.Tools
         public bool CreateHexesAsNeeded => false;
         public bool UseRadius => true;
         public SelectionType SelectionType => SelectionType.Face;
-        public void Use(HexObject hex);
-        public void Use(HexObject[] hexes){ }
+        public bool Use(HexObject hex);
+        public bool Use(HexObject[] hexes){ return false; }
     }
 }

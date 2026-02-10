@@ -9,9 +9,11 @@ namespace Game.Tools
         Sprite ITool.Icon => Resources.Load<Sprite>("Sprites/settlement");
         bool ITool.UseRadius => false;
         
-        public void Use(HexObject hex)
+        public bool Use(HexObject hex)
         {
-            hex?.Face.Add(FeatureType.Settlement);
+            if (!hex) return false;
+            hex.Face.Add(FeatureType.Settlement);
+            return true;
         }
     }
 }

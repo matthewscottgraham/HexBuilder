@@ -9,9 +9,11 @@ namespace Game.Tools
         public bool CreateHexesAsNeeded => true;
         public int Level { get; set; }
 
-        public void Use(HexObject hex)
+        public bool Use(HexObject hex)
         {
-            hex?.SetHeight(Level);
+            if (!hex) return false;
+            hex.SetHeight(Level);
+            return true;
         }
     }
 }

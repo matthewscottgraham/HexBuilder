@@ -9,9 +9,11 @@ namespace Game.Tools
         Sprite ITool.Icon => Resources.Load<Sprite>("Sprites/wilderness");
         bool ITool.UseRadius => false;
         
-        public void Use(HexObject hex)
+        public bool Use(HexObject hex)
         {
-            hex?.Face.Add(FeatureType.Wilderness);
+            if (!hex) return false;
+            hex.Face.Add(FeatureType.Wilderness);
+            return true;
         }
     }
 }

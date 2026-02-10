@@ -145,13 +145,13 @@ namespace Game.Tools
             }
         }
 
-        private IEnumerator UseTool(ITool tool, HexObject[] hexObjects, float delay = 0)
+        private static IEnumerator UseTool(ITool tool, HexObject[] hexObjects, float delay = 0)
         {
             yield return new WaitForSeconds(delay);
             var selectionType = Selector.Hovered.SelectionType;
             if (selectionType is SelectionType.Vertex or SelectionType.Edge)
             {
-                tool.Use(hexObjects);
+                if (!tool.Use(hexObjects)) yield break;
                 foreach (var hexObject in hexObjects)
                 {
                     PlayEffects(hexObject);
@@ -161,7 +161,7 @@ namespace Game.Tools
             {
                 foreach (var hexObject in hexObjects)
                 {
-                    tool.Use(hexObject);
+                    if (!tool.Use(hexObject)) continue;
                     PlayEffects(hexObject);
                 }
             }

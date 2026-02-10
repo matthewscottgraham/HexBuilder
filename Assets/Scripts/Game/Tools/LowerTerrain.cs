@@ -6,9 +6,11 @@ namespace Game.Tools
     public class LowerTerrain : ITool
     {
         Sprite ITool.Icon => Resources.Load<Sprite>("Sprites/lower");
-        public void Use(HexObject hex)
+        public bool Use(HexObject hex)
         {
-            hex?.SetHeight(hex.Height - 1);
+            if (!hex) return false;
+            hex.SetHeight(hex.Height - 1);
+            return true;
         }
     }
 }

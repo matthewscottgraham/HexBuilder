@@ -10,8 +10,9 @@ namespace Game.Tools
         bool ITool.UseRadius => false;
         SelectionType ITool.SelectionType => SelectionType.Vertex;
         
-        public void Use(HexObject hex)
+        public bool Use(HexObject hex)
         {
+            return false;
             // if (selection.SelectionType != SelectionType.Vertex) return;
             // if (hex == null) return;
             //

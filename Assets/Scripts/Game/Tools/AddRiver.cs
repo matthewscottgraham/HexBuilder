@@ -15,23 +15,25 @@ namespace Game.Tools
         
         private HexController _hexController;
 
-        public void Use(HexObject hex)
+        public bool Use(HexObject hex)
         {
-            // Noop
+            return false;
         }
 
-        public void Use(HexObject[] hexes)
+        public bool Use(HexObject[] hexes)
         {
-            if (hexes == null || hexes.Length != 2) return;
+            if (hexes == null || hexes.Length != 2) return false;
 
             var sharedEdgeA = HexGrid.GetSharedEdgeIndex(hexes[0].Coordinate, hexes[1].Coordinate);
-            if (sharedEdgeA < 0) return;
+            if (sharedEdgeA < 0) return false;
             var sharedEdgeB = (sharedEdgeA + 3) % 6;
             
             hexes[0].Edges.Set(sharedEdgeA, true);
             hexes[1].Edges.Set(sharedEdgeB, true);
 
-        // if (hex.Height != neighbourHex.Height && active)
+            return true;
+
+            // if (hex.Height != neighbourHex.Height && active)
             // {
             //     var waterfall = _hexController.WaterfallFactory.CreateWaterFall(
             //         hex, 
