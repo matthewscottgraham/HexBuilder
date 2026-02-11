@@ -10,7 +10,7 @@ namespace Game.Hexes.Features
     {
         [SerializeField] private RiverPrefab[] riverPrefabs = Array.Empty<RiverPrefab>(); 
         
-        public (GameObject prefab, int rotations) GetRiverPrefab(bool[] edges)
+        public (GameObject prefab, int rotations) GetPrefab(bool[] edges)
         {
             foreach (var t in riverPrefabs)
             {

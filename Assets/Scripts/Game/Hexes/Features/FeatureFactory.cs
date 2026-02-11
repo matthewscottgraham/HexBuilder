@@ -10,18 +10,21 @@ namespace Game.Hexes.Features
     {
         private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues;
         private ConnectedFeatureCatalogue _riverCatalogue;
+        private ConnectedFeatureCatalogue _pathCatalogue;
         private readonly Material _pathMaterial = Resources.Load<Material>("Materials/mat_path");
         
         public FeatureFactory()
         {
             _catalogues = GetCatalogues();
             _riverCatalogue = Resources.Load<ConnectedFeatureCatalogue>("Features/River");
+            _pathCatalogue = Resources.Load<ConnectedFeatureCatalogue>("Features/Path");
         }
 
         public void Dispose()
         {
             _catalogues.Clear();
             _riverCatalogue = null;
+            _pathCatalogue = null;
         }
 
         public GameObject CreateFeature(FeatureType featureType)
@@ -35,20 +38,18 @@ namespace Game.Hexes.Features
             return CreateNewFeature(featureType, false, variation);
         }
         
-        public GameObject CreateVertexMesh(Vector3 vertexPosition)
+        public GameObject GetPathMesh(bool[] vertices)
         {
-            var obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            Object.Destroy(obj.GetComponent<Collider>());
-            obj.name = "Vertex";
-            obj.transform.position = vertexPosition;
-            obj.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
-            obj.GetComponent<MeshRenderer>().material = _pathMaterial;
+            var pathPrefab = _pathCatalogue.GetPrefab(vertices);
+            var obj = Object.Instantiate(pathPrefab.prefab);
+            obj.transform.rotation = Quaternion.Euler(0, pathPrefab.rotations * 60 + 60, 0);
+            obj.name = "Path";
             return obj;
         }
         
         public GameObject GetRiverMesh(bool[] edges)
         {
-            var riverPrefab = _riverCatalogue.GetRiverPrefab(edges);
+            var riverPrefab = _riverCatalogue.GetPrefab(edges);
             var obj = Object.Instantiate(riverPrefab.prefab);
             obj.transform.rotation = Quaternion.Euler(0, riverPrefab.rotations * 60 - 180, 0);
             obj.name = "River";

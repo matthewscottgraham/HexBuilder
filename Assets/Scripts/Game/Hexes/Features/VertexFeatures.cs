@@ -9,10 +9,13 @@ namespace Game.Hexes.Features
 {
     public class VertexFeatures : HexComponent
     {
+        private readonly FeatureFactory _factory;
+        
         protected override string Name => nameof(VertexFeatures);
 
         public VertexFeatures(HexObject owner) : base(owner)
         {
+            _factory = ServiceLocator.Instance.Get<FeatureFactory>();
         }
 
         public Vector3 Position(int vertexIndex) => HexGrid.GetLocalVertexPosition(vertexIndex) + Owner.Face.Position;
@@ -72,11 +75,10 @@ namespace Game.Hexes.Features
         
         protected override void UpdateMesh()
         {
-            var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
-            var edgeObject = featureFactory.GetRiverMesh(FeaturesPresent());
-            edgeObject.transform.SetParent(FeatureParent, false);
-            edgeObject.transform.SetLocalHeight(0.01f);
-            Feature = edgeObject;
+            var vertexObject = _factory.GetPathMesh(FeaturesPresent());
+            vertexObject.transform.SetParent(FeatureParent, false);
+            vertexObject.transform.SetLocalHeight(0.01f);
+            Feature = vertexObject;
         }
     }
 }

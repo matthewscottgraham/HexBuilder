@@ -119,6 +119,24 @@ namespace Game.Grid
             }
             return -1;
         }
+        
+        public static int GetSharedVertexIndex(CubicCoordinate a, CubicCoordinate b, CubicCoordinate c)
+        {
+            var edgeAB = GetSharedEdgeIndex(b, a);
+            var edgeBC = GetSharedEdgeIndex(b, c);
+            if (edgeAB < 0 || edgeBC < 0) return -1;
+            
+            var adjacent = (edgeAB + 1) % 6 == edgeBC || (edgeBC + 1) % 6 == edgeAB;
+            if (!adjacent) return -1;
+            
+            var min = Mathf.Min(edgeAB, edgeBC);
+            var max = Mathf.Max(edgeAB, edgeBC);
+            
+            if (min == 0 && max == 5)
+                return 0;
+
+            return max;
+        }
 
         public static CubicCoordinate GetNeighbourSharingEdge(CubicCoordinate center, int edgeIndex)
         {

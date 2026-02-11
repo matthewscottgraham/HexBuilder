@@ -83,6 +83,7 @@ namespace Game.Hexes
         }
         private void SetMaterial(Material material)
         {
+            if (!_meshRenderer) return;
             _meshRenderer.sharedMaterial = material;
         }
     }
