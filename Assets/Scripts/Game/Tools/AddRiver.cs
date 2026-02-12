@@ -28,8 +28,10 @@ namespace Game.Tools
             if (sharedEdgeA < 0) return false;
             var sharedEdgeB = (sharedEdgeA + 3) % 6;
             
-            hexes[0].Edges.Set(sharedEdgeA, true);
-            hexes[1].Edges.Set(sharedEdgeB, true);
+            var riverPresent = hexes[0].Edges.Exists(sharedEdgeA); // if present on any hex, it is present for all
+            
+            hexes[0].Edges.Set(sharedEdgeA, !riverPresent);
+            hexes[1].Edges.Set(sharedEdgeB, !riverPresent);
 
             return true;
 

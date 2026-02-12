@@ -37,7 +37,7 @@ namespace Game.Hexes.Features
             if (_waterfalls[edgeIndex]) Object.Destroy(_waterfalls[edgeIndex].gameObject);
         }
         
-        public override CubicCoordinate[] GetCellsClosestToPosition(Vector3 cursorPosition)
+        public CubicCoordinate[] GetCellsClosestToPosition(Vector3 cursorPosition)
         {
             cursorPosition -= Owner.Face.Position;
             cursorPosition.y = 0;
@@ -71,12 +71,10 @@ namespace Game.Hexes.Features
 
         protected override void UpdateMesh()
         {
-            if (Feature) Object.Destroy(Feature);
-            
             if (FeatureType == FeatureType.None || HasFeatures.All(t=> !t)) return;
             var edgeObject = _factory.GetRiverMesh(FeaturesPresent());
-            edgeObject.transform.SetParent(FeatureParent, false);
-            edgeObject.transform.SetLocalHeight(0.01f);
+            edgeObject?.transform.SetParent(FeatureParent, false);
+            edgeObject?.transform.SetLocalHeight(0.01f);
             Feature = edgeObject;
         }
         

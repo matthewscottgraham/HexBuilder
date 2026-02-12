@@ -43,18 +43,6 @@ namespace Game.Hexes
             return HasFeatures;
         }
 
-        public virtual CubicCoordinate[] GetCellsClosestToPosition(Vector3 cursorPosition)
-        {
-            return null;
-        }
-        
-        
-        public virtual void Toggle(int index = 0)
-        {
-            index %= 6;
-            Set(index, !HasFeatures[index]);
-        }
-
         public virtual void Set(int index, bool hasFeature)
         {
             index %= 6;
@@ -66,8 +54,6 @@ namespace Game.Hexes
             {
                 Remove(index);
             }
-            
-            UpdateConnections();
         }
 
         protected virtual void UpdateFeatureType()
@@ -85,25 +71,10 @@ namespace Game.Hexes
 
         protected virtual void Remove(int index)
         {
+            if (Feature) Object.Destroy(Feature);
             HasFeatures[index] = false;
             UpdateFeatureType();
             UpdateMesh();
-        }
-
-        protected virtual void AddConnection(int index)
-        {
-            // NOOP
-        }
-        
-        protected void RemoveConnection(int index)
-        {
-            if (Connections[index] == null) return;
-            Object.Destroy(Connections[index]);
-        }
-
-        protected virtual void UpdateConnections()
-        {
-            // NOOP
         }
 
         protected virtual void UpdateMesh()

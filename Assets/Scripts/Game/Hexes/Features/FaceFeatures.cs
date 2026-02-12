@@ -6,11 +6,13 @@ namespace Game.Hexes.Features
 {
     public class FaceFeatures : HexComponent
     {
+        private FeatureFactory _factory;
         private FeatureType _currentFeatureType = FeatureType.None;
         protected override string Name => nameof(FaceFeatures);
         
         public FaceFeatures(HexObject owner) : base(owner)
         {
+            _factory = ServiceLocator.Instance.Get<FeatureFactory>();
         }
 
         public Vector3 Position => Owner.transform.position + new Vector3(0, Owner.Height, 0);
@@ -42,12 +44,6 @@ namespace Game.Hexes.Features
         protected override void UpdateFeatureType()
         {
             FeatureType = HasFeatures.Any(t=> t) ? _currentFeatureType : FeatureType.None;
-        }
-
-        protected override void Remove(int index)
-        {
-            HasFeatures[index] = false;
-            if (Feature) Object.Destroy(Feature);
         }
     }
 }

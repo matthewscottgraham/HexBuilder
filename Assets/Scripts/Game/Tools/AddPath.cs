@@ -28,33 +28,14 @@ namespace Game.Tools
             
             var sharedVertexC = HexGrid.GetSharedVertexIndex(hexes[2].Coordinate, hexes[0].Coordinate, hexes[1].Coordinate);
             if (sharedVertexC < 0) return false;
+
+            var pathPresent = hexes[0].Vertices.Exists(sharedVertexA); // if present on any hex, it is present for all
             
-            hexes[0].Vertices.Set(sharedVertexA, true);
-            hexes[1].Vertices.Set(sharedVertexB, true);
-            hexes[2].Vertices.Set(sharedVertexC, true);
+            hexes[0].Vertices.Set(sharedVertexA, !pathPresent);
+            hexes[1].Vertices.Set(sharedVertexB, !pathPresent);
+            hexes[2].Vertices.Set(sharedVertexC, !pathPresent);
 
             return true;
-            // if (selection.SelectionType != SelectionType.Vertex) return;
-            // if (hex == null) return;
-            //
-            // hex.Vertices.Toggle(selection.ComponentIndex);
-            //
-            // var neighbours = HexGrid.GetNeighboursSharingVertex(selection.Coordinate, selection.ComponentIndex);
-            // var neighbourVertexIndices = HexGrid.GetNeighbourVertexIndices(selection.ComponentIndex);
-            //
-            // var neighbourHexA = ServiceLocator.Instance.Get<HexController>().GetHexObject(neighbours.A);
-            // var neighbourHexB = ServiceLocator.Instance.Get<HexController>().GetHexObject(neighbours.B);
-            //
-            // var active = hex.Vertices.Exists(selection.ComponentIndex);
-            //
-            // if (neighbourHexA != null && hex.Height == neighbourHexA.Height)
-            // {
-            //     neighbourHexA.Vertices.Set(neighbourVertexIndices.A, active);    
-            // }
-            // if (neighbourHexB != null && hex.Height == neighbourHexB.Height)
-            // {
-            //     neighbourHexB.Vertices.Set(neighbourVertexIndices.B, active);
-            // }
         }
     }
 }

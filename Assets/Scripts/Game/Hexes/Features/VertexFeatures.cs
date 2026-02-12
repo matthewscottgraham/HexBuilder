@@ -4,6 +4,7 @@ using App.Services;
 using App.Utils;
 using Game.Grid;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Game.Hexes.Features
 {
@@ -20,7 +21,7 @@ namespace Game.Hexes.Features
 
         public Vector3 Position(int vertexIndex) => HexGrid.GetLocalVertexPosition(vertexIndex) + Owner.Face.Position;
 
-        public override CubicCoordinate[] GetCellsClosestToPosition(Vector3 cursorPosition)
+        public CubicCoordinate[] GetCellsClosestToPosition(Vector3 cursorPosition)
         {
             cursorPosition -= Owner.Face.Position;
             cursorPosition.y = 0;
@@ -45,39 +46,13 @@ namespace Game.Hexes.Features
         {
             FeatureType = HasFeatures.Any(t=> t) ? FeatureType.Path : FeatureType.None;
         }
-
-        protected override void AddConnection(int index)
-        {
-            // if (Connections[index] != null) return;
-            //
-            // var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
-            // var bridgeObject = featureFactory.CreateBridgeMesh(
-            //     Position(index),
-            //     Position((index + 1) % 6)
-            // );
-            // bridgeObject.transform.SetParent(FeatureParent, true);
-            // var localPosition = bridgeObject.transform.localPosition;
-            // localPosition.y = 0;
-            // bridgeObject.transform.localPosition = localPosition;
-            // Features[index] = bridgeObject;
-        }
-
-        protected override void UpdateConnections()
-        {
-            // for (var i = 0; i < 6; i++)
-            // {
-            //     var bridgeRequired = Features[i] != null && Features[(i + 1) % 6] != null;
-            //     
-            //     if (bridgeRequired && Connections[i] == null) AddConnection(i);
-            //     else RemoveConnection(i);
-            // }
-        }
         
         protected override void UpdateMesh()
         {
+            if (FeatureType == FeatureType.None || HasFeatures.All(t=> !t)) return;
             var vertexObject = _factory.GetPathMesh(FeaturesPresent());
-            vertexObject.transform.SetParent(FeatureParent, false);
-            vertexObject.transform.SetLocalHeight(0.01f);
+            vertexObject?.transform.SetParent(FeatureParent, false);
+            vertexObject?.transform.SetLocalHeight(0.01f);
             Feature = vertexObject;
         }
     }
