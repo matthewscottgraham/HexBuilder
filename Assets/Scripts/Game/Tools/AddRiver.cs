@@ -1,3 +1,4 @@
+using App.Services;
 using Game.Grid;
 using Game.Hexes;
 using Game.Selection;
@@ -11,7 +12,7 @@ namespace Game.Tools
         bool ITool.UseRadius => false;
         SelectionType ITool.SelectionType => SelectionType.Edge;
         
-        private HexController _hexController;
+        private readonly HexController _hexController = ServiceLocator.Instance.Get<HexController>();
 
         public bool Use(HexObject hex)
         {
@@ -30,22 +31,30 @@ namespace Game.Tools
             
             hexes[0].Edges.Set(sharedEdgeA, !riverPresent);
             hexes[1].Edges.Set(sharedEdgeB, !riverPresent);
-
+            
+            // TODO: Below code should be replaced when the feature meshes are decided based on neighbour hexes
+            if (hexes[0].Height == hexes[1].Height || riverPresent)
+            {
+                hexes[0].Edges.RemoveWaterfall(sharedEdgeA);
+                hexes[1].Edges.RemoveWaterfall(sharedEdgeB);
+                return true;
+            }
+            
+            var waterfallA = _hexController.WaterfallFactory.CreateWaterFall(
+                hexes[0], 
+                hexes[1], 
+                sharedEdgeA,
+                sharedEdgeB);
+            hexes[0].Edges.AddWaterfall(waterfallA, sharedEdgeA);
+                
+            var waterfallB = _hexController.WaterfallFactory.CreateWaterFall(
+                hexes[1], 
+                hexes[0], 
+                sharedEdgeB,
+                sharedEdgeA);
+            hexes[1].Edges.AddWaterfall(waterfallB, sharedEdgeB);
+            
             return true;
-
-            // if (hex.Height != neighbourHex.Height && active)
-            // {
-            //     var waterfall = _hexController.WaterfallFactory.CreateWaterFall(
-            //         hex, 
-            //         neighbourHex, 
-            //         selection.ComponentIndex,
-            //         neighbourEdgeIndex);
-            //     hex.Edges.AddWaterfall(waterfall, selection.ComponentIndex);
-            // }
-            // else if (hex.Height != neighbourHex.Height)
-            // {
-            //     hex.Edges.RemoveWaterfall(selection.ComponentIndex);
-            // }
         }
     }
 }
