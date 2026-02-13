@@ -29,6 +29,12 @@ namespace Game.Tools
         private HexController _hexController;
         public ITool[] Tools { get; private set; }
         public ITool CurrentTool { get; private set; }
+        
+        public int GetCurrentToolRadius()
+        {
+            if (CurrentTool == null) return _radius;
+            return _radius + CurrentTool.RadiusIncrement;
+        }
 
         public int GetCurrentToolIndex()
         {
@@ -113,8 +119,38 @@ namespace Game.Tools
         private void HandleInteractEvent()
         {
             Assert.IsNotNull(CurrentTool);
-            var radius = _radius + CurrentTool.RadiusIncrement;
-            UseToolOnCoordinatePlusRadius(Selector.Hovered.Coordinates, radius, CurrentTool);
+
+            var coordinates = Selector.Hovered.Coordinates;
+            if (coordinates.Count == 0) return;
+            
+            SetAverageHeight(coordinates);
+
+            var hexObjects = _hexController.GetHexObjects(coordinates, CurrentTool.CreateHexesAsNeeded);
+            StartCoroutine(UseTool(CurrentTool, hexObjects));
+        }
+
+        private void SetAverageHeight(HashSet<CubicCoordinate> coordinates)
+        {
+            var sum = 0;
+            var count = 0;
+            
+            foreach (var coordinate in coordinates)
+            {
+                var hexObject = _hexController.GetHexObject(coordinate);
+                if (hexObject == null) continue;
+                sum += hexObject.Height;
+                count += 1;
+            }
+
+            var height = Mathf.CeilToInt(sum / count) + 1; // Add 1 to fudge it a bit so it feels correct
+            
+            foreach (var tool in Tools)
+            {
+                if (tool.GetType() != typeof(LevelTerrain)) continue;
+
+                var levelTerrainTool = (LevelTerrain)tool;
+                levelTerrainTool.Level = height;
+            }
         }
 
         private void SetActiveSelector(SelectionType selectionType)
@@ -124,25 +160,6 @@ namespace Game.Tools
             foreach (var pair in _selectors)
             {
                 pair.Value.Activate(pair.Key == _currentSelector.SelectionType);
-            }
-        }
-
-        private void UseToolOnCoordinatePlusRadius(HashSet<CubicCoordinate> coordinates, int radius, ITool tool)
-        {
-            if (coordinates.Count == 0) return;
-            var firstSelected = coordinates.FirstOrDefault();
-            SetLevelFromCoordinate(firstSelected);
-            
-            if (tool.UseRadius && radius > 0) // This will only happen with face selection ie. raise / lower / level tools
-            {
-                var neighbourCoordinates = HexGrid.GetHexCoordinatesWithinRadius(firstSelected, radius);
-                var hexes = _hexController.GetHexObjects(neighbourCoordinates, tool.CreateHexesAsNeeded);
-                StartCoroutine(UseTool(tool, hexes, UnityEngine.Random.Range(0, 0.2f)));
-            }
-            else
-            {
-                var hexObjects = _hexController.GetHexObjects(coordinates, tool.CreateHexesAsNeeded);
-                StartCoroutine(UseTool(tool, hexObjects));
             }
         }
 
@@ -174,18 +191,6 @@ namespace Game.Tools
                 new PlaySoundEvent(UseToolSoundID, true));
             EventBus<PlayVFXBurstEvent>.Raise(
                 new PlayVFXBurstEvent(UseToolVfxID, hexObject.Face.Position, Vector3.zero));
-        }
-        
-        private void SetLevelFromCoordinate(CubicCoordinate coordinate)
-        {
-            var height = ServiceLocator.Instance.Get<HexController>().GetHexHeight(coordinate);
-            foreach (var tool in Tools)
-            {
-                if (tool.GetType() != typeof(LevelTerrain)) continue;
-
-                var levelTerrainTool = (LevelTerrain)tool;
-                levelTerrainTool.Level = height;
-            }
         }
         
         private void HandlePauseEvent()
