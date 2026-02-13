@@ -1,8 +1,6 @@
-using System.Linq;
 using App.Events;
 using App.Utils;
 using UnityEngine;
-using UnityEngine.U2D;
 using UnityEngine.UIElements;
 
 namespace Game.Menu

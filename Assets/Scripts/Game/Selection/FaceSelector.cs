@@ -16,14 +16,6 @@ namespace Game.Selection
             _toolController = ServiceLocator.Instance.Get<ToolController>();
         }
         
-        protected override SelectionContext GetClampedSelection(Vector3 worldPosition)
-        {
-            var hexCoordinate = HexGrid.GetClosestHexCoordinate(worldPosition);
-            var radius = _toolController.GetCurrentToolRadius();
-            var cells = HexGrid.GetHexCoordinatesWithinRadius(hexCoordinate, radius);
-            return new SelectionContext(SelectionType.Face, cells);
-        }
-        
         protected override SelectionContext GetClampedSelection(HexObject hexObject, Vector3 worldPosition)
         {
             var radius = _toolController.GetCurrentToolRadius();

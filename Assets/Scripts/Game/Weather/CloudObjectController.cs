@@ -9,13 +9,13 @@ namespace Game.Weather
         protected override float CylinderHeight => 1f;
         protected override float SpawnCadence => 9f;
         protected override float Radius => 40f;
-        protected override Vector2 LifetimeRange => new Vector2(30f, 40f);
+        protected override Vector2 LifetimeRange => new (30f, 40f);
 
         protected override void OnGetObject(GameObject obj)
         {
             var meshRenderer = obj.GetComponentInChildren<MeshRenderer>();
             obj.transform.localScale = Vector3.one * Random.Range(0.5f, 1f);
-            var tween = meshRenderer.material.TweenAlpha(0, 1, 3f);
+            meshRenderer.material.TweenAlpha(0, 1, 3f);
             obj.SetActive(true);
             SetObjectAnimation(obj);
         }
@@ -32,11 +32,11 @@ namespace Game.Weather
             Tweens[obj] = tween;
             
             var meshRenderer = obj.GetComponentInChildren<MeshRenderer>();
-            var tween2 = meshRenderer.material.TweenAlpha(1, 0, 3f).SetDelay(lifeTime - 3);
+            meshRenderer.material.TweenAlpha(1, 0, 3f).SetDelay(lifeTime - 3);
         }
 
 
-        private Vector3 GetRandomPointOnEdge(float radius, float height, float offset, int direction)
+        private static Vector3 GetRandomPointOnEdge(float radius, float height, float offset, int direction)
         {
             return new Vector3(
                 radius * direction,

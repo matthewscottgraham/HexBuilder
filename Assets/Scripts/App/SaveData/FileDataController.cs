@@ -9,10 +9,10 @@ namespace App.SaveData
 {
     public class FileDataController : IDisposable
     {
-        protected string SaveDirectoryName = "UserData";
+        protected const string SaveDirectoryName = "UserData";
         protected const string SaveDataFileName = "data";
 
-        private Dictionary<string, SaveData<object>> _enqueuedSaveData = new();
+        private readonly Dictionary<string, SaveData<object>> _enqueuedSaveData = new();
         
         public void Dispose()
         {

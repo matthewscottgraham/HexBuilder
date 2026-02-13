@@ -15,14 +15,6 @@ namespace Game.Grid
             GridRadius = gridRadius;
         }
         
-        public static Vector2 CubicTo2DSpace(CubicCoordinate coordinate)
-        {
-            return new Vector2(
-                coordinate.x + coordinate.z * 0.5f,
-                coordinate.z * 0.866f // This magic number is the square root of 3 / 2
-            );
-        }
-        
         public static Vector3 GetLocalVertexPosition(int cornerIndex)
         {
             var angleDegrees = 60f * cornerIndex;
@@ -45,7 +37,7 @@ namespace Game.Grid
             // This was a copy paste. It converts world coordinates into cubic coordinates.
             // It appears to work, but I have trouble reading it.
             var fx = (Sqrt3 / 3f * worldPos.x - worldPos.z / 3f) / HexRadius;
-            var fz = (2f / 3f * worldPos.z) / HexRadius;
+            var fz = 2f / 3f * worldPos.z / HexRadius;
             var fy = -fx - fz;
 
             var rx = Mathf.RoundToInt(fx);
@@ -151,16 +143,6 @@ namespace Game.Grid
                 5 => neighbours[4],
                 _ => throw new ArgumentOutOfRangeException(nameof(edgeIndex), edgeIndex, null)
             };
-        }
-
-        public static (int A, int B) GetNeighbourVertexIndices(int vertexIndex)
-        {
-            return ((vertexIndex + 3) % 6, (vertexIndex + 5) % 6);
-        }
-
-        public static int GetNeighboursSharedEdgeIndex(int edgeIndex)
-        {
-            return (edgeIndex + 3) % 6;
         }
     }
 }

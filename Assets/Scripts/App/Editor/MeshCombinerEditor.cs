@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace App.Utils.Editor
+namespace App.Editor
 {
     [CustomEditor(typeof(MeshCombiner))]
     public class MeshCombinerEditor : UnityEditor.Editor

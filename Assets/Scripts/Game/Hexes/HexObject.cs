@@ -9,7 +9,7 @@ namespace Game.Hexes
 {
     public class HexObject : MonoBehaviour
     {
-        private bool _hovered = false;
+        private bool _hovered;
         private Transform _hexMesh;
         private MeshRenderer _meshRenderer;
         private EventBinding<HoverEvent> _hoverEventBinding;

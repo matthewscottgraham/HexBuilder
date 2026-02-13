@@ -35,15 +35,6 @@ namespace Game.Tools
             if (CurrentTool == null) return _radius;
             return _radius + CurrentTool.RadiusIncrement;
         }
-
-        public int GetCurrentToolIndex()
-        {
-            for (var i = 0; i < Tools.Length; i++)
-            {
-                if (Tools[i] == CurrentTool) return i;
-            }
-            return -1;
-        }
         
         public void Initialize()
         {
@@ -142,7 +133,7 @@ namespace Game.Tools
                 count += 1;
             }
 
-            var height = Mathf.CeilToInt(sum / count) + 1; // Add 1 to fudge it a bit so it feels correct
+            var height = (count <= 0) ? 1 : Mathf.CeilToInt(sum / count) + 1; // Add 1 to fudge it a bit so it feels correct
             
             foreach (var tool in Tools)
             {

@@ -1,6 +1,5 @@
 using App.Tweens;
 using App.Utils;
-using Game.Grid;
 using Game.Hexes.Features;
 using UnityEngine;
 
@@ -13,7 +12,6 @@ namespace Game.Hexes
         protected readonly Transform FeatureParent;
         protected GameObject Feature;
         protected readonly bool[] HasFeatures = new bool[6];
-        protected readonly GameObject[] Connections = new GameObject[6];
         
         public int FeatureVariation => Owner? Owner.Variation : 0;
         public float FeatureRotation => FeatureParent.transform.localEulerAngles.y;
@@ -32,7 +30,7 @@ namespace Game.Hexes
                 .SetEase(HexObject.AnimationEaseType);
         }
         
-        public virtual bool Exists(int index = 0)
+        public bool Exists(int index = 0)
         {
             index %= 6;
             return HasFeatures[index];
@@ -43,7 +41,7 @@ namespace Game.Hexes
             return HasFeatures;
         }
 
-        public virtual void Set(int index, bool hasFeature)
+        public void Set(int index, bool hasFeature)
         {
             index %= 6;
             if (hasFeature)

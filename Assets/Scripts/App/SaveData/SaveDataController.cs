@@ -25,7 +25,7 @@ namespace App.SaveData
             Delete(Path.Combine(SaveDirectoryName, saveId.ToString()));
         }
 
-        public void SaveWithScreenshot(MonoBehaviour monoBehaviour, object gameData)
+        public void SaveWithScreenshot(object gameData)
         {
             var screenshotController = ServiceLocator.Instance.Get<ScreenshotController>();
             var relativeSavePath = Path.Combine(SaveDirectoryName, ConfigController.CurrentSaveSlot.ToString());

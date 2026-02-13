@@ -1,4 +1,3 @@
-using System;
 using App.Events;
 using App.Services;
 using App.Utils;

@@ -50,7 +50,7 @@ namespace Game.Cameras
 
         private void HandleZoom(ZoomEvent ev)
         {
-            var newPosition = transform.position + (new Vector3(0, ev.Delta, 0) * GetSensitivity(_zoomSensitivity) * Time.deltaTime);
+            var newPosition = transform.position + new Vector3(0, ev.Delta, 0) * GetSensitivity(_zoomSensitivity) * Time.deltaTime;
             newPosition.y = Mathf.Clamp(newPosition.y, _zoomMinMax.x, _zoomMinMax.y);
             transform.position = newPosition;
         }

@@ -54,13 +54,7 @@ namespace Game.Hexes
                 hexes.Add(new HexInfo(hexObject));
             }
             var gameData = new GameData(HexGrid.GridRadius, hexes);
-            ServiceLocator.Instance?.Get<SaveDataController>().SaveWithScreenshot(this, gameData);
-        }
-
-        public int GetHexHeight(CubicCoordinate coordinate)
-        {
-            if (!HexGrid.InBounds(coordinate) || !_map.ContainsKey(coordinate)) return 1;
-            return _map[coordinate].Height;
+            ServiceLocator.Instance?.Get<SaveDataController>().SaveWithScreenshot(gameData);
         }
 
         public HexObject GetHexObject(CubicCoordinate coordinate, bool createIfMissing = false)
@@ -100,7 +94,6 @@ namespace Game.Hexes
         
         private void CreateHexes(List<HexInfo> hexInfos)
         {
-            var featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
             foreach (var hexInfo in hexInfos)
             {
                 if (!HexGrid.InBounds(hexInfo.Coordinate)) continue;
@@ -112,7 +105,7 @@ namespace Game.Hexes
                     hexObject.Face.Add(hexInfo.FeatureType, hexInfo.FeatureVariation);
                 }
 
-                for (int i = 0; i < hexInfo.EdgeFeatures.Length; i++)
+                for (var i = 0; i < hexInfo.EdgeFeatures.Length; i++)
                 {
                     if (hexInfo.EdgeFeatures[i]) hexObject.Edges.Set(i, true);
                 }

@@ -28,7 +28,7 @@ namespace Game.Hexes.Features
             
             Remove(0);
             _currentFeatureType = featureType;
-            var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(featureType);
+            var feature = _factory.CreateFeature(featureType);
             feature.transform.SetParent(FeatureParent, false);
             Feature = feature;
             HasFeatures[0] = true;
@@ -36,7 +36,7 @@ namespace Game.Hexes.Features
 
         public void Add(FeatureType featureType, int variation)
         {
-            var feature = ServiceLocator.Instance.Get<FeatureFactory>().CreateFeature(featureType, variation);
+            var feature = _factory.CreateFeature(featureType, variation);
             feature.transform.SetParent(FeatureParent, false);
             Feature = feature;
             HasFeatures[0] = true;

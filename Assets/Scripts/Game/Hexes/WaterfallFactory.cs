@@ -8,10 +8,10 @@ namespace Game.Hexes
 {
     public class WaterfallFactory
     {
-        public const string WaterfallVfxID = "waterfallVFX";
+        private const string WaterfallVfxID = "waterfallVFX";
         private const float WaterfallWidth = 0.333f;
         private readonly Material _waterfallMaterial = Resources.Load<Material>("Materials/mat_river");
-        private readonly Dictionary<int, Mesh> _meshes = new Dictionary<int, Mesh>();
+        private readonly Dictionary<int, Mesh> _meshes = new ();
         
         public WaterfallFactory()
         {
@@ -50,7 +50,7 @@ namespace Game.Hexes
                     new (-1.74f, 0, -1 * WaterfallWidth),
                     new (-1.74f, 0, 1 * WaterfallWidth),
                     new (-1.74f, -height, -1 * WaterfallWidth),
-                    new (-1.74f, -height, 1 * WaterfallWidth),
+                    new (-1.74f, -height, 1 * WaterfallWidth)
                 },
                 triangles = new [] { 1, 0, 2, 3, 1, 2 },
                 uv = new Vector2[]
@@ -58,7 +58,7 @@ namespace Game.Hexes
                     new (0, 1),
                     new (1, 1),
                     new (0, 0),
-                    new (1, 0),
+                    new (1, 0)
                 }
             };
 

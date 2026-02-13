@@ -4,7 +4,7 @@ using Game.Grid;
 
 namespace Game.Selection
 {
-    public struct SelectionContext : IEquatable<SelectionContext>
+    public readonly struct SelectionContext : IEquatable<SelectionContext>
     {
         public readonly SelectionType SelectionType;
         public readonly HashSet<CubicCoordinate> Coordinates;

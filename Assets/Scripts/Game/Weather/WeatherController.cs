@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using App.Tweens;
@@ -20,7 +19,7 @@ namespace Game.Weather
         protected virtual float CylinderHeight => 5f;
         protected virtual float HeightOffset => 4f;
         protected virtual float SpawnCadence => 1f;
-        protected virtual Vector2 LifetimeRange => new Vector2(10f, 20f);
+        protected virtual Vector2 LifetimeRange => new (10f, 20f);
         
         private void Start()
         {
@@ -52,7 +51,7 @@ namespace Game.Weather
                 _pool.Get();
         }
 
-        protected virtual GameObject OnCreateObject()
+        private GameObject OnCreateObject()
         {
             var obj = Instantiate(prefabs[Random.Range(0, prefabs.Length)], transform);
             var renderableChildren = obj.GetComponentsInChildren<MeshRenderer>();
@@ -69,7 +68,7 @@ namespace Game.Weather
             SetObjectAnimation(obj);
         }
 
-        protected virtual void OnReleaseObject(GameObject obj)
+        private void OnReleaseObject(GameObject obj)
         {
             if (Tweens.TryGetValue(obj, out var tween))
             {
@@ -80,7 +79,7 @@ namespace Game.Weather
             obj.SetActive(false);
         }
 
-        protected void OnDestroyObject(GameObject obj)
+        private void OnDestroyObject(GameObject obj)
         {
             Destroy(obj);
         }

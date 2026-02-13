@@ -21,8 +21,6 @@ namespace Game.Hexes.Features
             _factory = ServiceLocator.Instance.Get<FeatureFactory>();
         }
 
-        public Vector3 Position(int edgeIndex) => Owner.Face.Position + HexGrid.GetLocalEdgePosition(edgeIndex);
-
         public void AddWaterfall(Transform waterfall, int edgeIndex)
         {
             waterfall.SetParent(FeatureParent, false);

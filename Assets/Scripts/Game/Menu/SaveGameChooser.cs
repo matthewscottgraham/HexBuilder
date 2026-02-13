@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using App.Config;
 using App.Events;
 using App.SaveData;
@@ -18,7 +17,7 @@ namespace Game.Menu
         private static MapType _mapType = MapType.Random;
         private const int SaveSlotCount = 3; // TODO: the max save slots should be added to the config
         private readonly bool _isNewGame;
-        private Dictionary<MapType, Button> _mapTypeButtons = new();
+        private readonly Dictionary<MapType, Button> _mapTypeButtons = new();
         
         public SaveGameChooser(bool isNewGame)
         {

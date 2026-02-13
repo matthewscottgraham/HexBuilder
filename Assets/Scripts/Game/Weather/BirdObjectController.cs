@@ -9,7 +9,7 @@ namespace Game.Weather
         protected override float CylinderHeight => 3f;
         protected override float SpawnCadence => 5f;
         protected override float Radius => 40f;
-        protected override Vector2 LifetimeRange => new Vector2(20f, 30f);
+        protected override Vector2 LifetimeRange => new (20f, 30f);
         
         protected override Vector3 GetRandomPointInCylinder(float radius, float cylinderHeight, float heightOffset)
         {

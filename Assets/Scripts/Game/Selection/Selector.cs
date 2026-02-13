@@ -12,8 +12,6 @@ namespace Game.Selection
 {
     public class Selector : MonoBehaviour, IDisposable
     {
-        protected HexController HexController;
-        
         private const string HoverSoundID = "Audio/SFX/hover";
         
         private Camera _camera;
@@ -38,8 +36,6 @@ namespace Game.Selection
 
         public void Initialize(HexController hexController)
         {
-            HexController = hexController;
-            
             _interactEventBinding = new EventBinding<InteractEvent>(HandleInteractEvent);
             EventBus<InteractEvent>.Register(_interactEventBinding);
 
@@ -52,11 +48,6 @@ namespace Game.Selection
         {
             EventBus<InteractEvent>.Deregister(_interactEventBinding);
             _interactEventBinding = null;
-        }
-
-        protected virtual SelectionContext GetClampedSelection(Vector3 pos)
-        {
-            return new SelectionContext();
         }
         
         protected virtual SelectionContext GetClampedSelection(HexObject hexObject, Vector3 pos)
@@ -71,16 +62,15 @@ namespace Game.Selection
             SetHoveredSelection(hit.transform.GetComponentInParent<HexObject>(), hit.point);
         }
 
-        private bool SetHoveredSelection(HexObject hexObject, Vector3 hoverPosition)
+        private void SetHoveredSelection(HexObject hexObject, Vector3 hoverPosition)
         {
-            if (!hexObject) return false;
+            if (!hexObject) return;
             var originalHover = Hovered;
             var newHover = GetClampedSelection(hexObject, hoverPosition);
-            if (originalHover.Equals(newHover)) return true;
+            if (originalHover.Equals(newHover)) return;
             Hovered = newHover;
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
             EventBus<PlaySoundEvent>.Raise(new PlaySoundEvent(HoverSoundID, true));
-            return true;
         }
 
         private static IEnumerator InvokeSelectionEvent()

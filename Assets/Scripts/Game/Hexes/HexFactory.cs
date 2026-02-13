@@ -17,7 +17,7 @@ namespace Game.Hexes
         
         private static Color[] GetLandColours()
         {
-            return new Color[]
+            return new[]
             {
                 GetColour("#D4C63D"),
                 GetColour("#3DD4CE"),
@@ -74,7 +74,7 @@ namespace Game.Hexes
             return _materials[height];
         }
         
-        private GameObject CreateMeshObject()
+        private static GameObject CreateMeshObject()
         {
             var hexMesh = new GameObject("HexMesh");
             var filter = hexMesh.AddComponent<MeshFilter>();

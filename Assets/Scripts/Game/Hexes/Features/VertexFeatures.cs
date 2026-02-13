@@ -4,7 +4,6 @@ using App.Services;
 using App.Utils;
 using Game.Grid;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Game.Hexes.Features
 {
@@ -18,8 +17,6 @@ namespace Game.Hexes.Features
         {
             _factory = ServiceLocator.Instance.Get<FeatureFactory>();
         }
-
-        public Vector3 Position(int vertexIndex) => HexGrid.GetLocalVertexPosition(vertexIndex) + Owner.Face.Position;
 
         public CubicCoordinate[] GetCellsClosestToPosition(Vector3 cursorPosition)
         {

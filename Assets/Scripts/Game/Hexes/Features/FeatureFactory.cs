@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using App.Utils;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -56,18 +55,6 @@ namespace Game.Hexes.Features
             return obj;
         }
 
-        public GameObject CreateBridgeMesh(Vector3 vertexAPosition, Vector3 vertexBPosition)
-        {
-            var obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Object.Destroy(obj.GetComponent<Collider>());
-            obj.name = "VertexBridge";
-            obj.transform.position = (vertexAPosition + vertexBPosition) / 2f;
-            obj.transform.rotation = Quaternion.LookRotation(vertexBPosition - vertexAPosition);
-            obj.transform.localScale = new Vector3(0.2f, 0.2f, Vector3.Distance(vertexAPosition, vertexBPosition));
-            obj.GetComponent<MeshRenderer>().material = _pathMaterial;
-            return obj;
-        }
-
         private static Dictionary<FeatureType, FeatureModelCatalogues> GetCatalogues()
         {
             var modelCatalogues = Resources.LoadAll<FeatureModelCatalogues>("Features");
@@ -82,12 +69,10 @@ namespace Game.Hexes.Features
         {
             var (featurePrefab, variation) = _catalogues[featureType].GetPrefab(getRandomPrefab, prefabVariation);
             var instance = Object.Instantiate(featurePrefab.Prefab);
-            
-            if (featurePrefab.AllowRotation)
-            {
-                var rot = 60 * UnityEngine.Random.Range(0, 6);
-                instance.transform.localRotation = Quaternion.Euler(0, rot, 0);
-            }
+
+            if (!featurePrefab.AllowRotation) return instance;
+            var rot = 60 * UnityEngine.Random.Range(0, 6);
+            instance.transform.localRotation = Quaternion.Euler(0, rot, 0);
 
             return instance;
         }

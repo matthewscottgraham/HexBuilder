@@ -17,7 +17,6 @@ namespace App.Tweens
 
         private int _loopsCompleted;
         private Action<T> _onPercentComplete;
-        private Action _onComplete;
         private Action<T> _onTweenUpdate;
         private Action<T> _onUpdate;
         private float _percentThreshold = -1f;
@@ -45,7 +44,7 @@ namespace App.Tweens
         public bool WasKilled { get; private set; }
         public float DelayTime { get; private set; }
 
-        public Action OnComplete => _onComplete;
+        public Action OnComplete { get; private set; }
 
         public void Tick()
         {
@@ -104,7 +103,7 @@ namespace App.Tweens
             _onUpdate = null;
             _onTweenUpdate = null;
             _onPercentComplete = null;
-            _onComplete = null;
+            OnComplete = null;
         }
 
         public void Kill()
@@ -115,7 +114,7 @@ namespace App.Tweens
             _onUpdate = null;
             _onTweenUpdate = null;
             _onPercentComplete = null;
-            _onComplete = null;
+            OnComplete = null;
         }
 
         public bool IsTargetDestroyed()
@@ -156,7 +155,7 @@ namespace App.Tweens
 
         public ITween SetOnComplete(Action onComplete)
         {
-            _onComplete = onComplete;
+            OnComplete = onComplete;
             return this;
         }
 

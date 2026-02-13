@@ -93,7 +93,7 @@ namespace App
             return File.Exists(Path.Combine(_appDataPath, relativePath, fileName));
         }
 
-        private string GetUniqueFilename(string folderPath, string fileName, string extension)
+        private static string GetUniqueFilename(string folderPath, string fileName, string extension)
         {
             var fullPath = Path.Combine(folderPath, $"{fileName}.{extension}");
             var uniqueFileName = $"{fileName}";

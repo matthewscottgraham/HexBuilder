@@ -43,7 +43,7 @@ namespace App.VFX
 
         #region Modules
 
-        static void CopyMain(ParticleSystem.MainModule s, ParticleSystem.MainModule d)
+        private static void CopyMain(ParticleSystem.MainModule s, ParticleSystem.MainModule d)
         {
             d.duration = s.duration;
             d.loop = s.loop;
@@ -67,7 +67,7 @@ namespace App.VFX
             d.ringBufferLoopRange = s.ringBufferLoopRange;
         }
 
-        static void CopyEmission(ParticleSystem.EmissionModule s, ParticleSystem.EmissionModule d)
+        private static void CopyEmission(ParticleSystem.EmissionModule s, ParticleSystem.EmissionModule d)
         {
             d.enabled = s.enabled;
             d.rateOverTime = s.rateOverTime;
@@ -78,7 +78,7 @@ namespace App.VFX
             d.SetBursts(bursts);
         }
 
-        static void CopyShape(ParticleSystem.ShapeModule s, ParticleSystem.ShapeModule d)
+        private static void CopyShape(ParticleSystem.ShapeModule s, ParticleSystem.ShapeModule d)
         {
             d.enabled = s.enabled;
             d.shapeType = s.shapeType;
@@ -97,7 +97,7 @@ namespace App.VFX
             d.sphericalDirectionAmount = s.sphericalDirectionAmount;
         }
 
-        static void CopyVelocityOverLifetime(ParticleSystem.VelocityOverLifetimeModule s, ParticleSystem.VelocityOverLifetimeModule d)
+        private static void CopyVelocityOverLifetime(ParticleSystem.VelocityOverLifetimeModule s, ParticleSystem.VelocityOverLifetimeModule d)
         {
             d.enabled = s.enabled;
             d.space = s.space;
@@ -111,7 +111,7 @@ namespace App.VFX
             d.speedModifier = s.speedModifier;
         }
 
-        static void CopyLimitVelocityOverLifetime(ParticleSystem.LimitVelocityOverLifetimeModule s, ParticleSystem.LimitVelocityOverLifetimeModule d)
+        private static void CopyLimitVelocityOverLifetime(ParticleSystem.LimitVelocityOverLifetimeModule s, ParticleSystem.LimitVelocityOverLifetimeModule d)
         {
             d.enabled = s.enabled;
             d.space = s.space;
@@ -123,14 +123,14 @@ namespace App.VFX
             d.separateAxes = s.separateAxes;
         }
 
-        static void CopyInheritVelocity(ParticleSystem.InheritVelocityModule s, ParticleSystem.InheritVelocityModule d)
+        private static void CopyInheritVelocity(ParticleSystem.InheritVelocityModule s, ParticleSystem.InheritVelocityModule d)
         {
             d.enabled = s.enabled;
             d.mode = s.mode;
             d.curve = s.curve;
         }
 
-        static void CopyForceOverLifetime(ParticleSystem.ForceOverLifetimeModule s, ParticleSystem.ForceOverLifetimeModule d)
+        private static void CopyForceOverLifetime(ParticleSystem.ForceOverLifetimeModule s, ParticleSystem.ForceOverLifetimeModule d)
         {
             d.enabled = s.enabled;
             d.space = s.space;
@@ -139,20 +139,20 @@ namespace App.VFX
             d.z = s.z;
         }
 
-        static void CopyColorOverLifetime(ParticleSystem.ColorOverLifetimeModule s, ParticleSystem.ColorOverLifetimeModule d)
+        private static void CopyColorOverLifetime(ParticleSystem.ColorOverLifetimeModule s, ParticleSystem.ColorOverLifetimeModule d)
         {
             d.enabled = s.enabled;
             d.color = s.color;
         }
 
-        static void CopyColorBySpeed(ParticleSystem.ColorBySpeedModule s, ParticleSystem.ColorBySpeedModule d)
+        private static void CopyColorBySpeed(ParticleSystem.ColorBySpeedModule s, ParticleSystem.ColorBySpeedModule d)
         {
             d.enabled = s.enabled;
             d.color = s.color;
             d.range = s.range;
         }
 
-        static void CopySizeOverLifetime(ParticleSystem.SizeOverLifetimeModule s, ParticleSystem.SizeOverLifetimeModule d)
+        private static void CopySizeOverLifetime(ParticleSystem.SizeOverLifetimeModule s, ParticleSystem.SizeOverLifetimeModule d)
         {
             d.enabled = s.enabled;
             d.size = s.size;
@@ -162,7 +162,7 @@ namespace App.VFX
             d.z = s.z;
         }
 
-        static void CopySizeBySpeed(ParticleSystem.SizeBySpeedModule s, ParticleSystem.SizeBySpeedModule d)
+        private static void CopySizeBySpeed(ParticleSystem.SizeBySpeedModule s, ParticleSystem.SizeBySpeedModule d)
         {
             d.enabled = s.enabled;
             d.size = s.size;
@@ -170,7 +170,7 @@ namespace App.VFX
             d.separateAxes = s.separateAxes;
         }
 
-        static void CopyRotationOverLifetime(ParticleSystem.RotationOverLifetimeModule s, ParticleSystem.RotationOverLifetimeModule d)
+        private static void CopyRotationOverLifetime(ParticleSystem.RotationOverLifetimeModule s, ParticleSystem.RotationOverLifetimeModule d)
         {
             d.enabled = s.enabled;
             d.separateAxes = s.separateAxes;
@@ -179,7 +179,7 @@ namespace App.VFX
             d.z = s.z;
         }
 
-        static void CopyRotationBySpeed(ParticleSystem.RotationBySpeedModule s, ParticleSystem.RotationBySpeedModule d)
+        private static void CopyRotationBySpeed(ParticleSystem.RotationBySpeedModule s, ParticleSystem.RotationBySpeedModule d)
         {
             d.enabled = s.enabled;
             d.separateAxes = s.separateAxes;
@@ -189,14 +189,14 @@ namespace App.VFX
             d.range = s.range;
         }
 
-        static void CopyExternalForces(ParticleSystem.ExternalForcesModule s, ParticleSystem.ExternalForcesModule d)
+        private static void CopyExternalForces(ParticleSystem.ExternalForcesModule s, ParticleSystem.ExternalForcesModule d)
         {
             d.enabled = s.enabled;
             d.multiplier = s.multiplier;
             d.influenceFilter = s.influenceFilter;
         }
 
-        static void CopyNoise(ParticleSystem.NoiseModule s, ParticleSystem.NoiseModule d)
+        private static void CopyNoise(ParticleSystem.NoiseModule s, ParticleSystem.NoiseModule d)
         {
             d.enabled = s.enabled;
             d.strength = s.strength;
@@ -209,7 +209,7 @@ namespace App.VFX
             d.quality = s.quality;
         }
 
-        static void CopyCollision(ParticleSystem.CollisionModule s, ParticleSystem.CollisionModule d)
+        private static void CopyCollision(ParticleSystem.CollisionModule s, ParticleSystem.CollisionModule d)
         {
             d.enabled = s.enabled;
             d.type = s.type;
@@ -222,7 +222,7 @@ namespace App.VFX
             d.sendCollisionMessages = s.sendCollisionMessages;
         }
 
-        static void CopyTrigger(ParticleSystem.TriggerModule s, ParticleSystem.TriggerModule d)
+        private static void CopyTrigger(ParticleSystem.TriggerModule s, ParticleSystem.TriggerModule d)
         {
             d.enabled = s.enabled;
             d.inside = s.inside;
@@ -232,7 +232,7 @@ namespace App.VFX
             d.radiusScale = s.radiusScale;
         }
 
-        static void CopySubEmitters(ParticleSystem.SubEmittersModule s, ParticleSystem.SubEmittersModule d)
+        private static void CopySubEmitters(ParticleSystem.SubEmittersModule s, ParticleSystem.SubEmittersModule d)
         {
             d.enabled = s.enabled;
             for (int i = 0; i < s.subEmittersCount; i++)
@@ -244,7 +244,7 @@ namespace App.VFX
             }
         }
 
-        static void CopyTextureSheetAnimation(ParticleSystem.TextureSheetAnimationModule s, ParticleSystem.TextureSheetAnimationModule d)
+        private static void CopyTextureSheetAnimation(ParticleSystem.TextureSheetAnimationModule s, ParticleSystem.TextureSheetAnimationModule d)
         {
             d.enabled = s.enabled;
             d.mode = s.mode;
@@ -257,7 +257,7 @@ namespace App.VFX
             d.rowMode = s.rowMode;
         }
 
-        static void CopyLights(ParticleSystem.LightsModule s, ParticleSystem.LightsModule d)
+        private static void CopyLights(ParticleSystem.LightsModule s, ParticleSystem.LightsModule d)
         {
             d.enabled = s.enabled;
             d.light = s.light;
@@ -266,7 +266,7 @@ namespace App.VFX
             d.intensity = s.intensity;
         }
 
-        static void CopyTrails(ParticleSystem.TrailModule s, ParticleSystem.TrailModule d)
+        private static void CopyTrails(ParticleSystem.TrailModule s, ParticleSystem.TrailModule d)
         {
             d.enabled = s.enabled;
             d.mode = s.mode;
@@ -277,23 +277,7 @@ namespace App.VFX
             d.dieWithParticles = s.dieWithParticles;
         }
 
-        // static void CopyCustomData(ParticleSystem.CustomDataModule s, ParticleSystem.CustomDataModule d)
-        // {
-        //     d.enabled = s.enabled;
-        //     for (int i = 0; i < 4; i++)
-        //     {
-        //         d.SetMode((ParticleSystemCustomData)i, s.GetMode((ParticleSystemCustomData)i));
-        //         for (int j = 0; j < 4; j++)
-        //         {
-        //             d.SetVector(
-        //                 (ParticleSystemCustomData)i,
-        //                 j,
-        //                 s.GetVector((ParticleSystemCustomData)i, j));
-        //         }
-        //     }
-        // }
-
-        static void CopyRenderer(ParticleSystem src, ParticleSystem dst)
+        private static void CopyRenderer(ParticleSystem src, ParticleSystem dst)
         {
             var sr = src.GetComponent<ParticleSystemRenderer>();
             var dr = dst.GetComponent<ParticleSystemRenderer>();

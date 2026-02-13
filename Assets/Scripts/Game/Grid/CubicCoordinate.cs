@@ -40,7 +40,7 @@ namespace Game.Grid
                 new CubicCoordinate(x + 1, y - 1, z + 0), // E
                 new CubicCoordinate(x + 0, y - 1, z + 1), // SE
                 new CubicCoordinate(x - 1, y + 0, z + 1), // SW
-                new CubicCoordinate(x - 1, y + 1, z + 0), // W
+                new CubicCoordinate(x - 1, y + 1, z + 0) // W
             };
         }
 
@@ -60,7 +60,7 @@ namespace Game.Grid
             new (-1, 0, 1), // SW
             new (0, -1, 1), // SE
             new (1, -1, 0), // E
-            new (1, 0, -1), // NE
+            new (1, 0, -1) // NE
         };
         
         public static CubicCoordinate[] GetNeighboursRelative() { return NeighboursRelative; }

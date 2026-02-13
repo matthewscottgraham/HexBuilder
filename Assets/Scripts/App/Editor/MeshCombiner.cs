@@ -1,9 +1,10 @@
 using System.IO;
 using System.Linq;
+using App.Utils;
 using UnityEditor;
 using UnityEngine;
 
-namespace App.Utils
+namespace App.Editor
 {
     public class MeshCombiner : MonoBehaviour
     {
@@ -11,7 +12,7 @@ namespace App.Utils
         public void CombineChildren()
         {
             var meshFilters = GetComponentsInChildren<MeshFilter>()
-                .Where(mf => mf.transform != transform && mf.sharedMesh != null).ToArray();
+                .Where(mf => mf.transform != transform && mf.sharedMesh).ToArray();
             
             if (meshFilters.Length == 0) return;
             
@@ -60,11 +61,9 @@ namespace App.Utils
                 AssetDatabase.Refresh();
             }
 
-            if (!Directory.Exists(Application.dataPath + "/Models/CombinedMeshes"))
-            {
-                AssetDatabase.CreateFolder("Assets/Models", "CombinedMeshes");
-                AssetDatabase.Refresh();
-            }
+            if (Directory.Exists(Application.dataPath + "/Models/CombinedMeshes")) return;
+            AssetDatabase.CreateFolder("Assets/Models", "CombinedMeshes");
+            AssetDatabase.Refresh();
         }
     }
 }
