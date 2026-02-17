@@ -17,7 +17,7 @@ namespace Game.Tools
             SelectionType = SelectionType.Edge;
         }
         
-        public override bool Use(HexObject[] hexes, ToolMode toolMode = ToolMode.Add)
+        public override bool Use(HexObject[] hexes)
         {
             if (hexes == null || hexes.Length != 2) return false;
 

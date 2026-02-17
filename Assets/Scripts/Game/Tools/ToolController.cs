@@ -31,8 +31,6 @@ namespace Game.Tools
         public Tool[] Tools { get; private set; }
         public Tool CurrentTool { get; private set; }
         
-        public ToolMode Mode { get; private set; } = ToolMode.Toggle;
-        
         public int GetCurrentToolRadius()
         {
             if (CurrentTool == null) return _radius;
@@ -41,7 +39,7 @@ namespace Game.Tools
 
         public void SetToolMode(ToolMode mode)
         {
-            Mode = mode;
+            CurrentTool?.SetMode(mode);
         }
         
         public void Initialize()
@@ -167,7 +165,7 @@ namespace Game.Tools
             var selectionType = Selector.Hovered.SelectionType;
             if (selectionType is SelectionType.Vertex or SelectionType.Edge)
             {
-                if (!tool.Use(hexObjects, Mode)) yield break;
+                if (!tool.Use(hexObjects)) yield break;
                 foreach (var hexObject in hexObjects)
                 {
                     PlayEffects(hexObject);
@@ -177,7 +175,7 @@ namespace Game.Tools
             {
                 foreach (var hexObject in hexObjects)
                 {
-                    if (!tool.Use(hexObject, Mode)) continue;
+                    if (!tool.Use(hexObject)) continue;
                     PlayEffects(hexObject);
                 }
             }

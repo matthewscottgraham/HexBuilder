@@ -14,7 +14,7 @@ namespace Game.Tools
             SelectionType = SelectionType.Vertex;
         }
         
-        public override bool Use(HexObject[] hexes, ToolMode toolMode = ToolMode.Add)
+        public override bool Use(HexObject[] hexes)
         {
             if (hexes == null || hexes.Length != 3) return false;
 

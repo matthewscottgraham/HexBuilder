@@ -56,8 +56,23 @@ namespace Game.Tools
 
         private void SetModeButtonsVisibility()
         {
-            _toolModeSelector.SetButtonVisibility(0, _toolController.CurrentTool.UseToggleMode);
-            _toolModeSelector.SetVisibility(_toolController.CurrentTool.UseMode);
+            var availableModes = _toolController.CurrentTool.GetModes();
+            if (availableModes == null || availableModes.Length == 0)
+            {
+                _toolModeSelector.SetVisibility(false);
+                return;
+            }
+            else
+            {
+                _toolModeSelector.SetVisibility(true);
+            }
+            
+            _toolModeSelector.SetButtonVisibility(0, availableModes.Contains(ToolMode.Toggle));
+            _toolModeSelector.SetButtonVisibility(1, availableModes.Contains(ToolMode.Add));
+            _toolModeSelector.SetButtonVisibility(2, availableModes.Contains(ToolMode.Subtract));
+
+            var currentMode = _toolController.CurrentTool.CurrentMode;
+            _toolModeSelector.SetValueWithoutNotify((int)currentMode);
         }
 
         private void OnDestroy()
