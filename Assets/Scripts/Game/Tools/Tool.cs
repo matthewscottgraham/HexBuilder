@@ -9,13 +9,13 @@ namespace Game.Tools
     {
         protected FeatureType FeatureType;
         
-        public int RadiusIncrement { get; protected set; } = 0;
+        public int RadiusIncrement { get; protected set; }
         public Sprite Icon { get; protected set; }
         public bool UseRadius { get; protected set; } = true;
         public ToolMode CurrentMode { get; protected set; }
         public SelectionType SelectionType { get; protected set; } = SelectionType.Face;
 
-        protected ToolMode[] ToolModes = null;
+        protected ToolMode[] ToolModes;
         
         public virtual void SetMode(ToolMode mode)
         {
@@ -24,7 +24,7 @@ namespace Game.Tools
 
         public virtual ToolMode[] GetModes()
         {
-            return ToolModes ??= new ToolMode[]
+            return ToolModes ??= new[]
             {
                 ToolMode.Toggle,
                 ToolMode.Add,
@@ -65,7 +65,7 @@ namespace Game.Tools
             return true;
         }
         
-        protected virtual bool UseToggle(HexObject hex, FeatureType currentFeatureType)
+        private bool UseToggle(HexObject hex, FeatureType currentFeatureType)
         {
             return currentFeatureType != FeatureType 
                 ? UseAdditive(hex, currentFeatureType) 

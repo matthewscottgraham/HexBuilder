@@ -7,17 +7,9 @@ namespace Game.Hexes.Features
 {
     public class FeatureFactory : IDisposable
     {
-        private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues;
-        private ConnectedFeatureCatalogue _riverCatalogue;
-        private ConnectedFeatureCatalogue _pathCatalogue;
-        private readonly Material _pathMaterial = Resources.Load<Material>("Materials/mat_path");
-        
-        public FeatureFactory()
-        {
-            _catalogues = GetCatalogues();
-            _riverCatalogue = Resources.Load<ConnectedFeatureCatalogue>("Features/River");
-            _pathCatalogue = Resources.Load<ConnectedFeatureCatalogue>("Features/Path");
-        }
+        private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues = GetCatalogues();
+        private ConnectedFeatureCatalogue _riverCatalogue = Resources.Load<ConnectedFeatureCatalogue>("Features/River");
+        private ConnectedFeatureCatalogue _pathCatalogue = Resources.Load<ConnectedFeatureCatalogue>("Features/Path");
 
         public void Dispose()
         {
@@ -33,8 +25,9 @@ namespace Game.Hexes.Features
 
         public GameObject CreateFeature(FeatureType featureType, int variation)
         {
-            if (featureType == FeatureType.None) return null;
-            return CreateNewFeature(featureType, false, variation);
+            return featureType == FeatureType.None 
+                ? null : 
+                CreateNewFeature(featureType, false, variation);
         }
         
         public GameObject GetPathMesh(bool[] vertices)

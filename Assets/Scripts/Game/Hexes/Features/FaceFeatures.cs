@@ -6,7 +6,7 @@ namespace Game.Hexes.Features
 {
     public class FaceFeatures : HexComponent
     {
-        private FeatureFactory _factory;
+        private readonly FeatureFactory _factory;
         protected override string Name => nameof(FaceFeatures);
         
         public FaceFeatures(HexObject owner) : base(owner)

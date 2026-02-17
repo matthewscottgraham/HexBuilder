@@ -135,7 +135,7 @@ namespace App.Input
             _rotating = false;
         }
 
-        private void HandleFocus(InputAction.CallbackContext ctx)
+        private static void HandleFocus(InputAction.CallbackContext ctx)
         {
             EventBus<FocusEvent>.Raise(new FocusEvent());
         }

@@ -8,13 +8,13 @@ namespace Game.Tools
     {
         public override void SetMode(ToolMode mode)
         {
-            mode = (mode == ToolMode.Toggle) ? ToolMode.Add : mode;
+            mode = mode == ToolMode.Toggle ? ToolMode.Add : mode;
             CurrentMode = mode;
         }
 
         public override ToolMode[] GetModes()
         {
-            return ToolModes ??= new ToolMode[]
+            return ToolModes ??= new[]
             {
                 ToolMode.Add,
                 ToolMode.Subtract

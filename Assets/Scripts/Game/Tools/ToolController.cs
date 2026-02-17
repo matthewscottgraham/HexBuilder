@@ -138,7 +138,7 @@ namespace Game.Tools
                 count += 1;
             }
 
-            var height = (count <= 0) ? 1 : Mathf.CeilToInt(sum / count) + 1; // Add 1 to fudge it a bit so it feels correct
+            var height = count <= 0 ? 1 : Mathf.CeilToInt(sum / count) + 1; // Add 1 to fudge it a bit so it feels correct
             
             foreach (var tool in Tools)
             {
@@ -159,7 +159,7 @@ namespace Game.Tools
             }
         }
 
-        private IEnumerator UseTool(Tool tool, HexObject[] hexObjects, float delay = 0)
+        private static IEnumerator UseTool(Tool tool, HexObject[] hexObjects, float delay = 0)
         {
             yield return new WaitForSeconds(delay);
             var selectionType = Selector.Hovered.SelectionType;

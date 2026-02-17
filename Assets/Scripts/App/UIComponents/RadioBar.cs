@@ -87,20 +87,20 @@ namespace App.UIComponents
 
         private void CleanUp(DetachFromPanelEvent evt)
         {
-            for (var i = 0; i < _buttons.Length; i++)
+            foreach (var button in _buttons)
             {
-                if (_buttons[i] != null)
-                    _buttons[i].UnregisterCallback<ClickEvent>(OnButtonClicked);
+                button?.UnregisterCallback<ClickEvent>(OnButtonClicked);
             }
+
             UnregisterCallback<DetachFromPanelEvent>(CleanUp);
         }
         
-        private Button CreateTextButton(string text)
+        private static Button CreateTextButton(string text)
         {
             return new Button { text = text };
         }
 
-        private Button CreateIconButton(Sprite sprite)
+        private static Button CreateIconButton(Sprite sprite)
         {
             var btn = new Button();
 
@@ -115,17 +115,15 @@ namespace App.UIComponents
             var button = evt.target as Button;
             for (var i = 0; i < _buttons.Length; i++)
             {
-                if (_buttons[i] == button)
-                {
-                    value = i;
-                    return;
-                }
+                if (_buttons[i] != button) continue;
+                value = i;
+                return;
             }
         }
 
         private void SetFirstAvailableValue()
         {
-            for (int i = 0; i < _buttons.Length; i++)
+            for (var i = 0; i < _buttons.Length; i++)
             {
                 var button = _buttons[i];
                 if (button.ClassListContainsAny(new string[] { "disabled", "hidden", "hidden-and-collapsed" }))
