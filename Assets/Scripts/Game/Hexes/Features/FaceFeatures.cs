@@ -7,7 +7,6 @@ namespace Game.Hexes.Features
     public class FaceFeatures : HexComponent
     {
         private FeatureFactory _factory;
-        private FeatureType _currentFeatureType = FeatureType.None;
         protected override string Name => nameof(FaceFeatures);
         
         public FaceFeatures(HexObject owner) : base(owner)
@@ -19,15 +18,8 @@ namespace Game.Hexes.Features
 
         public void Add(FeatureType featureType)
         {
-            if (_currentFeatureType == featureType)
-            {
-                Remove(0);
-                _currentFeatureType = FeatureType.None;
-                return;
-            }
-            
             Remove(0);
-            _currentFeatureType = featureType;
+            FeatureType = featureType;
             var feature = _factory.CreateFeature(featureType);
             feature.transform.SetParent(FeatureParent, false);
             Feature = feature;
@@ -43,7 +35,7 @@ namespace Game.Hexes.Features
         }
         protected override void UpdateFeatureType()
         {
-            FeatureType = HasFeatures.Any(t=> t) ? _currentFeatureType : FeatureType.None;
+            FeatureType = HasFeatures.Any(t=> t) ? FeatureType : FeatureType.None;
         }
     }
 }

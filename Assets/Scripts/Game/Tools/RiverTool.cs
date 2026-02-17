@@ -6,20 +6,18 @@ using UnityEngine;
 
 namespace Game.Tools
 {
-    public class AddRiver : ITool
+    public class RiverTool : Tool
     {
-        Sprite ITool.Icon => Resources.Load<Sprite>("Sprites/river");
-        bool ITool.UseRadius => false;
-        SelectionType ITool.SelectionType => SelectionType.Edge;
-        
         private readonly HexController _hexController = ServiceLocator.Instance.Get<HexController>();
 
-        public bool Use(HexObject hex)
+        public RiverTool()
         {
-            return false;
+            UseRadius = false;
+            Icon = Resources.Load<Sprite>("Sprites/river");
+            SelectionType = SelectionType.Edge;
         }
-
-        public bool Use(HexObject[] hexes)
+        
+        public override bool Use(HexObject[] hexes, ToolMode toolMode = ToolMode.Add)
         {
             if (hexes == null || hexes.Length != 2) return false;
 

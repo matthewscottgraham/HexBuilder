@@ -49,5 +49,11 @@ namespace App.Utils
             element.RemoveFromClassList("hidden-and-collapsed");
             element.RemoveFromClassList("hidden");
         }
+
+        public static void SetVisibility(this VisualElement element, bool isVisible, bool collapse = true)
+        {
+            if (isVisible) element.Show();
+            else element.Hide(collapse);
+        }
     }
 }

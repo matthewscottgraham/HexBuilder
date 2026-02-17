@@ -5,18 +5,16 @@ using UnityEngine;
 
 namespace Game.Tools
 {
-    public class AddPath : ITool
+    public class PathTool : Tool
     {
-        Sprite ITool.Icon => Resources.Load<Sprite>("Sprites/path");
-        bool ITool.UseRadius => false;
-        SelectionType ITool.SelectionType => SelectionType.Vertex;
-        
-        public bool Use(HexObject hex)
+        public PathTool()
         {
-            return false;
+            UseRadius = false;
+            Icon = Resources.Load<Sprite>("Sprites/path");
+            SelectionType = SelectionType.Vertex;
         }
         
-        public bool Use(HexObject[] hexes)
+        public override bool Use(HexObject[] hexes, ToolMode toolMode = ToolMode.Add)
         {
             if (hexes == null || hexes.Length != 3) return false;
 

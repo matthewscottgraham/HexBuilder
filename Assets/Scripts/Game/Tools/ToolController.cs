@@ -27,13 +27,21 @@ namespace Game.Tools
         private EventBinding<GameResumeEvent> _resumeEventBinding;
         private Selector _currentSelector;
         private HexController _hexController;
-        public ITool[] Tools { get; private set; }
-        public ITool CurrentTool { get; private set; }
+        
+        public Tool[] Tools { get; private set; }
+        public Tool CurrentTool { get; private set; }
+        
+        public ToolMode Mode { get; private set; } = ToolMode.Toggle;
         
         public int GetCurrentToolRadius()
         {
             if (CurrentTool == null) return _radius;
             return _radius + CurrentTool.RadiusIncrement;
+        }
+
+        public void SetToolMode(ToolMode mode)
+        {
+            Mode = mode;
         }
         
         public void Initialize()
@@ -46,16 +54,15 @@ namespace Game.Tools
             _selectionEventBinding = new EventBinding<SelectionEvent>(HandleInteractEvent);
             EventBus<SelectionEvent>.Register(_selectionEventBinding);
             
-            Tools = new ITool[]
+            Tools = new Tool[]
             {
-                new RaiseTerrain(),
-                new LowerTerrain(),
-                new LevelTerrain(),
-                new AddMountain(),
-                new AddTrees(),
-                new AddFarm(),
-                new AddRiver(),
-                new AddPath()
+                new ShiftTerrainTool(),
+                new LevelTerrainTool(),
+                new MountainsTool(),
+                new WildernessTool(),
+                new SettlementTool(),
+                new RiverTool(),
+                new PathTool()
             };
             
             _selectors = new Dictionary<SelectionType, Selector>
@@ -116,7 +123,7 @@ namespace Game.Tools
             
             SetAverageHeight(coordinates);
 
-            var hexObjects = _hexController.GetHexObjects(coordinates, CurrentTool.CreateHexesAsNeeded);
+            var hexObjects = _hexController.GetHexObjects(coordinates, true);
             StartCoroutine(UseTool(CurrentTool, hexObjects));
         }
 
@@ -137,9 +144,9 @@ namespace Game.Tools
             
             foreach (var tool in Tools)
             {
-                if (tool.GetType() != typeof(LevelTerrain)) continue;
+                if (tool.GetType() != typeof(LevelTerrainTool)) continue;
 
-                var levelTerrainTool = (LevelTerrain)tool;
+                var levelTerrainTool = (LevelTerrainTool)tool;
                 levelTerrainTool.Level = height;
             }
         }
@@ -154,13 +161,13 @@ namespace Game.Tools
             }
         }
 
-        private static IEnumerator UseTool(ITool tool, HexObject[] hexObjects, float delay = 0)
+        private IEnumerator UseTool(Tool tool, HexObject[] hexObjects, float delay = 0)
         {
             yield return new WaitForSeconds(delay);
             var selectionType = Selector.Hovered.SelectionType;
             if (selectionType is SelectionType.Vertex or SelectionType.Edge)
             {
-                if (!tool.Use(hexObjects)) yield break;
+                if (!tool.Use(hexObjects, Mode)) yield break;
                 foreach (var hexObject in hexObjects)
                 {
                     PlayEffects(hexObject);
@@ -170,7 +177,7 @@ namespace Game.Tools
             {
                 foreach (var hexObject in hexObjects)
                 {
-                    if (!tool.Use(hexObject)) continue;
+                    if (!tool.Use(hexObject, Mode)) continue;
                     PlayEffects(hexObject);
                 }
             }

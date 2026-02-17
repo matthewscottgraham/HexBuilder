@@ -16,6 +16,7 @@ namespace App.Input
         
         private Vector2 _clickStartPosition;
         private bool _clicking;
+        private bool _rotating;
         private bool _wasDragged;
         private bool _moving;
         
@@ -34,6 +35,9 @@ namespace App.Input
             _inputSystem.Player.Interact.started += HandleInteractStart;
             _inputSystem.Player.Interact.canceled += HandleInteractEnd;
             _inputSystem.Player.Zoom.performed += HandleZoom;
+            _inputSystem.Player.Focus.performed += HandleFocus;
+            _inputSystem.Player.Camera.performed += HandleCameraStart;
+            _inputSystem.Player.Camera.canceled += HandleCameraEnd;
             
             LastMousePosition = PointerPosition;
         }
@@ -45,6 +49,9 @@ namespace App.Input
             _inputSystem.Player.Interact.started -= HandleInteractStart;
             _inputSystem.Player.Interact.canceled -= HandleInteractEnd;
             _inputSystem.Player.Zoom.performed -= HandleZoom;
+            _inputSystem.Player.Focus.performed -= HandleFocus;
+            _inputSystem.Player.Camera.performed -= HandleCameraStart;
+            _inputSystem.Player.Camera.canceled -= HandleCameraEnd;
             _inputSystem?.Dispose();
         }
 
@@ -54,19 +61,19 @@ namespace App.Input
 
             var pointerOverUi = IsPointerOverUI();
             
-            if (_clicking)
+            if (_clicking || _rotating)
             {
                 if (pointerOverUi)
                 {
                     CancelClick();
                     return;
                 }
-                if (Vector2.Distance(_clickStartPosition, PointerPosition) > DragThreshold)
-                {
-                    _wasDragged = true;
-                    var delta = LastMousePosition - PointerPosition;
-                    EventBus<DragEvent>.Raise(new DragEvent(delta.normalized));
-                }
+                if (Vector2.Distance(_clickStartPosition, PointerPosition) < DragThreshold) return;
+                
+                _wasDragged = true;
+                var delta = LastMousePosition - PointerPosition;
+                if (_rotating) EventBus<RotateEvent>.Raise(new RotateEvent(delta.normalized));
+                else EventBus<DragEvent>.Raise(new DragEvent(delta.normalized));
             }
 
             if (pointerOverUi) return;
@@ -116,6 +123,21 @@ namespace App.Input
         {
             _wasDragged = false;
             _clicking = false;
+        }
+
+        private void HandleCameraStart(InputAction.CallbackContext ctx)
+        {
+            _rotating = true;
+        }
+
+        private void HandleCameraEnd(InputAction.CallbackContext ctx)
+        {
+            _rotating = false;
+        }
+
+        private void HandleFocus(InputAction.CallbackContext ctx)
+        {
+            EventBus<FocusEvent>.Raise(new FocusEvent());
         }
     }
 }

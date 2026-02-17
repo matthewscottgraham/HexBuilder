@@ -48,7 +48,6 @@ namespace App.Events
 
         public Vector2 Delta;
     }
-
     public struct ZoomEvent : IEvent
     {
         public ZoomEvent(float delta)
@@ -58,17 +57,15 @@ namespace App.Events
         
         public readonly float Delta;
     }
-    
     public struct RotateEvent : IEvent
     {
-        public RotateEvent(float delta)
+        public RotateEvent(Vector2 delta)
         {
             Delta = delta;
         }
         
-        public readonly float Delta;
+        public readonly Vector2 Delta;
     }
-
     public struct DragEvent : IEvent
     {
         public DragEvent(Vector2 delta)
@@ -78,7 +75,8 @@ namespace App.Events
 
         public Vector2 Delta;
     }
-
+    public struct FocusEvent : IEvent {}
+    
     public struct SetMusicVolume : IEvent
     {
         public SetMusicVolume(float volume)
@@ -97,7 +95,6 @@ namespace App.Events
 
         public readonly float Volume;
     }
-    
     public struct PlaySoundEvent : IEvent
     {
         public PlaySoundEvent(string soundID, bool randomPitch = false)
@@ -109,7 +106,6 @@ namespace App.Events
         public readonly string SoundID;
         public readonly bool RandomPitch;
     }
-    
     public struct PlayMusicEvent : IEvent { }
     public struct StopMusicEvent : IEvent { }
 

@@ -65,9 +65,10 @@ namespace Game.Hexes
             SetMaterialBasedOnHeight();
         }
 
-        public void SetHeight(int height)
+        public bool SetHeight(int height)
         {
             height = Mathf.Clamp(height, 0, HexFactory.MaxHeight);
+            if (Height == height) return false;
             Height = height;
             _hexMesh.TweenScale(_hexMesh.transform.localScale, new Vector3(1, height, 1), AnimationDuration)
                 .SetEase(AnimationEaseType).SetOnComplete(SetMaterialBasedOnHeight);
@@ -75,6 +76,7 @@ namespace Game.Hexes
             Vertices.SetHeight(height);
             Edges.SetHeight(height);
             Face.SetHeight(height);
+            return true;
         }
 
         private void SetMaterialBasedOnHeight()
