@@ -126,3 +126,23 @@ SliderInt:focus > .unity-base-field__label {
     background-color: black;
     border-width: 0;
 }
+
+.radio-bar {
+    flex-direction: row;
+}
+.radio-bar__button-text {
+    
+}
+.radio-bar__button-icon {
+    height: 64px;
+    width: 64px;
+    margin: 0;
+    padding: 10px 12px;
+    border-width: 0;
+}
+.radio-bar__button-text.checked {
+    background-color: coral;
+}
+.radio-bar__button-icon.checked {
+    background-color: coral;
+}

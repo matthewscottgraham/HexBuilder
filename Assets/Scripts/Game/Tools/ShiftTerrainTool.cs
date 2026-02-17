@@ -22,10 +22,5 @@ namespace Game.Tools
         {
             return hex.SetHeight(hex.Height - 1);
         }
-
-        protected override bool UseToggle(HexObject hex, FeatureType currentFeatureType)
-        {
-            return UseAdditive(hex, currentFeatureType);
-        }
     }
 }

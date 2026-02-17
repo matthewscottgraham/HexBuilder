@@ -1,5 +1,7 @@
+using System.Linq;
 using App.Events;
 using App.Services;
+using App.UIComponents;
 using App.Utils;
 using Game.Menu;
 using UnityEngine;
@@ -11,10 +13,8 @@ namespace Game.Tools
     {
         private ToolController _toolController;
         private SliderInt _radiusSlider;
-        private ToggleButtonGroup _toolButtonGroup;
-        private ToggleButtonGroup _toolModeButtonGroup;
-        private Button _toggleModeButton;
-        private Button _addModeButton;
+        private RadioBar _toolSelector;
+        private RadioBar _toolModeSelector;
         
         private EventBinding<GamePauseEvent> _pauseEventBinding;
         private EventBinding<GameResumeEvent> _resumeEventBinding;
@@ -28,31 +28,25 @@ namespace Game.Tools
             _radiusSlider.lowValue = 0;
             _radiusSlider.highValue = 2;
             _radiusSlider.RegisterValueChangedCallback(HandleRadiusChanged);
-            
-            _toolModeButtonGroup = menuBarController.RegisterCustomElement<ToggleButtonGroup>(new ToggleButtonGroup());
-            _toggleModeButton = _toolModeButtonGroup.AddNew(new Button());
-            _toggleModeButton.iconImage = Resources.Load<Sprite>("Sprites/toggle").texture;
-            _addModeButton = _toolModeButtonGroup.AddNew(new Button());
-            _addModeButton.iconImage = Resources.Load<Sprite>("Sprites/add").texture;
-            var subtractButton = _toolModeButtonGroup.AddNew(new Button());
-            subtractButton.iconImage = Resources.Load<Sprite>("Sprites/subtract").texture;
-            SetToggleButtonVisibility();
-            _toolModeButtonGroup.RegisterValueChangedCallback(HandleToolModeChanged);
 
+            var modeIcons = new []
+            {
+                Resources.Load<Sprite>("Sprites/toggle"),
+                Resources.Load<Sprite>("Sprites/add"),
+                Resources.Load<Sprite>("Sprites/subtract")
+            };
+            _toolModeSelector = menuBarController.RegisterCustomElement<RadioBar>(new RadioBar(modeIcons));
+            _toolModeSelector.RegisterValueChangedCallback(HandleToolModeChanged);
+            
             var spacer = new VisualElement();
             spacer.AddToClassList("spacer");
-            
             menuBarController.RegisterCustomElement<VisualElement>(spacer);
-            
-            _toolButtonGroup = menuBarController.RegisterCustomElement<ToggleButtonGroup>(new ToggleButtonGroup());
-            
-            foreach (var tool in _toolController.Tools)
-            {
-                var button = _toolButtonGroup.AddNew(new Button());
-                button.iconImage = tool.Icon?.texture;
-            }
-            
-            _toolButtonGroup.RegisterValueChangedCallback(HandleToolChanged);
+
+            var toolIcons = _toolController.Tools.Select(tool => tool.Icon).ToArray();
+            _toolSelector = menuBarController.RegisterCustomElement<RadioBar>(new RadioBar(toolIcons));
+            _toolSelector.RegisterValueChangedCallback(HandleToolChanged);
+
+            SetModeButtonsVisibility();
             
             _pauseEventBinding = new EventBinding<GamePauseEvent>(HandlePauseEvent);
             _resumeEventBinding = new EventBinding<GameResumeEvent>(HandleResumeEvent);
@@ -60,10 +54,10 @@ namespace Game.Tools
             EventBus<GameResumeEvent>.Register(_resumeEventBinding);
         }
 
-        private void SetToggleButtonVisibility()
+        private void SetModeButtonsVisibility()
         {
-            var isVisible = _toolController.CurrentTool.UseToggleMode;
-            _toggleModeButton.SetVisibility(isVisible);
+            _toolModeSelector.SetButtonVisibility(0, _toolController.CurrentTool.UseToggleMode);
+            _toolModeSelector.SetVisibility(_toolController.CurrentTool.UseMode);
         }
 
         private void OnDestroy()
@@ -77,31 +71,32 @@ namespace Game.Tools
             ServiceLocator.Instance.Get<ToolController>().SetToolRadius(evt.newValue);
         }
 
-        private void HandleToolChanged(ChangeEvent<ToggleButtonGroupState> evt)
+        private void HandleToolChanged(ChangeEvent<int> evt)
         {
-            var toolIndex = evt.newValue.GetActiveOptions(stackalloc int[evt.newValue.length]);
-            _toolController.SetActiveTool(toolIndex[0]);
+            var toolIndex = evt.newValue;
+            _toolController.SetActiveTool(toolIndex);
             _radiusSlider.visible = _toolController.CurrentTool.UseRadius;
-            _toggleModeButton.SetVisibility(_toolController.CurrentTool.UseToggleMode);
+            SetModeButtonsVisibility();
         }
 
-        private void HandleToolModeChanged(ChangeEvent<ToggleButtonGroupState> evt)
+        private void HandleToolModeChanged(ChangeEvent<int> evt)
         {
-            var modeIndex = evt.newValue.GetActiveOptions(stackalloc int[evt.newValue.length]);
-            _toolController.SetToolMode((ToolMode)modeIndex[0]);
-            _toolModeButtonGroup.SetVisibility(_toolController.CurrentTool.UseMode);
+            var modeIndex = evt.newValue;
+            _toolController.SetToolMode((ToolMode)modeIndex);
         }
         
         private void HandlePauseEvent()
         {
-            _toolButtonGroup.SetEnabled(false);
             _radiusSlider.SetEnabled(false);
+            _toolModeSelector.SetEnabled(false);
+            _toolSelector.SetEnabled(false);
         }
 
         private void HandleResumeEvent()
         {
-            _toolButtonGroup.SetEnabled(true);
             _radiusSlider.SetEnabled(true);
+            _toolModeSelector.SetEnabled(true);
+            _toolSelector.SetEnabled(true);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace App.Utils
@@ -14,6 +15,13 @@ namespace App.Utils
         {
             var button = parentElement.AddNew(new Button());
             button.text = text;
+            button.clicked += onClick;
+            return button;
+        }
+        public static Button AddButton(this VisualElement parentElement, Texture2D icon, Action onClick)
+        {
+            var button = parentElement.AddNew<Button>(new Button(), "button-icon");
+            button.iconImage = icon;
             button.clicked += onClick;
             return button;
         }
@@ -54,6 +62,16 @@ namespace App.Utils
         {
             if (isVisible) element.Show();
             else element.Hide(collapse);
+        }
+
+        public static bool ClassListContainsAny(this VisualElement element, string[] classNames)
+        {
+            if (classNames == null || classNames.Length == 0) return false;
+            foreach (var className in classNames)
+            {
+                if (element.ClassListContains(className)) return true;
+            }
+            return false;
         }
     }
 }
