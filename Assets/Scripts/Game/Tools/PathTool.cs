@@ -1,5 +1,7 @@
+using System;
 using Game.Grid;
 using Game.Hexes;
+using Game.Hexes.Features;
 using Game.Selection;
 using UnityEngine;
 
@@ -27,13 +29,42 @@ namespace Game.Tools
             var sharedVertexC = HexGrid.GetSharedVertexIndex(hexes[2].Coordinate, hexes[0].Coordinate, hexes[1].Coordinate);
             if (sharedVertexC < 0) return false;
 
-            var pathPresent = hexes[0].Vertices.Exists(sharedVertexA); // if present on any hex, it is present for all
-            
-            hexes[0].Vertices.Set(sharedVertexA, !pathPresent);
-            hexes[1].Vertices.Set(sharedVertexB, !pathPresent);
-            hexes[2].Vertices.Set(sharedVertexC, !pathPresent);
+            var exists = hexes[0].Vertices.Exists(sharedVertexA); // if present on any hex, it is present for all
+            var changed = Use(hexes[0], sharedVertexA, exists);
+            changed += Use(hexes[1], sharedVertexB, exists); 
+            changed += Use(hexes[2], sharedVertexC, exists);
 
-            return true;
+            return changed > 0;
+        }
+
+        private int Use(HexObject hex, int vertex, bool exists)
+        {
+            return CurrentMode switch
+            {
+                ToolMode.Toggle => UseToggle(hex, vertex, exists),
+                ToolMode.Add => UseAdditive(hex, vertex),
+                ToolMode.Subtract => UseSubtractive(hex, vertex),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
+        private static int UseAdditive(HexObject hex, int vertex)
+        {
+            if (hex.Vertices.Exists(vertex)) return 0;
+            hex.Vertices.Set(vertex, true);
+            return 1;
+        }
+
+        private static int UseSubtractive(HexObject hex, int vertex)
+        {
+            if (!hex.Vertices.Exists(vertex)) return 0;
+            hex.Vertices.Set(vertex, false);
+            return 1;
+        }
+        
+        private static int UseToggle(HexObject hex, int vertex, bool exists)
+        {
+            return exists ? UseSubtractive(hex, vertex) : UseAdditive(hex, vertex);
         }
     }
 }

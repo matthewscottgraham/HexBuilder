@@ -1,3 +1,4 @@
+using System;
 using App.Services;
 using Game.Grid;
 using Game.Hexes;
@@ -25,17 +26,16 @@ namespace Game.Tools
             if (sharedEdgeA < 0) return false;
             var sharedEdgeB = (sharedEdgeA + 3) % 6;
             
-            var riverPresent = hexes[0].Edges.Exists(sharedEdgeA); // if present on any hex, it is present for all
-            
-            hexes[0].Edges.Set(sharedEdgeA, !riverPresent);
-            hexes[1].Edges.Set(sharedEdgeB, !riverPresent);
+            var exists = hexes[0].Edges.Exists(sharedEdgeA); // if present on any hex, it is present for all
+            var changed = Use(hexes[0], sharedEdgeA, exists);
+            changed += Use(hexes[1], sharedEdgeB, exists);
             
             // TODO: Below code should be replaced when the feature meshes are decided based on neighbour hexes
-            if (hexes[0].Height == hexes[1].Height || riverPresent)
+            if (hexes[0].Height == hexes[1].Height || exists)
             {
                 hexes[0].Edges.RemoveWaterfall(sharedEdgeA);
                 hexes[1].Edges.RemoveWaterfall(sharedEdgeB);
-                return true;
+                return changed > 0;
             }
             
             var waterfallA = _hexController.WaterfallFactory.CreateWaterFall(
@@ -52,7 +52,37 @@ namespace Game.Tools
                 sharedEdgeA);
             hexes[1].Edges.AddWaterfall(waterfallB, sharedEdgeB);
             
-            return true;
+            return changed > 0;
+        }
+        
+        private int Use(HexObject hex, int edge, bool exists)
+        {
+            return CurrentMode switch
+            {
+                ToolMode.Toggle => UseToggle(hex, edge, exists),
+                ToolMode.Add => UseAdditive(hex, edge),
+                ToolMode.Subtract => UseSubtractive(hex, edge),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
+        private static int UseAdditive(HexObject hex, int edge)
+        {
+            if (hex.Edges.Exists(edge)) return 0;
+            hex.Edges.Set(edge, true);
+            return 1;
+        }
+
+        private static int UseSubtractive(HexObject hex, int edge)
+        {
+            if (!hex.Edges.Exists(edge)) return 0;
+            hex.Edges.Set(edge, false);
+            return 1;
+        }
+        
+        private static int UseToggle(HexObject hex, int edge, bool exists)
+        {
+            return exists ? UseSubtractive(hex, edge) : UseAdditive(hex, edge);
         }
     }
 }
