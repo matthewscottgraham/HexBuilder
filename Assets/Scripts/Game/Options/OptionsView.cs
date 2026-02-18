@@ -3,6 +3,7 @@ using App.Events;
 using App.Screenshots;
 using App.Services;
 using App.Utils;
+using Game.Cameras;
 using Game.Events;
 using Game.Menu;
 using UnityEngine;
@@ -12,6 +13,9 @@ namespace Game.Options
 {
     public class OptionsView : MonoBehaviour
     {
+        private const string ScreenShotTabId = "screenshot";
+        private MenuBarController _menuBarController;
+        
         private Slider _dofSlider;
         private Slider _fovSlider;
         private Slider _timeSlider;
@@ -24,11 +28,11 @@ namespace Game.Options
 
         private void Start()
         {
+            _menuBarController ??= GetComponent<MenuBarController>();
             var audioController = ServiceLocator.Instance.Get<AudioController>();
-            var menuBarController = GetComponent<MenuBarController>();
-            
+
             var screenshotIcon = Resources.Load<Sprite>("Sprites/screenshot"); 
-            var screenshotTab = menuBarController.RegisterTab("screenshot", screenshotIcon);
+            var screenshotTab = _menuBarController.RegisterTab(ScreenShotTabId, screenshotIcon);
             
             _dofSlider = screenshotTab.AddSlider("DOF", 0, 0, 1);
             _dofSlider.RegisterValueChangedCallback(HandleDofChanged);
@@ -46,7 +50,7 @@ namespace Game.Options
             screenshotTab.AddButton("Take Screenshot", TakeScreenshot);
             
             var optionsIcon = Resources.Load<Sprite>("Sprites/options"); 
-            var optionsTab = menuBarController.RegisterTab("options", optionsIcon);
+            var optionsTab = _menuBarController.RegisterTab("options", optionsIcon);
 
             _musicVolumeSlider = optionsTab.AddSlider("Music Volume", audioController.MusicVolume, 0, 1);
             _musicVolumeSlider.RegisterValueChangedCallback(HandleMusicVolumeChanged);
@@ -65,6 +69,17 @@ namespace Game.Options
             _captureUIToggle.UnregisterValueChangedCallback(HandleCaptureUiToggleChanged);
             _musicVolumeSlider.UnregisterValueChangedCallback(HandleMusicVolumeChanged);
             _sfxVolumeSlider.UnregisterValueChangedCallback(HandleSfxVolumeChanged);
+        }
+
+        private void OnEnable()
+        {
+            _menuBarController ??= GetComponent<MenuBarController>();
+            _menuBarController.OnTabChange += HandleTabChanged;
+        }
+
+        private void OnDisable()
+        {
+            _menuBarController.OnTabChange -= HandleTabChanged;
         }
 
         private void HandleDofChanged(ChangeEvent<float> evt)
@@ -101,6 +116,12 @@ namespace Game.Options
         private static void HandleSfxVolumeChanged(ChangeEvent<float> value)
         {
             EventBus<SetSfxVolume>.Raise(new SetSfxVolume(value.newValue));
+        }
+
+        private void HandleTabChanged(string tabId)
+        {
+            var cameraMode = (tabId == ScreenShotTabId) ? CameraMode.Screenshot : CameraMode.Game;
+            EventBus<SetCameraModeEvent>.Raise(new SetCameraModeEvent(cameraMode));
         }
     }
 }

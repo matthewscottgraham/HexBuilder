@@ -9,6 +9,7 @@ namespace Game.Menu
 {
     public class MenuBarController : MonoBehaviour
     {
+        public Action<string> OnTabChange;
         private VisualElement _mainContainer;
         private VisualElement _headerContainer;
         private VisualElement _headerTabButtons;
@@ -103,6 +104,8 @@ namespace Game.Menu
                 if (tab.Key != tabId) tab.Value.Hide();
                 else tab.Value.Show();
             }
+            
+            OnTabChange?.Invoke(tabId);
         }
 
         private void HandleHideUI(HideUIEvent evt)

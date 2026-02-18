@@ -8,10 +8,14 @@ namespace Game.Cameras
 {
     public class GameCameraController : MonoBehaviour
     {
+        [SerializeField] private Transform cameraParent;
+        
         private readonly Vector2 _dragSensitivity = new(60f, 90f);
         private readonly Vector2 _rotateSensitivity = new(150f, 250f);
         private readonly Vector2 _zoomSensitivity = new(30f, 80f);
         private readonly Vector2 _zoomMinMax = new(-7, 15);
+        private readonly Vector2 _pitchRange = new(30f, 68f);
+        private const float FocusSpeed = 0.03f;
 
         private Vector3? _focusPosition;
         private float _focusTimer;
@@ -57,13 +61,14 @@ namespace Game.Cameras
         {
             if (!_focusPosition.HasValue) return;
             transform.position = Vector3.Slerp(transform.position, _focusPosition.Value, _focusTimer);
-            _focusTimer += Time.deltaTime;
-            if (_focusTimer > 2) _focusPosition = null;
+            _focusTimer += Time.deltaTime * FocusSpeed;
+            if (_focusTimer > 3) _focusPosition = null;
         }
 
         private void HandleDrag(DragEvent ev)
         {
             _focusPosition = null;
+            
             var right = transform.right;
             var forward = Vector3.Cross(right, Vector3.up);
 
@@ -73,13 +78,22 @@ namespace Game.Cameras
 
         private void HandleZoom(ZoomEvent ev)
         {
-            var newPosition = transform.position + new Vector3(0, ev.Delta, 0) * GetSensitivity(_zoomSensitivity) * Time.deltaTime;
+            _focusPosition = null;
+            
+            var newPosition = transform.position 
+                              + new Vector3(0, ev.Delta, 0) * GetSensitivity(_zoomSensitivity) * Time.deltaTime;
             newPosition.y = Mathf.Clamp(newPosition.y, _zoomMinMax.x, _zoomMinMax.y);
             transform.localPosition = newPosition;
+
+            var percent = Mathf.InverseLerp(_zoomMinMax.x, _zoomMinMax.y, transform.localPosition.y);
+            var pitch = Mathf.Lerp(_pitchRange.x, _pitchRange.y, percent);
+            cameraParent.localRotation = Quaternion.Euler(pitch, 0f, 0f);
         }
 
         private void HandleRotate(RotateEvent ev)
         {
+            _focusPosition = null;
+            
             _currentYaw -= ev.Delta.x * GetSensitivity(_rotateSensitivity) * Time.deltaTime;
             transform.localRotation = Quaternion.Euler(0, _currentYaw, 0);
         }
@@ -90,6 +104,7 @@ namespace Game.Cameras
             if (Selector.Hovered.Coordinates.Count == 0) return;
             var hoveredCoordinate = Selector.Hovered.Coordinates.FirstOrDefault();
             var focusPosition = HexGrid.GetWorldPosition(hoveredCoordinate);
+            focusPosition.y = transform.position.y;
             _focusPosition = focusPosition;
         }
 

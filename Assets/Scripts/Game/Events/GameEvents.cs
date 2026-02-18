@@ -1,4 +1,5 @@
 using App.Events;
+using Game.Cameras;
 using Game.Selection;
 
 namespace Game.Events
@@ -23,6 +24,14 @@ namespace Game.Events
         public SelectionContext HoverSelection;
     }
 
+    public struct SetCameraModeEvent : IEvent
+    {
+        public SetCameraModeEvent(CameraMode cameraMode)
+        {
+            CameraMode = cameraMode;
+        }
+        public CameraMode CameraMode;
+    }
     public struct SetDofEvent : IEvent
     {
         public SetDofEvent(float dof)
