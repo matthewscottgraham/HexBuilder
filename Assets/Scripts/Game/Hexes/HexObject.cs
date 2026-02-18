@@ -3,6 +3,7 @@ using App.Tweens;
 using Game.Events;
 using Game.Grid;
 using Game.Hexes.Features;
+using Game.Selection;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -43,6 +44,12 @@ namespace Game.Hexes
 
         private void HandleHoverEvent(HoverEvent evt)
         {
+            if (evt.HoverSelection.SelectionType == SelectionType.None)
+            {
+                DeHover();
+                return;
+            }
+            
             foreach (var coordinate in evt.HoverSelection.Coordinates)
             {
                 if (!coordinate.Equals(Coordinate)) continue;

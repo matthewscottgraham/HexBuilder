@@ -58,13 +58,23 @@ namespace Game.Selection
         private void Hover()
         {
             var ray = _camera.ScreenPointToRay(InputController.PointerPosition);
-            if (!Physics.Raycast(ray, out var hit)) return;
+            if (!Physics.Raycast(ray, out var hit))
+            {
+                Hovered = BlankSelection;
+                EventBus<HoverEvent>.Raise(new HoverEvent(BlankSelection));
+                return;
+            }
             SetHoveredSelection(hit.transform.GetComponentInParent<HexObject>(), hit.point);
         }
 
         private void SetHoveredSelection(HexObject hexObject, Vector3 hoverPosition)
         {
-            if (!hexObject) return;
+            if (!hexObject)
+            {
+                Hovered = BlankSelection;
+                EventBus<HoverEvent>.Raise(new HoverEvent(BlankSelection));
+                return;
+            }
             var originalHover = Hovered;
             var newHover = GetClampedSelection(hexObject, hoverPosition);
             if (originalHover.Equals(newHover)) return;
@@ -82,6 +92,7 @@ namespace Game.Selection
         private void HandleInteractEvent(InteractEvent interactEvent)
         {
             if (!_isActive) return;
+            if (Hovered.SelectionType == SelectionType.None) return;
             StartCoroutine(InvokeSelectionEvent());
         }
     }
