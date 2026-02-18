@@ -1,4 +1,5 @@
 using App.Events;
+using App.Services;
 using App.Tweens;
 using Game.Events;
 using Game.Grid;
@@ -10,6 +11,7 @@ namespace Game.Hexes
 {
     public class HexObject : MonoBehaviour
     {
+        private HexController _hexController;
         private bool _hovered;
         private Transform _hexMesh;
         private MeshRenderer _meshRenderer;
@@ -28,6 +30,7 @@ namespace Game.Hexes
         
         public void Initialize(CubicCoordinate coordinate, Transform hexMesh)
         {
+            _hexController = ServiceLocator.Instance.Get<HexController>();
             Coordinate = coordinate;
             _hexMesh = hexMesh;
             _hexMesh.SetParent(transform, false);
@@ -83,6 +86,7 @@ namespace Game.Hexes
             Vertices.SetHeight(height);
             Edges.SetHeight(height);
             Face.SetHeight(height);
+            
             return true;
         }
 

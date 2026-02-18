@@ -11,7 +11,7 @@ namespace Game.Hexes
         private readonly Color _highlightColour = Color.white;
         private static readonly int ShaderColourID = Shader.PropertyToID("_Color");
         public static int MaxHeight => 6;
-        
+        public static int WaterHeight => 2;
         private static Dictionary<int, Material> _materials = new();
         public static Material HighlightMaterial { get; private set; }
         

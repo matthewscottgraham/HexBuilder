@@ -1,5 +1,6 @@
 using App.Tweens;
 using App.Utils;
+using Game.Grid;
 using Game.Hexes.Features;
 using UnityEngine;
 
@@ -28,6 +29,8 @@ namespace Game.Hexes
             FeatureParent.TweenLocalPosition(
                     FeatureParent.localPosition, new Vector3(0, height, 0),HexObject.AnimationDuration)
                 .SetEase(HexObject.AnimationEaseType);
+
+            FeatureParent.gameObject.SetActive(height >= HexFactory.WaterHeight);
         }
         
         public bool Exists(int index = 0)
