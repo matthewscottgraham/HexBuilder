@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using App.Events;
 using App.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,11 +9,15 @@ namespace Game.Menu
 {
     public class MenuBarController : MonoBehaviour
     {
+        private VisualElement _mainContainer;
         private VisualElement _headerContainer;
         private VisualElement _headerTabButtons;
         private VisualElement _headerCustomElements;
         private VisualElement _contentContainer;
 
+        private EventBinding<HideUIEvent> _hideUIBinding;
+        private EventBinding<ShowUIEvent> _showUIBinding;
+        
         private readonly Dictionary<string, Button> _tabButtons = new();
         private readonly Dictionary<string, VisualElement> _tabContents = new();
 
@@ -57,16 +62,28 @@ namespace Game.Menu
         {
             var uiDocument = GetComponent<UIDocument>();
             var root = uiDocument.rootVisualElement;
-            var mainContainer = root.AddNew<VisualElement>(new VisualElement(), "menu-bar");
-            mainContainer.pickingMode = PickingMode.Ignore;
+            _mainContainer = root.AddNew<VisualElement>(new VisualElement(), "menu-bar");
+            _mainContainer.pickingMode = PickingMode.Ignore;
             
-            _headerContainer = mainContainer.AddNew<VisualElement>(new VisualElement(), "menu-bar-header");
+            _headerContainer = _mainContainer.AddNew<VisualElement>(new VisualElement(), "menu-bar-header");
             _headerTabButtons = _headerContainer.AddNew<VisualElement>(new VisualElement(), "horizontal");
             _headerContainer.AddSpacer();
             _headerCustomElements = _headerContainer.AddNew<VisualElement>(new VisualElement(), "horizontal");
             
-            _contentContainer = mainContainer.AddNew(new VisualElement());
+            _contentContainer = _mainContainer.AddNew(new VisualElement());
             _contentContainer.pickingMode = PickingMode.Ignore;
+
+            _hideUIBinding = new EventBinding<HideUIEvent>(HandleHideUI);
+            EventBus<HideUIEvent>.Register(_hideUIBinding);
+            
+            _showUIBinding = new EventBinding<ShowUIEvent>(HandleShowUI);
+            EventBus<ShowUIEvent>.Register(_showUIBinding);
+        }
+
+        private void OnDestroy()
+        {
+            EventBus<HideUIEvent>.Deregister(_hideUIBinding);
+            EventBus<ShowUIEvent>.Deregister(_showUIBinding);
         }
 
         private void ShowTab(string tabId)
@@ -86,6 +103,16 @@ namespace Game.Menu
                 if (tab.Key != tabId) tab.Value.Hide();
                 else tab.Value.Show();
             }
+        }
+
+        private void HandleHideUI(HideUIEvent evt)
+        {
+            _mainContainer.Hide();
+        }
+
+        private void HandleShowUI(ShowUIEvent evt)
+        {
+            _mainContainer.Show();
         }
     }
 }

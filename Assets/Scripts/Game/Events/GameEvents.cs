@@ -22,4 +22,29 @@ namespace Game.Events
         
         public SelectionContext HoverSelection;
     }
+
+    public struct SetDofEvent : IEvent
+    {
+        public SetDofEvent(float dof)
+        {
+            Dof = dof;
+        }
+        public float Dof;
+    }
+    public struct SetFovEvent : IEvent
+    {
+        public SetFovEvent(float fov)
+        {
+            Fov = fov;
+        }
+        public float Fov;
+    }
+    public struct SetTimeEvent : IEvent
+    {
+        public SetTimeEvent(float time)
+        {
+            Time = time;
+        }
+        public float Time;
+    }
 }

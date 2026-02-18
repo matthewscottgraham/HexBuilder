@@ -3,6 +3,7 @@ using App.Events;
 using App.Screenshots;
 using App.Services;
 using App.Utils;
+using Game.Events;
 using Game.Menu;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,49 +12,85 @@ namespace Game.Options
 {
     public class OptionsView : MonoBehaviour
     {
+        private Slider _dofSlider;
+        private Slider _fovSlider;
+        private Slider _timeSlider;
+        private Toggle _captureUIToggle;
+        
         private Slider _musicVolumeSlider;
         private Slider _sfxVolumeSlider;
+
+        private bool _captureUi = true;
 
         private void Start()
         {
             var audioController = ServiceLocator.Instance.Get<AudioController>();
             var menuBarController = GetComponent<MenuBarController>();
-
-#if !UNITY_WEBGL
+            
             var screenshotIcon = Resources.Load<Sprite>("Sprites/screenshot"); 
-            menuBarController.RegisterButton("screenshot", screenshotIcon, TakeScreenshot);
-#endif
+            var screenshotTab = menuBarController.RegisterTab("screenshot", screenshotIcon);
+            
+            _dofSlider = screenshotTab.AddSlider("DOF", 0, 0, 1);
+            _dofSlider.RegisterValueChangedCallback(HandleDofChanged);
+            
+            _fovSlider = screenshotTab.AddSlider("FOV", 60, 10, 110);
+            _fovSlider.RegisterValueChangedCallback(HandleFovChanged);
+            
+            _timeSlider = screenshotTab.AddSlider("Time", 0, 0, 1);
+            _timeSlider.RegisterValueChangedCallback(HandleTimeChanged);
+            
+            _captureUIToggle = screenshotTab.AddNew(new Toggle("Capture UI"));
+            _captureUIToggle.value = _captureUi;
+            _captureUIToggle.RegisterValueChangedCallback(HandleCaptureUiToggleChanged);
+            
+            screenshotTab.AddButton("Take Screenshot", TakeScreenshot);
             
             var optionsIcon = Resources.Load<Sprite>("Sprites/options"); 
-            var tabContent = menuBarController.RegisterTab("options", optionsIcon);
-            
-            _musicVolumeSlider = MakeSlider(tabContent, "Music", audioController.MusicVolume);
+            var optionsTab = menuBarController.RegisterTab("options", optionsIcon);
+
+            _musicVolumeSlider = optionsTab.AddSlider("Music Volume", audioController.MusicVolume, 0, 1);
             _musicVolumeSlider.RegisterValueChangedCallback(HandleMusicVolumeChanged);
             
-            _sfxVolumeSlider = MakeSlider(tabContent, "SFX", audioController.SfxVolume);
+            _sfxVolumeSlider = optionsTab.AddSlider("SFX Volume", audioController.SfxVolume, 0, 1);
             _sfxVolumeSlider.RegisterValueChangedCallback(HandleSfxVolumeChanged);
         }
 
         private void OnDestroy()
         {
             if (_musicVolumeSlider == null) return;
+            
+            _dofSlider.UnregisterValueChangedCallback(HandleDofChanged);
+            _fovSlider.UnregisterValueChangedCallback(HandleFovChanged);
+            _timeSlider.UnregisterValueChangedCallback(HandleTimeChanged);
+            _captureUIToggle.UnregisterValueChangedCallback(HandleCaptureUiToggleChanged);
             _musicVolumeSlider.UnregisterValueChangedCallback(HandleMusicVolumeChanged);
             _sfxVolumeSlider.UnregisterValueChangedCallback(HandleSfxVolumeChanged);
         }
 
-        private static Slider MakeSlider(VisualElement parentElement, string label, float value)
+        private void HandleDofChanged(ChangeEvent<float> evt)
         {
-            var slider = parentElement.AddNew(new Slider());
-            slider.label = label;
-            slider.SetValueWithoutNotify(value);
-            slider.lowValue = 0;
-            slider.highValue = 1;
-            return slider;
+            EventBus<SetDofEvent>.Raise(new SetDofEvent(1f - evt.newValue));
         }
 
-        private static void TakeScreenshot()
+        private void HandleFovChanged(ChangeEvent<float> evt)
         {
-            ServiceLocator.Instance.Get<ScreenshotController>().TakeScreenshot();
+            EventBus<SetFovEvent>.Raise(new SetFovEvent(evt.newValue));
+        }
+
+        private void HandleTimeChanged(ChangeEvent<float> evt)
+        {
+            EventBus<SetTimeEvent>.Raise(new SetTimeEvent(evt.newValue * 24f));
+        }
+
+        private void HandleCaptureUiToggleChanged(ChangeEvent<bool> evt)
+        {
+            _captureUi = evt.newValue;
+        }
+
+        private void TakeScreenshot()
+        {
+            Debug.Log(_captureUi);
+            ServiceLocator.Instance.Get<ScreenshotController>().TakeScreenshot(_captureUi);
         }
 
         private static void HandleMusicVolumeChanged(ChangeEvent<float> value)

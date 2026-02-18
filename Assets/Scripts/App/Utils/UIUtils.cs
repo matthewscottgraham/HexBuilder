@@ -18,12 +18,23 @@ namespace App.Utils
             button.clicked += onClick;
             return button;
         }
+        
         public static Button AddButton(this VisualElement parentElement, Texture2D icon, Action onClick)
         {
             var button = parentElement.AddNew<Button>(new Button(), "button-icon");
             button.iconImage = icon;
             button.clicked += onClick;
             return button;
+        }
+
+        public static Slider AddSlider(this VisualElement parentElement, string text, float value, float min, float max)
+        {
+            var slider = parentElement.AddNew(new Slider());
+            slider.value = value;
+            slider.lowValue = min;
+            slider.highValue = max;
+            slider.label = text;
+            return slider;
         }
 
         public static T AddNew<T>(this VisualElement parentElement, T childElement) where T : VisualElement

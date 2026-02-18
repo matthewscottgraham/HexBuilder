@@ -92,7 +92,9 @@ Button.unity-button:checked {
     width: 64px;
     height: 64px;
 }
-
+.unity-slider__input {
+    min-width: 200px;
+}
 Slider {
     min-width: 200px;
 }

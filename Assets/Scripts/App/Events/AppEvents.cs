@@ -11,7 +11,6 @@ namespace App.Events
 
         public string SceneName;
     }
-
     public struct SceneUnloadedEvent : IEvent
     {
         public SceneUnloadedEvent(string sceneName)
@@ -23,22 +22,15 @@ namespace App.Events
     }
 
     public struct AppExitEvent : IEvent { }
-
     public struct GameExitEvent : IEvent { }
-
     public struct GameReloadEvent : IEvent { }
-
     public struct GamePauseEvent : IEvent { }
-
     public struct GameResumeEvent : IEvent { }
 
     public struct FileSaveEvent : IEvent { }
     public struct FileLoadEvent : IEvent { }
     
-    public struct InteractEvent : IEvent
-    {
-    }
-
+    public struct InteractEvent : IEvent { }
     public struct MoveEvent : IEvent
     {
         public MoveEvent(Vector2 delta)
@@ -108,6 +100,9 @@ namespace App.Events
     }
     public struct PlayMusicEvent : IEvent { }
     public struct StopMusicEvent : IEvent { }
+    
+    public struct HideUIEvent : IEvent { }
+    public struct ShowUIEvent : IEvent { }
 
     public struct PlayVFXBurstEvent : IEvent
     {

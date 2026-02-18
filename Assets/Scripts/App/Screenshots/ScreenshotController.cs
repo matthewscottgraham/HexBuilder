@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using App.Events;
 using App.Services;
 using UnityEngine;
 
@@ -16,8 +17,10 @@ namespace App.Screenshots
             _ioController = null;
         }
 
-        public void TakeScreenshot()
+        public void TakeScreenshot(bool captureGameUI)
         {
+            if (!captureGameUI)
+                EventBus<HideUIEvent>.Raise(new HideUIEvent());
             StartCoroutine(TakeScreenshotCoroutine(
                 ScreenshotDirectory, 
                 "screenshot", 
@@ -49,6 +52,8 @@ namespace App.Screenshots
             var imagePath = _ioController.SaveImage(fileData, relativePath, fileName, "jpg");
 
             if (openDirectory) OpenDirectory(imagePath);
+            
+            EventBus<ShowUIEvent>.Raise(new ShowUIEvent());
         }
 
         private static void OpenDirectory(string imagePath)
