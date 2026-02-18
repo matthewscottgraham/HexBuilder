@@ -96,6 +96,8 @@ namespace App.Tweens
         {
             if (IsComplete) return;
             
+            Interpolate(_startValue, _endValue, 1);
+            
             IsComplete = true;
             _onUpdate?.Invoke(_endValue);
             OnComplete?.Invoke();
