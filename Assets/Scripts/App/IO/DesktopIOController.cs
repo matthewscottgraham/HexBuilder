@@ -5,9 +5,9 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace App
+namespace App.IO
 {
-    public class IOController
+    public class DesktopIOController : IOController
     {
         private readonly string _appDataPath = Application.persistentDataPath;
 
@@ -56,7 +56,7 @@ namespace App
             return tex;
         }
 
-        public string SaveImage(byte[] imageData, string relativePath, string fileName, string fileExtension)
+        public string SaveFile(byte[] imageData, string fileName, string fileExtension, string relativePath)
         {
             CreateDirectory(relativePath);
             if (DoesFileExist(relativePath, $"{fileName}.{fileExtension}"))

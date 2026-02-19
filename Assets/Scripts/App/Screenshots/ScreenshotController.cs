@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using App.Events;
+using App.IO;
 using App.Services;
 using UnityEngine;
 
@@ -49,11 +50,13 @@ namespace App.Screenshots
             }
 
             var fileData = texture.EncodeToJPG();
-            var imagePath = _ioController.SaveImage(fileData, relativePath, fileName, "jpg");
+            var imagePath = _ioController.SaveFile(fileData, fileName, "jpg", relativePath);
 
             if (openDirectory) OpenDirectory(imagePath);
             
             EventBus<ShowUIEvent>.Raise(new ShowUIEvent());
+            
+            Destroy(texture);
         }
 
         private static void OpenDirectory(string imagePath)
@@ -68,11 +71,9 @@ namespace App.Screenshots
         {
             var rt = RenderTexture.GetTemporary(width, height);
             RenderTexture.active = rt;
-
-            // Copy texture to RT (GPU scaling)
+            
             Graphics.Blit(source, rt);
-
-            // Read RT back into a new Texture2D
+            
             var result = new Texture2D(width, height, source.format, false);
             result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             result.Apply();

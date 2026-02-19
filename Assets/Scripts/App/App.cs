@@ -5,6 +5,7 @@ using App.Audio;
 using App.Config;
 using App.Events;
 using App.Input;
+using App.IO;
 using App.SaveData;
 using App.Scenes;
 using App.Screenshots;
@@ -20,7 +21,7 @@ using UnityEditor;
 
 namespace App
 {
-    public class Main : MonoBehaviour
+    public class App : MonoBehaviour
     {
         private const string MainSceneName = "App";
         private EventBinding<AppExitEvent> _exitEventBinding;
@@ -34,8 +35,13 @@ namespace App
             EventBus<AppExitEvent>.Register(_exitEventBinding);
 
             var serviceLocator = new ServiceLocator();
-            serviceLocator.Register(new IOController());
-
+            
+#if UNITY_WEBGL
+            serviceLocator.RegisterAsType(new WebIOController(), typeof(IOController));
+#else
+            serviceLocator.RegisterAsType(new DesktopIOController(), typeof(IOController));
+#endif
+            
             var configController = new ConfigController();
             serviceLocator.Register(configController);
             
@@ -45,7 +51,7 @@ namespace App
             var screenshotController = gameObject.AddChild<ScreenshotController>("ScreenshotController");
             
 #if UNITY_WEBGL
-            VFXController vfxController = gameObject.AddChild<CpuVfxController>("VFXController");
+            var vfxController = gameObject.AddChild<CpuVfxController>("VFXController");
 #else
             var vfxController = gameObject.AddChild<GpuVfxController>("VFXController");
 #endif
