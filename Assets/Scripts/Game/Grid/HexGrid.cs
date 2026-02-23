@@ -14,6 +14,15 @@ namespace Game.Grid
         {
             GridRadius = gridRadius;
         }
+
+        public static CubicCoordinate GetRandomCell()
+        {
+            var coord = new CubicCoordinate(
+                UnityEngine.Random.Range(-GridRadius, GridRadius), 
+                UnityEngine.Random.Range(-GridRadius, GridRadius));
+
+            return InBounds(coord) ? coord : GetRandomCell();
+        }
         
         public static Vector3 GetLocalVertexPosition(int cornerIndex)
         {

@@ -28,6 +28,9 @@ namespace App.SaveData
 
         public void SaveGame(object gameData)
         {
+#if UNITY_WEBGL
+            return;
+#endif
             var relativeSavePath = Path.Combine(SaveDirectoryName, ConfigController.CurrentSaveSlot.ToString());
             EnqueueSave(relativeSavePath, gameData, ConfigController.CurrentSaveSlot);
             

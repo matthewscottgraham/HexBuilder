@@ -15,3 +15,4 @@
 * Added an action that is invoked when the active tab in the menubar changes
 * Abstracted out the file handling so that I can have a WebGL specific controller
 * Removed additional save slots and redid the map chooser window. It now shows map preview images.
+* Added a screensaver mode that animates the camera around and looks awesome
