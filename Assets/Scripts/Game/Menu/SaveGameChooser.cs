@@ -15,23 +15,22 @@ namespace Game.Menu
     public class SaveGameChooser : VisualElement
     {
         private static MapType _mapType = MapType.Random;
-        private const int SaveSlotCount = 3; // TODO: the max save slots should be added to the config
-        private readonly bool _isNewGame;
         private readonly Dictionary<MapType, Button> _mapTypeButtons = new();
+        private VisualElement _contentContainer;
+        private Image _mapTypeImage;
         
-        public SaveGameChooser(bool isNewGame)
+        public SaveGameChooser()
         {
-            _isNewGame = isNewGame;
-            
             CreateHeader();
+            _contentContainer = this.AddNew<VisualElement>(new VisualElement(), "new-game-container");
             CreateMapChooser();
-            CreateSlots();
+            CreateSingleSlot();
+            HandleMapTypeChanged(_mapType);
         }
 
         private void CreateMapChooser()
         {
-            var container = this.AddNew<VisualElement>(new VisualElement(), "save-slot-container");
-            
+            var container = _contentContainer.AddNew<VisualElement>(new VisualElement(), "map-chooser-container");
             container.AddNew(new Label("Map Type: "));
             
             for (var i = 0; i < Enum.GetValues(typeof(MapType)).Length; i++)
@@ -40,56 +39,34 @@ namespace Game.Menu
                 var button = container.AddButton(Enum.GetName(typeof(MapType), i), () => HandleMapTypeChanged(mapType));
                 _mapTypeButtons.Add(mapType, button);
             }
-            HandleMapTypeChanged(_mapType);
         }
 
-        private void CreateSlots()
+        private void SetMapTypeImage()
         {
-            var slotContainer = this.AddNew<VisualElement>(new VisualElement(), "save-slot-container");
-            for (var i = 0; i < SaveSlotCount; i++)
-            {
-                var index = i;
-                CreateSlotButton(slotContainer, index);
-            }
+            _mapTypeImage.image = Resources.Load<Texture2D>("MapPreviews/" + _mapType);
+        }
+
+        private void CreateSingleSlot()
+        {
+            var slotContainer = _contentContainer.AddNew<VisualElement>(new VisualElement(), "save-slot-container");
+            _mapTypeImage = slotContainer.AddNew<Image>(new Image(), "save-slot-image");
+            var button = slotContainer.AddButton("Create Map", CreateNewMap);
         }
 
         private void CreateHeader()
         {
             var header = this.AddNew<VisualElement>(new VisualElement(), "header-bar");
-
-            var labelText = _isNewGame ? "Choose Slot for New Game" : "Choose Game to Load";
-            header.AddNew<Label>(new Label(labelText), "header-bar-label");
-
+            header.AddNew<Label>(new Label("Choose Map Type for New Game"), "header-bar-label");
             header.AddSpacer();
 
             var cancelButton = header.AddNew<Button>(new Button(CloseWindow), "exit-button");
             cancelButton.text = "X";
         }
 
-        private void CreateSlotButton(VisualElement parentContainer, int index)
-        {
-            var saveData = ServiceLocator.Instance.Get<SaveDataController>().GetMetaData(index);
-            parentContainer.Add(CreateSlotButton(index, saveData.Item1, saveData.Item2));
-        }
-
-        private VisualElement CreateSlotButton(int index, Texture2D screenshot, string labelText)
-        {
-            var saveSlot = new Button();
-            saveSlot.clicked += () => HandleSlotClicked(index);
-            saveSlot.AddToClassList("save-slot");
-
-            var icon = saveSlot.AddNew<Image>(new Image(), "save-icon");
-            icon.image = screenshot;
-
-            labelText = string.IsNullOrEmpty(labelText) ? $"Slot {index + 1} - New Game" : $"Slot {index + 1} - {labelText}";
-            saveSlot.AddNew<Label>(new Label(labelText), "save-info-label");
-
-            return  saveSlot;
-        }
-
         private void HandleMapTypeChanged(MapType mapType)
         {
             _mapType = mapType;
+            SetMapTypeImage();
             foreach (var pair in _mapTypeButtons)
             {
                 if (pair.Key == _mapType) pair.Value.AddToClassList("active-tab");
@@ -102,18 +79,14 @@ namespace Game.Menu
             RemoveFromHierarchy();
         }
 
-        private void HandleSlotClicked(int index)
+        private void CreateNewMap()
         {
-            if (ConfigController.CurrentSaveSlot != index)
-                ServiceLocator.Instance.Get<HexController>().SaveData();
+#if !UNITY_WEBGL
+            ServiceLocator.Instance.Get<SaveDataController>().DeleteSaveData(0);
+#endif
 
-            if (_isNewGame)
-            {
-                ServiceLocator.Instance.Get<SaveDataController>().DeleteSaveData(index);
-                HexController.SetNewMapType(_mapType);
-            }
-
-            ConfigController.CurrentSaveSlot = index;
+            HexController.SetNewMapType(_mapType);
+            ConfigController.CurrentSaveSlot = 0;
             
             CloseWindow();
             EventBus<GameReloadEvent>.Raise(new GameReloadEvent());

@@ -13,3 +13,5 @@
 * screenshot camera is now a separate camera so that the game cameras state is not modified while taking screenshots
 * tweaked camera rig feel
 * Added an action that is invoked when the active tab in the menubar changes
+* Abstracted out the file handling so that I can have a WebGL specific controller
+* Removed additional save slots and redid the map chooser window. It now shows map preview images.

@@ -9,7 +9,6 @@ namespace Game.Menu
     {
         private UIDocument _document;
         private Button _exitButton;
-        private Button _loadButton;
         private Button _newGameButton;
         private Button _pauseButton;
         private Button _resumeButton;
@@ -34,7 +33,6 @@ namespace Game.Menu
             _resumeButton.Hide();
 
             _newGameButton = tabContent.AddButton("New", HandleNewGameButtonClicked);
-            _loadButton = tabContent.AddButton("Load", HandleLoadButtonClicked);
             _exitButton = tabContent.AddButton("", HandleExitButtonClicked);
             _exitButton.AddToClassList("exit-button");
             _exitButton.iconImage = Resources.Load<Sprite>("Sprites/exit")?.texture;
@@ -47,7 +45,6 @@ namespace Game.Menu
 
         private void OnDestroy()
         {
-            if (_loadButton != null) _loadButton.clicked -= HandleLoadButtonClicked;
             if (_newGameButton != null) _newGameButton.clicked -= HandleNewGameButtonClicked;
             if (_exitButton != null) _exitButton.clicked -= HandleExitButtonClicked;
             if (_pauseButton != null) _pauseButton.clicked -= HandlePauseButtonClicked;
@@ -59,12 +56,7 @@ namespace Game.Menu
 
         private void HandleNewGameButtonClicked()
         {
-            _document.rootVisualElement.Add(new SaveGameChooser(true));
-        }
-
-        private void HandleLoadButtonClicked()
-        {
-            _document.rootVisualElement.Add(new SaveGameChooser(false));
+            _document.rootVisualElement.Add(new SaveGameChooser());
         }
 
         private static void HandleExitButtonClicked()

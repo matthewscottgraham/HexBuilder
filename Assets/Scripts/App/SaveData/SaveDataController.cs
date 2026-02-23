@@ -26,12 +26,9 @@ namespace App.SaveData
             Delete(Path.Combine(SaveDirectoryName, saveId.ToString()));
         }
 
-        public void SaveWithScreenshot(object gameData)
+        public void SaveGame(object gameData)
         {
-            var screenshotController = ServiceLocator.Instance.Get<ScreenshotController>();
             var relativeSavePath = Path.Combine(SaveDirectoryName, ConfigController.CurrentSaveSlot.ToString());
-            screenshotController.TakeGamePreviewImage(relativeSavePath, SaveImageFileName);
-            
             EnqueueSave(relativeSavePath, gameData, ConfigController.CurrentSaveSlot);
             
         }

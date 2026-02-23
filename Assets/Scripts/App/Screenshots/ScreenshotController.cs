@@ -32,6 +32,10 @@ namespace App.Screenshots
         
         public void TakeGamePreviewImage(string relativePath, string fileName)
         {
+    #if UNITY_WEBGL
+            return;
+    #endif
+            EventBus<HideUIEvent>.Raise(new HideUIEvent());
             StartCoroutine(TakeScreenshotCoroutine(
                 relativePath, 
                 fileName, 

@@ -28,38 +28,35 @@ SaveGameChooser {
     flex-grow: 1;
 }
 
-.save-slot-container {
-    justify-content: center;
-    align-items: center;
+.new-game-container {
     flex-direction: row;
-    padding: 24px;
-}
-
-.save-slot-container Button {
-    min-width: 150px;
-    min-height: 60px;
-}
-
-.save-slot {
     flex-grow: 1;
-    flex-shrink: 1;
-    padding: 48px;
-    height: 100%;
+    padding: 72px;
 }
 
-Button.save-slot {
-    background-color: transparent;
+.map-chooser-container{
+    width: 25%;
+    padding-right: 48px;
 }
 
-.save-icon {
-    align-self: center;
-    background-color: rgba(1, 1, 1, 0.5);
-    height: 256px;
-    width: 256px;
+.map-chooser-container .unity-label{
+    font-size: 32px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    padding-bottom: 24px;
 }
 
-.save-info-label {
+.save-slot-container {
     flex-grow: 1;
-    margin-top: 12px;
-    white-space: normal;
+    align-items: center;
+}
+.save-slot-container .unity-image{
+    margin-bottom: 24px;
+}
+
+.save-slot-container .unity-button {
+    width: 300px;
+    height: 60px;
+    font-size: 28px;
+    -unity-font-style: bold;
 }

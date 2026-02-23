@@ -54,7 +54,7 @@ namespace Game.Hexes
                 hexes.Add(new HexInfo(hexObject));
             }
             var gameData = new GameData(HexGrid.GridRadius, hexes);
-            ServiceLocator.Instance?.Get<SaveDataController>().SaveWithScreenshot(gameData);
+            ServiceLocator.Instance?.Get<SaveDataController>().SaveGame(gameData);
         }
 
         public HexObject GetHexObject(CubicCoordinate coordinate, bool createIfMissing = false)
