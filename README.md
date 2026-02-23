@@ -1,7 +1,7 @@
 # Hex Builder
 
 ## Overview
-Years ago, when I was first learning Unity, I attempted an mostly failed to make a game that was a mashup of the board games Catan, Carcassonne and Scrabble. I found that the most enjoyable part of that project, was the "Level Editor". This is a toy that mostly scratches that same itch, while being a much better made program, that could reasonably be extended to create other Hex Tile based games in the future.
+Years ago, when I was first learning Unity, I attempted an mostly failed to make a game that was a mashup of the board games Catan, Carcassonne and Scrabble. I found that the most enjoyable part of that project, was the Level Editor. This is a toy that mostly scratches that same itch, while being a much better made program.
 
 <p align="center">
 	<img src="images/ScreenshotA.jpg" alt="Screenshot A" height="250"/>
@@ -15,9 +15,12 @@ Years ago, when I was first learning Unity, I attempted an mostly failed to make
 - Tools for manual terrain manipulation, using an area of effect.
 - Placement of features on faces, edges or vertices
 - Serialization / Deserialization of game data.
-- particle effects - gpu or cpu particles, dependent on platform
-- day/night cycle
-- audio
+- Particle effects - gpu or cpu particles, dependent on platform
+- Day / Night cycle
+- Screenshot tool that allows for adjusting Camera Field of View, Depth of Field and Time of Day.
+- Screensaver mode, that chooses random tiles and animates camera view to create an endless animation.
+- Audio
+- Tweening
 
 ## Dependencies
 - **Unity 6.2**
@@ -33,7 +36,7 @@ No external Unity packages or plugins are required beyond the standard Unity ins
 This repository is a complete Unity project.
 
 Notable areas of interest:
-- `Assets/Scripts/App/Main.cs` — Bootstrapper for the entire application. Start here.
+- `Assets/Scripts/App/App.cs` — Bootstrapper for the entire application. Start here.
 - `Assets/Scenes/Game/Game.cs` — Bootstrapper for the Game. All game logic stems from here.
 
 ## How to Run
@@ -45,20 +48,14 @@ Notable areas of interest:
 4. Open the main scene and press **Play**.
 
 ### Play a Build
-Prebuilt binaries and a WebGL version are available on Itch.io:
-
+A WebGL version is available on Itch.io:
 **Itch.io page:** https://msgraham.itch.io/hexbuilder
 
 ### Controls
-- Click-Drag to move the camera
-- Left Click to use the selected tool on the face/edge/vertex under the mouse.
-
-## Roadmap
-- **v0.1** - Working prototype
-- **v0.2** - Visual polish and rendering improvements
-- **v0.3** - Landscape presets and procedural terrain generation
-- **v0.4** - UI styling, better music, more feature options.
-- **v0.5** - Fixing edge and vertex object placement, and wave function collapse for choosing face objects.
+- Left Click = use selected tool
+- Left Click + drag = pan camera
+- Mouse Wheel = zoom
+- Right click + drag = rotate camera (or hold down alt on windows / option on mac)
 
 ## References
 - Screen Based outline shader based on this tutorial by Digvijaysinh Gohil: https://www.youtube.com/watch?v=nc3a3THBFrg
