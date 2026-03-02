@@ -39,13 +39,7 @@ namespace Game.Tools
 
         private int Use(HexObject hex, int vertex, bool exists)
         {
-            return CurrentMode switch
-            {
-                ToolMode.Toggle => UseToggle(hex, vertex, exists),
-                ToolMode.Add => UseAdditive(hex, vertex),
-                ToolMode.Subtract => UseSubtractive(hex, vertex),
-                _ => throw new ArgumentOutOfRangeException()
-            };
+            return UseToggle(hex, vertex, exists);
         }
 
         private static int UseAdditive(HexObject hex, int vertex)

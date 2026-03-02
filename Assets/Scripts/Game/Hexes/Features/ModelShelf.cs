@@ -20,7 +20,7 @@ namespace Game.Hexes.Features
         private const string ModelInfoClass = "model-info__container";
         
         private EventBinding<SelectionEvent> _selectionEventBinding;
-        private EventBinding<SelectTool> _selectToolEventBinding;
+        private EventBinding<SelectToolEvent> _selectToolEventBinding;
 
         private FeatureFactory _featureFactory;
         private VisualElement _shelf;
@@ -28,6 +28,8 @@ namespace Game.Hexes.Features
         private Label _shelfLabel;
         private VisualElement _shelfHeader;
         private VisualElement _shelfContent;
+        private Button _randomButton;
+        private Button[] _modelButtons;
         
         private bool _isShelfOpen = false;
         private bool _useRandom = true;
@@ -38,18 +40,20 @@ namespace Game.Hexes.Features
             _selectionEventBinding ??= new EventBinding<SelectionEvent>(HandleSelection);
             EventBus<SelectionEvent>.Register(_selectionEventBinding);
             
-            _selectToolEventBinding ??= new EventBinding<SelectTool>(HandleToolSelection);
-            EventBus<SelectTool>.Register(_selectToolEventBinding);
+            _selectToolEventBinding ??= new EventBinding<SelectToolEvent>(HandleToolSelection);
+            EventBus<SelectToolEvent>.Register(_selectToolEventBinding);
         }
 
         private void OnDisable()
         {
             EventBus<SelectionEvent>.Deregister(_selectionEventBinding);
-            EventBus<SelectTool>.Deregister(_selectToolEventBinding);
+            EventBus<SelectToolEvent>.Deregister(_selectToolEventBinding);
         }
 
         private void Start()
         {
+            _featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
+            
             var uiDocument = GetComponent<UIDocument>();
             _shelf = uiDocument.rootVisualElement.AddNew<VisualElement>(new VisualElement(), ShelfClassName);
             _shelfHeader = _shelf.AddNew<VisualElement>(new VisualElement(), ShelfHeaderClass);
@@ -99,15 +103,18 @@ namespace Game.Hexes.Features
             _shelfContent.Clear();
             _shelfLabel.text = categoryName;
             
-            _shelfContent.AddNew(CreateModelButton(ChooseRandomFromCategory, randomIcon.texture));
+            _randomButton = _shelfContent.AddNew(
+                CreateModelButton(ChooseRandomFromCategory, randomIcon.texture));
             
+            _modelButtons = new Button[_currentCatalogue.Count];
             for (var i = 0; i < _currentCatalogue.Count; i++)
             {
                 var index = i;
                 var featurePrefab = _currentCatalogue.GetPrefab(index);
-                var button = _shelfContent.AddNew(
+                _modelButtons[i] = _shelfContent.AddNew(
                     CreateModelButton(() => SetModelToCreate(index), featurePrefab.Icon));
             }
+            SetActiveButtonClass();
         }
 
         private static Button CreateModelButton(Action onClickAction, Texture2D icon)
@@ -134,12 +141,27 @@ namespace Game.Hexes.Features
         {
             _useRandom = true;
             _featureFactory.CurrentVariation = -1;
+            SetActiveButtonClass();
         }
 
         private void SetModelToCreate(int index)
         {
             _useRandom = false;
             _featureFactory.CurrentVariation = index;
+            SetActiveButtonClass();
+        }
+
+        private void SetActiveButtonClass()
+        {
+            if (_useRandom) _randomButton.AddToClassList("checked");
+            else _randomButton.RemoveFromClassList("checked");
+
+            for (var i = 0; i < _modelButtons.Length; i++)
+            {
+                if (_featureFactory.CurrentVariation == i)
+                    _modelButtons[i].AddToClassList("checked");
+                else _modelButtons[i].RemoveFromClassList("checked");
+            }
         }
 
         private void HandleSelection(SelectionEvent selectionEvent)
@@ -147,13 +169,20 @@ namespace Game.Hexes.Features
             if (_useRandom) ChooseRandomFromCategory();
         }
 
-        private void HandleToolSelection(SelectTool selectToolEvent)
+        private void HandleToolSelection(SelectToolEvent selectToolEventEvent)
         {
-            if (selectToolEvent.Tool.SelectionType != SelectionType.Face) return;
-            
+            if (selectToolEventEvent.Tool.SelectionType != SelectionType.Face) return;
             _featureFactory ??= ServiceLocator.Instance.Get<FeatureFactory>();
-            var catalogue = _featureFactory.GetCatalogue(selectToolEvent.Tool.FeatureType);
+            
+            
+            var catalogue = _featureFactory.GetCatalogue(selectToolEventEvent.Tool.FeatureType);
+            if (catalogue == null)
+            {
+                LockShelf();
+                return;
+            }
             DisplayModels(catalogue.FeatureType.ToString(), catalogue);
+            ChooseRandomFromCategory();
         }
     }
 }

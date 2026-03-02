@@ -84,4 +84,9 @@
     width: 128px;
     height: 128px;
     padding: 0;
+    border-radius: 8px;
+}
+
+.model-info__container.checked Image{
+    background-color: coral;
 }

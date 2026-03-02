@@ -36,11 +36,6 @@ namespace Game.Tools
             if (CurrentTool == null) return _radius;
             return _radius + CurrentTool.RadiusIncrement;
         }
-
-        public void SetToolMode(ToolMode mode)
-        {
-            CurrentTool?.SetMode(mode);
-        }
         
         public void Initialize()
         {
@@ -54,8 +49,10 @@ namespace Game.Tools
             
             Tools = new Tool[]
             {
-                new ShiftTerrainTool(),
+                new RaiseTerrainTool(),
+                new LowerTerrainTool(),
                 new LevelTerrainTool(),
+                new Eraser(),
                 new MountainsTool(),
                 new WildernessTool(),
                 new SettlementTool(),
@@ -103,7 +100,7 @@ namespace Game.Tools
         {
             Assert.IsTrue(toolIndex >= 0 && toolIndex < Tools.Length);
             CurrentTool = Tools[toolIndex];
-            EventBus<SelectTool>.Raise(new SelectTool(CurrentTool));
+            EventBus<SelectToolEvent>.Raise(new SelectToolEvent(CurrentTool));
             SetActiveSelector(CurrentTool.SelectionType);
         }
 
@@ -122,7 +119,7 @@ namespace Game.Tools
             SetAverageHeight(coordinates);
 
             var hexObjects = _hexController.GetHexObjects(coordinates, true);
-            StartCoroutine(UseTool(CurrentTool, hexObjects));
+            StartCoroutine(UseTool(CurrentTool, hexObjects, _radius));
         }
 
         private void SetAverageHeight(HashSet<CubicCoordinate> coordinates)
@@ -159,7 +156,7 @@ namespace Game.Tools
             }
         }
 
-        private static IEnumerator UseTool(Tool tool, HexObject[] hexObjects, float delay = 0)
+        private static IEnumerator UseTool(Tool tool, HexObject[] hexObjects, int radius, float delay = 0)
         {
             yield return new WaitForSeconds(delay);
             var selectionType = Selector.Hovered.SelectionType;
@@ -173,9 +170,12 @@ namespace Game.Tools
             }
             else
             {
+                var toolMode = radius == 0 ? ToolMode.Toggle : ToolMode.Add;
+                var exists = hexObjects[0].Face.Exists();
+                if (exists && radius == 0) toolMode = ToolMode.Toggle;
                 foreach (var hexObject in hexObjects)
                 {
-                    if (!tool.Use(hexObject)) continue;
+                    if (!tool.Use(hexObject, toolMode)) continue;
                     PlayEffects(hexObject);
                 }
             }

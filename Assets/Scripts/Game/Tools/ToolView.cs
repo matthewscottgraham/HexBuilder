@@ -2,7 +2,7 @@ using System.Linq;
 using App.Events;
 using App.Services;
 using App.UIComponents;
-using App.Utils;
+using Game.Events;
 using Game.Menu;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -14,8 +14,8 @@ namespace Game.Tools
         private ToolController _toolController;
         private SliderInt _radiusSlider;
         private RadioBar _toolSelector;
-        private RadioBar _toolModeSelector;
         
+        private EventBinding<SelectToolEvent> _selectToolEventBinding;
         private EventBinding<GamePauseEvent> _pauseEventBinding;
         private EventBinding<GameResumeEvent> _resumeEventBinding;
         
@@ -28,15 +28,6 @@ namespace Game.Tools
             _radiusSlider.lowValue = 0;
             _radiusSlider.highValue = 2;
             _radiusSlider.RegisterValueChangedCallback(HandleRadiusChanged);
-
-            var modeIcons = new []
-            {
-                Resources.Load<Sprite>("Sprites/toggle"),
-                Resources.Load<Sprite>("Sprites/add"),
-                Resources.Load<Sprite>("Sprites/subtract")
-            };
-            _toolModeSelector = menuBarController.RegisterCustomElement<RadioBar>(new RadioBar(modeIcons));
-            _toolModeSelector.RegisterValueChangedCallback(HandleToolModeChanged);
             
             var spacer = new VisualElement();
             spacer.AddToClassList("spacer");
@@ -44,37 +35,20 @@ namespace Game.Tools
 
             var toolIcons = _toolController.Tools.Select(tool => tool.Icon).ToArray();
             _toolSelector = menuBarController.RegisterCustomElement<RadioBar>(new RadioBar(toolIcons));
-            _toolSelector.RegisterValueChangedCallback(HandleToolChanged);
+            _toolSelector.RegisterValueChangedCallback(HandlePlayerSelectTool);
 
-            SetModeButtonsVisibility();
-            
+            _selectToolEventBinding = new EventBinding<SelectToolEvent>(HandleSelectToolEvent);
             _pauseEventBinding = new EventBinding<GamePauseEvent>(HandlePauseEvent);
             _resumeEventBinding = new EventBinding<GameResumeEvent>(HandleResumeEvent);
+            
+            EventBus<SelectToolEvent>.Register(_selectToolEventBinding);
             EventBus<GamePauseEvent>.Register(_pauseEventBinding);
             EventBus<GameResumeEvent>.Register(_resumeEventBinding);
         }
 
-        private void SetModeButtonsVisibility()
-        {
-            var availableModes = _toolController.CurrentTool.GetModes();
-            if (availableModes == null || availableModes.Length == 0)
-            {
-                _toolModeSelector.SetVisibility(false);
-                return;
-            }
-
-            _toolModeSelector.SetVisibility(true);
-
-            _toolModeSelector.SetButtonVisibility(0, availableModes.Contains(ToolMode.Toggle));
-            _toolModeSelector.SetButtonVisibility(1, availableModes.Contains(ToolMode.Add));
-            _toolModeSelector.SetButtonVisibility(2, availableModes.Contains(ToolMode.Subtract));
-
-            var currentMode = _toolController.CurrentTool.CurrentMode;
-            _toolModeSelector.SetValueWithoutNotify((int)currentMode);
-        }
-
         private void OnDestroy()
         {
+            EventBus<SelectToolEvent>.Deregister(_selectToolEventBinding);
             EventBus<GamePauseEvent>.Deregister(_pauseEventBinding);
             EventBus<GameResumeEvent>.Deregister(_resumeEventBinding);
         }
@@ -84,31 +58,25 @@ namespace Game.Tools
             ServiceLocator.Instance.Get<ToolController>().SetToolRadius(evt.newValue);
         }
 
-        private void HandleToolChanged(ChangeEvent<int> evt)
+        private void HandlePlayerSelectTool(ChangeEvent<int> evt)
         {
-            var toolIndex = evt.newValue;
-            _toolController.SetActiveTool(toolIndex);
-            _radiusSlider.visible = _toolController.CurrentTool.UseRadius;
-            SetModeButtonsVisibility();
+            _toolController.SetActiveTool(evt.newValue);
         }
 
-        private void HandleToolModeChanged(ChangeEvent<int> evt)
+        private void HandleSelectToolEvent(SelectToolEvent evt)
         {
-            var modeIndex = evt.newValue;
-            _toolController.SetToolMode((ToolMode)modeIndex);
+            _radiusSlider.visible = _toolController.CurrentTool.UseRadius;
         }
         
         private void HandlePauseEvent()
         {
             _radiusSlider.SetEnabled(false);
-            _toolModeSelector.SetEnabled(false);
             _toolSelector.SetEnabled(false);
         }
 
         private void HandleResumeEvent()
         {
             _radiusSlider.SetEnabled(true);
-            _toolModeSelector.SetEnabled(true);
             _toolSelector.SetEnabled(true);
         }
     }

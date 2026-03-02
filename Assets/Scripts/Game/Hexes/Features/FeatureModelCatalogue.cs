@@ -54,8 +54,6 @@ namespace Game.Hexes.Features
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-
-            Debug.Log("Icons baked successfully.");
         }
 #endif
         

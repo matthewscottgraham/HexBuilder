@@ -25,9 +25,9 @@ namespace Game.Events
         public SelectionContext HoverSelection;
     }
 
-    public struct SelectTool : IEvent
+    public struct SelectToolEvent : IEvent
     {
-        public SelectTool(Tool tool)
+        public SelectToolEvent(Tool tool)
         {
             Tool = tool;
         }

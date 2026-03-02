@@ -12,32 +12,16 @@ namespace Game.Tools
         public int RadiusIncrement { get; protected set; }
         public Sprite Icon { get; protected set; }
         public bool UseRadius { get; protected set; } = true;
-        public ToolMode CurrentMode { get; protected set; }
         public SelectionType SelectionType { get; protected set; } = SelectionType.Face;
 
         protected ToolMode[] ToolModes;
         
-        public virtual void SetMode(ToolMode mode)
-        {
-            CurrentMode = mode;
-        }
-
-        public virtual ToolMode[] GetModes()
-        {
-            return ToolModes ??= new[]
-            {
-                ToolMode.Toggle,
-                ToolMode.Add,
-                ToolMode.Subtract
-            };
-        }
-        
-        public virtual bool Use(HexObject hex) 
+        public virtual bool Use(HexObject hex, ToolMode toolMode) 
         { 
             if (!hex) return false;
             var currentFeatureType = hex.Face.FeatureType;
 
-            return CurrentMode switch
+            return toolMode switch
             {
                 ToolMode.Add => UseAdditive(hex, currentFeatureType),
                 ToolMode.Subtract => UseSubtractive(hex, currentFeatureType),
