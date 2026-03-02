@@ -88,6 +88,7 @@ namespace Game.Hexes.Features
                 _shelfContent.RemoveFromClassList(ShelfClosedClass);
             else 
                 _shelfContent.AddToClassList(ShelfClosedClass);
+            SetActiveButtonClass();
         }
 
         private void DisplayModels(string categoryName, FeatureModelCatalogue catalogue)
@@ -153,6 +154,7 @@ namespace Game.Hexes.Features
 
         private void SetActiveButtonClass()
         {
+            if (_randomButton == null) return;
             if (_useRandom) _randomButton.AddToClassList("checked");
             else _randomButton.RemoveFromClassList("checked");
 

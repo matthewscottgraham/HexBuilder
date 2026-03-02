@@ -6,13 +6,16 @@ using UnityEngine;
 
 namespace Game.Hexes
 {
-    public class HexFactory : IDisposable
+    public class HexFactory : MonoBehaviour, IDisposable
     {
         private readonly Color _highlightColour = Color.white;
         private static readonly int ShaderColourID = Shader.PropertyToID("_Color");
+        private static Dictionary<int, Material> _materials = new();
+        private GameObject _hexTopPrefab;
+        private GameObject _hexSidePrefab;
+        
         public static int MaxHeight => 6;
         public static int WaterHeight => 2;
-        private static Dictionary<int, Material> _materials = new();
         public static Material HighlightMaterial { get; private set; }
         
         private static Color[] GetLandColours()
@@ -35,7 +38,7 @@ namespace Game.Hexes
             return color;
         }
         
-        public HexFactory()
+        private void Awake()
         {
             _materials = new Dictionary<int, Material>();
             var landColours = GetLandColours();
@@ -46,7 +49,11 @@ namespace Game.Hexes
                 newMat.SetColor(ShaderColourID, landColours[i]);
                 _materials.Add(i, newMat);
             }
-            HighlightMaterial = UnityEngine.Object.Instantiate(material);
+            
+            _hexTopPrefab = Resources.Load<GameObject>("Meshes/hexTop");
+            _hexSidePrefab = Resources.Load<GameObject>("Meshes/hexSide");
+            
+            HighlightMaterial = Instantiate(material);
             HighlightMaterial.SetColor(ShaderColourID, _highlightColour);
         }
 
@@ -59,12 +66,14 @@ namespace Game.Hexes
         {
             var hexObject = parent.gameObject.AddChild<HexObject>(coordinate.ToString());
             hexObject.transform.position = HexGrid.GetWorldPosition(coordinate);
+
+            var hexTop = Instantiate(_hexTopPrefab, parent);
+            var hexSides = Instantiate(_hexSidePrefab, parent);
+            var hexSidesMeshObject = hexSides.transform.GetChild(0).gameObject;
+            var meshCollider = hexSidesMeshObject.AddComponent<MeshCollider>();
+            meshCollider.convex = true;
             
-            var meshObject = CreateMeshObject();
-            var collider = meshObject.AddComponent<MeshCollider>();
-            collider.convex = true;
-            
-            hexObject.Initialize(coordinate, meshObject.transform);
+            hexObject.Initialize(coordinate, hexSides.transform, hexTop.transform);
             return hexObject;
         }
 
@@ -72,83 +81,6 @@ namespace Game.Hexes
         {
             height = Mathf.Clamp(height, 0, MaxHeight);
             return _materials[height];
-        }
-        
-        private static GameObject CreateMeshObject()
-        {
-            var hexMesh = new GameObject("HexMesh");
-            var filter = hexMesh.AddComponent<MeshFilter>();
-            filter.mesh = CreateMesh();
-
-            var renderer = hexMesh.AddComponent<MeshRenderer>();
-            renderer.material = _materials[0];
-            return hexMesh;
-        }
-
-        private static Mesh CreateMesh()
-        {
-            var mesh = new Mesh
-            {
-                vertices = GetPrismVertices(1),
-                triangles = GetPrismTriangles()
-            };
-
-            mesh.RecalculateNormals();
-            mesh.RecalculateBounds();
-
-            return mesh;
-        }
-
-        private static Vector3[] GetPrismVertices(float height)
-        {
-            var vertices = new Vector3[18];
-
-            // top face vertices
-            for (var i = 0; i < 6; i++)
-            {
-                vertices[i] = HexGrid.GetLocalVertexPosition(i) + Vector3.up * height;
-            }
-
-            // top of side face vertices
-            for (var i = 6; i < 12; i++)
-            {
-                vertices[i] = HexGrid.GetLocalVertexPosition(i - 6) + Vector3.up * height;
-            }
-
-            // bottom of side face vertices
-            for (var i = 12; i < 18; i++)
-            {
-                vertices[i] = HexGrid.GetLocalVertexPosition(i - 12);
-            }
-
-            return vertices;
-        }
-
-        private static int[] GetPrismTriangles()
-        {
-            var triangles = new[]
-            {
-                // Top:
-                0, 1, 2,
-                0, 2, 3,
-                0, 3, 4,
-                0, 4, 5,
-                // Sides:
-                12, 7, 6,
-                13, 7, 12,
-                13, 8, 7,
-                14, 8, 13,
-                14, 9, 8,
-                15, 9, 14,
-                15, 10, 9,
-                16, 10, 15,
-                16, 11, 10,
-                17, 11, 16,
-                17, 6, 11,
-                12, 6, 17
-            };
-
-            return triangles;
         }
     }
 }

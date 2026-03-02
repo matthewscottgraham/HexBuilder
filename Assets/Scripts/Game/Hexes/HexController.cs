@@ -28,7 +28,7 @@ namespace Game.Hexes
         
         public void Initialize()
         {
-            _hexFactory = new HexFactory();
+            _hexFactory = gameObject.AddComponent<HexFactory>();
             _mapFactory = new MapFactory();
             
             WaterfallFactory = new WaterfallFactory();

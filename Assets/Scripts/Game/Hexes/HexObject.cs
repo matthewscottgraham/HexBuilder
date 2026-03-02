@@ -14,7 +14,8 @@ namespace Game.Hexes
         private HexController _hexController;
         private bool _hovered;
         private Transform _hexMesh;
-        private MeshRenderer _meshRenderer;
+        private Transform _hexTop;
+        private MeshRenderer[] _meshRenderers;
         private EventBinding<HoverEvent> _hoverEventBinding;
         
         public static float AnimationDuration => 0.3f;
@@ -28,18 +29,25 @@ namespace Game.Hexes
         
         public int Variation { get; private set; }
         
-        public void Initialize(CubicCoordinate coordinate, Transform hexMesh)
+        public void Initialize(CubicCoordinate coordinate, Transform hexMesh, Transform hexTop)
         {
             _hexController = ServiceLocator.Instance.Get<HexController>();
             Coordinate = coordinate;
             _hexMesh = hexMesh;
             _hexMesh.SetParent(transform, false);
-
+            
+            _hexTop = hexTop;
+            _hexTop.SetParent(transform, false);
+            
             Face = new FaceFeatures(this);
             Edges = new EdgeFeatures(this);
             Vertices = new VertexFeatures(this);
-            
-            _meshRenderer = _hexMesh.GetComponent<MeshRenderer>();
+
+            _meshRenderers = new[]
+            {
+                _hexMesh.GetComponentInChildren<MeshRenderer>(),
+                _hexTop.GetComponentInChildren<MeshRenderer>()
+            };
             
             _hoverEventBinding = new EventBinding<HoverEvent>(HandleHoverEvent);
             EventBus<HoverEvent>.Register(_hoverEventBinding);
@@ -80,8 +88,12 @@ namespace Game.Hexes
             height = Mathf.Clamp(height, 0, HexFactory.MaxHeight);
             if (Height == height) return false;
             Height = height;
-            _hexMesh.TweenScale(_hexMesh.transform.localScale, new Vector3(1, height, 1), AnimationDuration)
+            
+            _hexMesh.TweenScale(_hexMesh.transform.localScale, new Vector3(1, height - 0.1f, 1), AnimationDuration)
                 .SetEase(AnimationEaseType).SetOnComplete(SetMaterialBasedOnHeight);
+            
+            _hexTop.TweenLocalPosition(_hexMesh.transform.localPosition, new Vector3(0, height, 0), AnimationDuration)
+                .SetEase(AnimationEaseType);
 
             Vertices.SetHeight(height);
             Edges.SetHeight(height);
@@ -96,8 +108,12 @@ namespace Game.Hexes
         }
         private void SetMaterial(Material material)
         {
-            if (!_meshRenderer) return;
-            _meshRenderer.sharedMaterial = material;
+            if (_meshRenderers == null || _meshRenderers.Length == 0) return;
+            foreach (var meshRenderer in _meshRenderers)
+            {
+                meshRenderer.sharedMaterial = material;
+            }
+            
         }
     }
 }
