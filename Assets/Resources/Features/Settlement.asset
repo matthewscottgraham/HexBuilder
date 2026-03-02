@@ -16,21 +16,31 @@ MonoBehaviour:
   prefabs:
   - prefab: {fileID: 2021093281289282885, guid: 73e0f4d1f73954b0fa0f9138ea4949d7, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: 2e1249061d61d49c1a2f686564916390, type: 3}
   - prefab: {fileID: 2096918973143824915, guid: e6530ff4432ee48149ee421479bc035a, type: 3}
     allowRotation: 0
+    icon: {fileID: 2800000, guid: d2587ef0bbfef41fb9e499f9ead3b3b7, type: 3}
   - prefab: {fileID: 6142636613007321832, guid: b31b6eec6e44348cd921466871354ad3, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: 464710ba570554575ae6b49c8ea44a95, type: 3}
   - prefab: {fileID: 3514548753929725200, guid: d7785bdfca04c4b45b41385c870b53cf, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: 897d2ae4876cf4097b40b6e1d1eb54b5, type: 3}
   - prefab: {fileID: 6152733883645897609, guid: 112ca37ca6b434022adb44da3e683c76, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: 1ab25368b71304c0f9ebeb4a72b369cc, type: 3}
   - prefab: {fileID: 7739790541399446232, guid: fc4dd14303d4d4640a323244b0e18378, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: fcb7d3f0c542549d19cc9a6c246bf3d2, type: 3}
   - prefab: {fileID: 2565627944150942992, guid: b2106e4934583420bb13ba92b96bc9e3, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: ddcd129e538d1445f8760fdf16fded27, type: 3}
   - prefab: {fileID: 7177215328050730565, guid: 02ac40d562c914501b9526bc8fee5ee7, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: 7326baa0028874ea6a4dc11a026775b4, type: 3}
   - prefab: {fileID: 3418513067279663885, guid: 0f23610ff8daf479ab37ffc09f155661, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: 9646ef4d8c4a1452db8348934f11e7fb, type: 3}
   - prefab: {fileID: 5512701113124954922, guid: 40ef7493addc846ccbff7cc0382501cd, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: b90001ea7d4264ac5992cbd9aabab96e, type: 3}

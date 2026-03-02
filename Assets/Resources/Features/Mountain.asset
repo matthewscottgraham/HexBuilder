@@ -16,9 +16,13 @@ MonoBehaviour:
   prefabs:
   - prefab: {fileID: 443742877951503677, guid: 6366d2aefde5b4e73bf8b4da0cea0907, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: c428a623c4e6446928821fcb221e0d69, type: 3}
   - prefab: {fileID: 709745925262384342, guid: 5726ac7906d3f475bbd82ddf83ac7397, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: 480f0600641034f8693aec11553474cf, type: 3}
   - prefab: {fileID: 5503285346483269088, guid: f2cb05aecc27740739ed1c108dcadb71, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: 1ee7bce6d882d4153b3b1cb1f10aa16a, type: 3}
   - prefab: {fileID: 6603863637631324799, guid: 6c77ff325a90e44acb6abc08743f069a, type: 3}
     allowRotation: 1
+    icon: {fileID: 2800000, guid: bff5f65395b3e4560abe9e84c6946bfa, type: 3}

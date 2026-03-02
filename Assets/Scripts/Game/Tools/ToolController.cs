@@ -103,7 +103,7 @@ namespace Game.Tools
         {
             Assert.IsTrue(toolIndex >= 0 && toolIndex < Tools.Length);
             CurrentTool = Tools[toolIndex];
-
+            EventBus<SelectTool>.Raise(new SelectTool(CurrentTool));
             SetActiveSelector(CurrentTool.SelectionType);
         }
 

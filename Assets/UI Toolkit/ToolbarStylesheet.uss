@@ -39,3 +39,49 @@
 .horizontal {
     flex-direction: row;
 }
+
+.model-shelf {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 12px;
+}
+
+.model-shelf__header {
+    background-color: #232323;
+    border-radius: 6px;
+    flex-direction: row;
+    margin-bottom: 4px;
+    padding: 12px;
+    align-items: center;
+}
+
+.model-shelf__header Label {
+    font-size: 40px;
+}
+
+.model-shelf__header Button {
+    
+}
+
+.model-shelf__content {
+    align-self: flex-start;
+    background-color: #232323;
+    border-radius: 6px;
+    flex-direction: row;
+    padding: 24px;
+    transform-origin: 100% 100%;
+    transition: all 0.5s ease-out;
+}
+
+.model-shelf__closed {
+    scale: 0;
+    padding: 0;
+    height: 0;
+}
+
+.model-info__container{
+    width: 128px;
+    height: 128px;
+    padding: 0;
+}

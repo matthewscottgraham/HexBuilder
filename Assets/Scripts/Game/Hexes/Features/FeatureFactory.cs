@@ -7,10 +7,12 @@ namespace Game.Hexes.Features
 {
     public class FeatureFactory : IDisposable
     {
-        private readonly Dictionary<FeatureType, FeatureModelCatalogues> _catalogues = GetCatalogues();
+        private readonly Dictionary<FeatureType, FeatureModelCatalogue> _catalogues = GetCatalogues();
         private ConnectedFeatureCatalogue _riverCatalogue = Resources.Load<ConnectedFeatureCatalogue>("Features/River");
         private ConnectedFeatureCatalogue _pathCatalogue = Resources.Load<ConnectedFeatureCatalogue>("Features/Path");
 
+        public int CurrentVariation { get; set; } = -1;
+        
         public void Dispose()
         {
             _catalogues.Clear();
@@ -18,16 +20,22 @@ namespace Game.Hexes.Features
             _pathCatalogue = null;
         }
 
+        public FeatureModelCatalogue GetCatalogue(FeatureType featureType)
+        {
+            _catalogues.TryGetValue(featureType, out var modelCatalogue);
+            return modelCatalogue;
+        }
+
         public GameObject CreateFeature(FeatureType featureType)
         {
-            return CreateNewFeature(featureType);
+            return CreateNewFeature(featureType, CurrentVariation);
         }
 
         public GameObject CreateFeature(FeatureType featureType, int variation)
         {
             return featureType == FeatureType.None 
                 ? null : 
-                CreateNewFeature(featureType, false, variation);
+                CreateNewFeature(featureType, variation);
         }
         
         public GameObject GetPathMesh(bool[] vertices)
@@ -48,19 +56,19 @@ namespace Game.Hexes.Features
             return obj;
         }
 
-        private static Dictionary<FeatureType, FeatureModelCatalogues> GetCatalogues()
+        private static Dictionary<FeatureType, FeatureModelCatalogue> GetCatalogues()
         {
-            var modelCatalogues = Resources.LoadAll<FeatureModelCatalogues>("Features");
-            var dict = new Dictionary<FeatureType, FeatureModelCatalogues>();
+            var modelCatalogues = Resources.LoadAll<FeatureModelCatalogue>("Features");
+            var dict = new Dictionary<FeatureType, FeatureModelCatalogue>();
             foreach (var modelCatalogue in modelCatalogues)
                 if (!dict.TryAdd(modelCatalogue.FeatureType, modelCatalogue))
                     Debug.LogError($"A catalogue of models for: {modelCatalogue.name} already exists");
             return dict;
         }
 
-        private GameObject CreateNewFeature(FeatureType featureType, bool getRandomPrefab = true, int prefabVariation = 0)
+        private GameObject CreateNewFeature(FeatureType featureType, int prefabVariation = 0)
         {
-            var (featurePrefab, variation) = _catalogues[featureType].GetPrefab(getRandomPrefab, prefabVariation);
+            var featurePrefab = _catalogues[featureType].GetPrefab(prefabVariation);
             var instance = Object.Instantiate(featurePrefab.Prefab);
 
             if (!featurePrefab.AllowRotation) return instance;

@@ -1,6 +1,7 @@
 using App.Events;
 using Game.Cameras;
 using Game.Selection;
+using Game.Tools;
 
 namespace Game.Events
 {
@@ -22,6 +23,15 @@ namespace Game.Events
         }
         
         public SelectionContext HoverSelection;
+    }
+
+    public struct SelectTool : IEvent
+    {
+        public SelectTool(Tool tool)
+        {
+            Tool = tool;
+        }
+        public Tool Tool;
     }
 
     public struct SetCameraModeEvent : IEvent
