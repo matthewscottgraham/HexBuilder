@@ -26,3 +26,5 @@ MonoBehaviour:
   - prefab: {fileID: 6603863637631324799, guid: 6c77ff325a90e44acb6abc08743f069a, type: 3}
     allowRotation: 1
     icon: {fileID: 2800000, guid: bff5f65395b3e4560abe9e84c6946bfa, type: 3}
+  underwaterPrefabs:
+  - {fileID: 8529005602575359182, guid: 8ac2624879b6141a29bc09407ab0eea7, type: 3}
