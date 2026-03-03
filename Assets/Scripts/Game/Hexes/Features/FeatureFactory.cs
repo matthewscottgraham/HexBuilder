@@ -37,13 +37,6 @@ namespace Game.Hexes.Features
                 ? null : 
                 CreateNewFeature(featureType, variation);
         }
-
-        public GameObject CreateRandomWaterFeature(FeatureType featureType)
-        {
-            return _catalogues.TryGetValue(featureType, out var catalogue) 
-                ? CreateNewWaterFeature(catalogue.GetRandomUnderwaterPrefab()) 
-                : null;
-        }
         
         public GameObject GetPathMesh(bool[] vertices)
         {

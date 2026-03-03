@@ -111,7 +111,7 @@ namespace Game.Hexes
             if (_meshRenderers == null || _meshRenderers.Length == 0) return;
             foreach (var meshRenderer in _meshRenderers)
             {
-                meshRenderer.sharedMaterial = material;
+                if (meshRenderer) meshRenderer.sharedMaterial = material;
             }
             
         }

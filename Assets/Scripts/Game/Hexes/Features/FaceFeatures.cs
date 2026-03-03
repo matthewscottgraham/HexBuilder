@@ -24,10 +24,6 @@ namespace Game.Hexes.Features
             feature.transform.SetParent(FeatureParent, false);
             Feature = feature;
             HasFeatures[0] = true;
-            WaterFeature = _factory.CreateRandomWaterFeature(featureType);
-            WaterFeature?.transform.SetParent(FeatureParent, false);
-            
-            ShowFeatureByHeight();
         }
 
         public void Add(FeatureType featureType, int variation)
@@ -36,10 +32,6 @@ namespace Game.Hexes.Features
             feature.transform.SetParent(FeatureParent, false);
             Feature = feature;
             HasFeatures[0] = true;
-            WaterFeature = _factory.CreateRandomWaterFeature(featureType);
-            WaterFeature?.transform.SetParent(FeatureParent, false);
-            
-            ShowFeatureByHeight();
         }
         protected override void UpdateFeatureType()
         {

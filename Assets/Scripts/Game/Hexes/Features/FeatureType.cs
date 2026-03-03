@@ -6,6 +6,7 @@ namespace Game.Hexes.Features
         Mountain,
         Wilderness,
         Settlement,
+        Water,
         River,
         Path
     }

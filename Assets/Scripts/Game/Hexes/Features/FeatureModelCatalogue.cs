@@ -14,7 +14,6 @@ namespace Game.Hexes.Features
     {
         [SerializeField] private FeatureType featureType;
         [SerializeField] private FeaturePrefab[] prefabs = Array.Empty<FeaturePrefab>();
-        [SerializeField] private GameObject[] underwaterPrefabs = Array.Empty<GameObject>();
 
         public FeatureType FeatureType => featureType;
         public int Count => prefabs.Length;
@@ -24,13 +23,6 @@ namespace Game.Hexes.Features
             if (variation < 0) return GetRandomPrefab().Item1;
             variation %= prefabs.Length;
             return prefabs[variation];
-        }
-
-        public GameObject GetRandomUnderwaterPrefab()
-        {
-            if (underwaterPrefabs.Length == 0) return default;
-            var variation = Random.Range(0, underwaterPrefabs.Length);
-            return underwaterPrefabs[variation];
         }
         
         public (FeaturePrefab, int) GetPrefab(bool useRandom = true, int variation = -1)

@@ -12,7 +12,6 @@ namespace Game.Hexes
         protected readonly HexObject Owner;
         protected readonly Transform FeatureParent;
         protected GameObject Feature;
-        protected GameObject WaterFeature;
         protected readonly bool[] HasFeatures = new bool[6];
         
         public int FeatureVariation => Owner? Owner.Variation : 0;
@@ -30,8 +29,6 @@ namespace Game.Hexes
             FeatureParent.TweenLocalPosition(
                     FeatureParent.localPosition, new Vector3(0, height, 0),HexObject.AnimationDuration)
                 .SetEase(HexObject.AnimationEaseType);
-
-            ShowFeatureByHeight();
         }
         
         public bool Exists(int index = 0)
@@ -57,25 +54,7 @@ namespace Game.Hexes
                 Remove(index);
             }
         }
-
-        protected void ShowFeatureByHeight()
-        {
-            if (Owner.Height < HexFactory.WaterHeight) ShowWaterFeature();
-            else ShowLandFeature();
-        }
-
-        private void ShowWaterFeature()
-        {
-            if (Feature) Feature.SetActive(false);
-            if (WaterFeature) WaterFeature.SetActive(true);
-        }
-
-        private void ShowLandFeature()
-        {
-            if (Feature) Feature.SetActive(true);
-            if (WaterFeature) WaterFeature.SetActive(false);
-        }
-
+        
         protected virtual void UpdateFeatureType()
         {
             // NOOP
@@ -92,7 +71,6 @@ namespace Game.Hexes
         protected virtual void Remove(int index)
         {
             if (Feature) Object.Destroy(Feature);
-            if (WaterFeature) Object.Destroy(WaterFeature);
             HasFeatures[index] = false;
             UpdateFeatureType();
             UpdateMesh();

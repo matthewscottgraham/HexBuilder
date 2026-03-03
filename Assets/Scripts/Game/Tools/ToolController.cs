@@ -56,6 +56,7 @@ namespace Game.Tools
                 new MountainsTool(),
                 new WildernessTool(),
                 new SettlementTool(),
+                new WaterTool(),
                 new RiverTool(),
                 new PathTool()
             };
