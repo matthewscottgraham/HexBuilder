@@ -98,7 +98,7 @@ namespace Game.Hexes
             {
                 if (!HexGrid.InBounds(hexInfo.Coordinate)) continue;
                 var hexObject = CreateNewHex(hexInfo.Coordinate);
-                hexObject.SetHeight(hexInfo.Height);
+                hexObject.SetHeightImmediately(hexInfo.Height);
 
                 if (hexInfo.FeatureType != FeatureType.None)
                 {

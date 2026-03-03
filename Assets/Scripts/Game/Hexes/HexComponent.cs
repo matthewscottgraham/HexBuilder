@@ -30,6 +30,11 @@ namespace Game.Hexes
                     FeatureParent.localPosition, new Vector3(0, height, 0),HexObject.AnimationDuration)
                 .SetEase(HexObject.AnimationEaseType);
         }
+
+        public void SetHeightImmediately(int height)
+        {
+            FeatureParent.localPosition = new Vector3(0, height, 0);
+        }
         
         public bool Exists(int index = 0)
         {

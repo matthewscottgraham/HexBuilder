@@ -92,12 +92,28 @@ namespace Game.Hexes
             _hexMesh.TweenScale(_hexMesh.transform.localScale, new Vector3(1, height - 0.1f, 1), AnimationDuration)
                 .SetEase(AnimationEaseType).SetOnComplete(SetMaterialBasedOnHeight);
             
-            _hexTop.TweenLocalPosition(_hexMesh.transform.localPosition, new Vector3(0, height, 0), AnimationDuration)
+            _hexTop.TweenLocalPosition(_hexTop.transform.localPosition, new Vector3(0, height, 0), AnimationDuration)
                 .SetEase(AnimationEaseType);
 
             Vertices.SetHeight(height);
             Edges.SetHeight(height);
             Face.SetHeight(height);
+            
+            return true;
+        }
+
+        public bool SetHeightImmediately(int height)
+        {
+            Height = Mathf.Clamp(height, 0, HexFactory.MaxHeight);
+
+            _hexMesh.localScale = new Vector3(1, Height - 0.1f, 1);
+            _hexTop.localPosition = new Vector3(0, Height, 0);
+            
+            Vertices.SetHeightImmediately(Height);
+            Edges.SetHeightImmediately(Height);
+            Face.SetHeightImmediately(Height);
+
+            SetMaterialBasedOnHeight();
             
             return true;
         }
