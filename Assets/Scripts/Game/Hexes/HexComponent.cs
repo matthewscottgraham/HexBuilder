@@ -31,7 +31,7 @@ namespace Game.Hexes
                 .SetEase(HexObject.AnimationEaseType);
         }
 
-        public void SetHeightImmediately(int height)
+        public virtual void SetHeightImmediately(int height)
         {
             FeatureParent.localPosition = new Vector3(0, height, 0);
         }

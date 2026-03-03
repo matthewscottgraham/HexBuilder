@@ -1,5 +1,6 @@
 using System.Linq;
 using App.Services;
+using App.Tweens;
 using UnityEngine;
 
 namespace Game.Hexes.Features
@@ -24,6 +25,8 @@ namespace Game.Hexes.Features
             feature.transform.SetParent(FeatureParent, false);
             Feature = feature;
             HasFeatures[0] = true;
+            
+            SetHeight(Owner.Height);
         }
 
         public void Add(FeatureType featureType, int variation)
@@ -32,6 +35,8 @@ namespace Game.Hexes.Features
             feature.transform.SetParent(FeatureParent, false);
             Feature = feature;
             HasFeatures[0] = true;
+            
+            SetHeightImmediately(Owner.Height);
         }
         protected override void UpdateFeatureType()
         {
@@ -42,7 +47,28 @@ namespace Game.Hexes.Features
         {
             if (height < HexFactory.WaterHeight && FeatureType != FeatureType.Water) Remove(0);
             if (height >= HexFactory.WaterHeight && FeatureType == FeatureType.Water) Remove(0);
+
+            if (FeatureType == FeatureType.Water)
+            {
+                if (Feature.GetComponent<Floater>())
+                    height = HexFactory.WaterHeight;
+            }
+            
             base.SetHeight(height);
+        }
+
+        public override void SetHeightImmediately(int height)
+        {
+            if (height < HexFactory.WaterHeight && FeatureType != FeatureType.Water) Remove(0);
+            if (height >= HexFactory.WaterHeight && FeatureType == FeatureType.Water) Remove(0);
+
+            if (FeatureType == FeatureType.Water)
+            {
+                if (Feature.GetComponent<Floater>())
+                    height = HexFactory.WaterHeight;
+            }
+            
+            base.SetHeightImmediately(height);
         }
     }
 }
