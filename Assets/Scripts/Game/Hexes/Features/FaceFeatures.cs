@@ -37,5 +37,12 @@ namespace Game.Hexes.Features
         {
             FeatureType = HasFeatures.Any(t=> t) ? FeatureType : FeatureType.None;
         }
+
+        public override void SetHeight(int height)
+        {
+            if (height < HexFactory.WaterHeight && FeatureType != FeatureType.Water) Remove(0);
+            if (height >= HexFactory.WaterHeight && FeatureType == FeatureType.Water) Remove(0);
+            base.SetHeight(height);
+        }
     }
 }
