@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using App.Audio;
 using App.Events;
 using App.Input;
@@ -75,9 +76,8 @@ namespace Game.Selection
                 EventBus<HoverEvent>.Raise(new HoverEvent(BlankSelection));
                 return;
             }
-            var originalHover = Hovered;
+            if (Hovered.Coordinates.FirstOrDefault().Equals(hexObject.Coordinate)) return;
             var newHover = GetClampedSelection(hexObject, hoverPosition);
-            if (originalHover.Equals(newHover)) return;
             Hovered = newHover;
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
             EventBus<PlaySoundEvent>.Raise(new PlaySoundEvent(HoverSoundID, true));
