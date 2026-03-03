@@ -9,7 +9,7 @@ Button {
 }
 
 .unity-scroll-view {
-    background-color: darkslategrey;
+    background-color: #AB9B8E;
     min-width: 200px;
 }
 
@@ -25,18 +25,18 @@ DropdownField {
 }
 
 DropdownField .unity-base-field__input {
-    background-color: darkslategrey;
+    background-color: #AB9B8E;
     border-radius: 12px;
 }
 
 .map-type-selector.unity-base-field:hover > .unity-base-field__input {
     background-image: none;
-    background-color: goldenrod;
+    background-color: #C77B58;
 }
 
 unity-popup-menu__item:hover {
     background-image: none;
-    background-color: goldenrod;
+    background-color: #C77B58;
 }
 
 .spacer {
@@ -45,27 +45,27 @@ unity-popup-menu__item:hover {
 }
 
 .unity-button {
-    background-color: #454545;
+    background-color: #847875;
     border-width: 1px;
     border-color: transparent;
     color: white;
 }
 
 Button.unity-button:hover:enabled {
-    background-color: goldenrod;
+    background-color: #C77B58;
 }
 
 Button.unity-button:focus:enabled {
-    border-color: goldenrod;
+    border-color: #C77B58;
 }
 
 Button.unity-button:checked {
-    background-color: coral;
+    background-color: #AE5D40;
 
 }
 
 .exit-button {
-    background-color: coral;
+    background-color: #AE5D40;
     color: black;
     -unity-font-style: bold;
     border-radius: 6px;
@@ -143,8 +143,8 @@ SliderInt:focus > .unity-base-field__label {
     border-width: 0;
 }
 .radio-bar__button-text.checked {
-    background-color: coral;
+    background-color: #D1B187;
 }
 .radio-bar__button-icon.checked {
-    background-color: coral;
+    background-color: #D1B187;
 }

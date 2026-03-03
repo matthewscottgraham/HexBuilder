@@ -1,5 +1,5 @@
 SaveGameChooser {
-    background-color: #343434;
+    background-color: #AB9B8E;
     border-radius: 6px;
     position: absolute;
     width: 95%;
@@ -10,7 +10,7 @@ SaveGameChooser {
 
 .header-bar {
     align-items: center;
-    background-color: #121212;
+    background-color: #4D4539;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
     flex-direction: row;

@@ -3,19 +3,19 @@
 }
 
 .menu-bar-header {
-    background-color: #232323;
+    background-color: rgba(77, 69, 73, 0.75);
     border-radius: 6px;
     flex-direction: row;
-    margin-bottom: 4px;
-    padding: 12px;
+    padding: 3px;
     align-items: center;
 }
 
 .menu-bar-content {
     align-self: flex-start;
-    background-color: #232323;
+    background-color: rgba(77, 69, 73, 0.85);
     border-radius: 6px;
-    padding: 24px;
+    padding: 12px;
+    margin: 0;
 }
 
 .menu-bar__tab-button {
@@ -33,7 +33,7 @@
 }
 
 .active-tab {
-    background-color: coral;
+    background-color: #D1B187;
 }
 
 .horizontal {
@@ -48,11 +48,11 @@
 }
 
 .model-shelf__header {
-    background-color: #232323;
+    background-color: rgba(77, 69, 73, 0.75);
     border-radius: 6px;
     flex-direction: row;
     margin-bottom: 4px;
-    padding: 12px;
+    padding: 2px;
     align-items: center;
 }
 
@@ -66,10 +66,10 @@
 
 .model-shelf__content {
     align-self: flex-start;
-    background-color: #232323;
+    background-color: rgba(77, 69, 73, 0.75);
     border-radius: 6px;
     flex-direction: row;
-    padding: 24px;
+    padding: 2px;
     transform-origin: 100% 100%;
     transition: all 0.5s ease-out;
 }
@@ -88,5 +88,5 @@
 }
 
 .model-info__container.checked Image{
-    background-color: coral;
+    background-color: #D1B187;
 }

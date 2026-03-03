@@ -22,13 +22,13 @@ namespace Game.Hexes
         {
             return new[]
             {
-                GetColour("#D4C63D"),
-                GetColour("#3DD4CE"),
-                GetColour("#D4C63D"),
-                GetColour("#A6D44F"),
-                GetColour("#BCA64B"),
-                GetColour("#968E62"),
-                GetColour("#82695B")
+                GetColour("#4B726E"),
+                GetColour("#8CABA1"),
+                GetColour("#D2C9A5"),
+                GetColour("#B3A555"),
+                GetColour("#77743B"),
+                GetColour("#4D4539"),
+                GetColour("#4B3D44")
             };
         }
 
