@@ -66,4 +66,13 @@ namespace Game.Events
         }
         public float Time;
     }
+
+    public struct SetWhiteBalanceEvent : IEvent
+    {
+        public SetWhiteBalanceEvent(float temperature)
+        {
+            Temperature = temperature;
+        }
+        public float Temperature;
+    }
 }

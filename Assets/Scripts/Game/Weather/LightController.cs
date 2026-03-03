@@ -9,14 +9,13 @@ namespace Game.Weather
         private EventBinding<GamePauseEvent> _pauseBinding;
         private EventBinding<GameResumeEvent> _resumeBinding;
         private EventBinding<SetTimeEvent> _timeEventBinding;
-        
-        [SerializeField] private float speed = 2;
+
         [SerializeField] private AnimationCurve intensity;
+        [SerializeField] private AnimationCurve shadowIntensity;
         [SerializeField] private Light sun;
+        private const float Speed = 0.05f;
         private bool _isActive = true;
-        private static float _currentTime = 45f; // of 360
-        
-        public static float CurrentTime => _currentTime / 360f;
+        private float _currentTime = 6f;
         
         private void Start()
         {
@@ -47,8 +46,7 @@ namespace Game.Weather
 
         private void HandleSetTime(SetTimeEvent setTimeEvent)
         {
-            _currentTime = setTimeEvent.Time / -24f * 360f;
-            _currentTime -= 180f;
+            _currentTime = setTimeEvent.Time / 24f;
             UpdateVisuals();
         }
 
@@ -56,13 +54,20 @@ namespace Game.Weather
         {
             if (!_isActive) return;
             UpdateVisuals();
-            _currentTime -= speed * Time.deltaTime;
+            _currentTime += Speed * Time.deltaTime;
+            _currentTime %= 24;
         }
 
         private void UpdateVisuals()
         {
-            transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, _currentTime));
-            sun.intensity = intensity.Evaluate(_currentTime / 360f);
+            var percent = _currentTime / 24f;
+            transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, percent * 360 + 180));
+            
+            sun.intensity = intensity.Evaluate(percent);
+            sun.shadowStrength = shadowIntensity.Evaluate(percent);
+            
+            var temperature = Mathf.Sin(percent * Mathf.PI);
+            EventBus<SetWhiteBalanceEvent>.Raise(new SetWhiteBalanceEvent(temperature));
         }
     }
 }
