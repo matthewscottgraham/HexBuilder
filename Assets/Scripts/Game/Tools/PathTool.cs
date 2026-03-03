@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Game.Grid;
 using Game.Hexes;
 using Game.Hexes.Features;
@@ -18,7 +19,11 @@ namespace Game.Tools
         
         public override bool Use(HexObject[] hexes)
         {
-            if (hexes == null || hexes.Length != 3) return false;
+            if (hexes is not { Length: 3 }) return false;
+            if (hexes.Any(hex => hex.Height < HexFactory.WaterHeight))
+            {
+                return false;
+            }
 
             var sharedVertexA = HexGrid.GetSharedVertexIndex(hexes[0].Coordinate, hexes[1].Coordinate, hexes[2].Coordinate);
             if (sharedVertexA < 0) return false;

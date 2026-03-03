@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using App.Services;
 using Game.Grid;
 using Game.Hexes;
@@ -20,7 +21,11 @@ namespace Game.Tools
         
         public override bool Use(HexObject[] hexes)
         {
-            if (hexes == null || hexes.Length != 2) return false;
+            if (hexes is not { Length: 2 }) return false;
+            if (hexes.Any(hex => hex.Height < HexFactory.WaterHeight))
+            {
+                return false;
+            }
 
             var sharedEdgeA = HexGrid.GetSharedEdgeIndex(hexes[0].Coordinate, hexes[1].Coordinate);
             if (sharedEdgeA < 0) return false;
