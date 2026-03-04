@@ -21,17 +21,17 @@ namespace Game.Menu
         
         public SaveGameChooser()
         {
-            CreateHeader();
             _contentContainer = this.AddNew<VisualElement>(new VisualElement(), "new-game-container");
             CreateMapChooser();
             CreateSingleSlot();
             HandleMapTypeChanged(_mapType);
+            EventBus<HideUIEvent>.Raise(new HideUIEvent());
         }
 
         private void CreateMapChooser()
         {
             var container = _contentContainer.AddNew<VisualElement>(new VisualElement(), "map-chooser-container");
-            container.AddNew(new Label("Map Type: "));
+            container.AddNew(new Label("New Game"));
             
             for (var i = 0; i < Enum.GetValues(typeof(MapType)).Length; i++)
             {
@@ -43,24 +43,19 @@ namespace Game.Menu
 
         private void SetMapTypeImage()
         {
-            _mapTypeImage.image = Resources.Load<Texture2D>("MapPreviews/" + _mapType);
+            _mapTypeImage.style.backgroundImage = Resources.Load<Texture2D>("MapPreviews/" + _mapType);
         }
 
         private void CreateSingleSlot()
         {
             var slotContainer = _contentContainer.AddNew<VisualElement>(new VisualElement(), "save-slot-container");
             _mapTypeImage = slotContainer.AddNew<Image>(new Image(), "save-slot-image");
-            var button = slotContainer.AddButton("Create Map", CreateNewMap);
-        }
-
-        private void CreateHeader()
-        {
-            var header = this.AddNew<VisualElement>(new VisualElement(), "header-bar");
-            header.AddNew<Label>(new Label("Choose Map Type for New Game"), "header-bar-label");
-            header.AddSpacer();
-
-            var cancelButton = header.AddNew<Button>(new Button(CloseWindow), "exit-button");
-            cancelButton.text = "X";
+            
+            var buttonContainer = slotContainer.AddNew<VisualElement>(new VisualElement(), "save-slot-buttons");
+            var cancelButton = buttonContainer.AddNew<Button>(new Button(CloseWindow), "exit-button");
+            cancelButton.text = "Cancel";
+            buttonContainer.AddNew<VisualElement>(new VisualElement(), "expander");
+            var button = buttonContainer.AddButton("Create Map", CreateNewMap);
         }
 
         private void HandleMapTypeChanged(MapType mapType)
@@ -77,6 +72,7 @@ namespace Game.Menu
         private void CloseWindow()
         {
             RemoveFromHierarchy();
+            EventBus<ShowUIEvent>.Raise(new ShowUIEvent());
         }
 
         private void CreateNewMap()

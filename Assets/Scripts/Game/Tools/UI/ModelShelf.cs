@@ -15,8 +15,6 @@ namespace Game.Tools.UI
         [SerializeField] private Sprite randomIcon;
         
         private const string ShelfClosedClass = "model-shelf__closed";
-        //private const string ShelfContentClass = "model-shelf__content";
-        //private const string ShelfHeaderClass = "model-shelf__header";
         private const string ModelInfoClass = "model-info__container";
         
         private EventBinding<SelectionEvent> _selectionEventBinding;
@@ -31,7 +29,6 @@ namespace Game.Tools.UI
         private Button _randomButton;
         private Button[] _modelButtons;
         
-        private bool _isShelfOpen = false;
         private bool _useRandom = true;
         private FeatureModelCatalogue _currentCatalogue;
         
@@ -56,35 +53,11 @@ namespace Game.Tools.UI
             
             var toolMenuController = GetComponent<ToolMenuController>();
             _shelfContent = toolMenuController.ModelsContainer;
-            //_shelfHeader = _shelf.AddNew<VisualElement>(new VisualElement(), ShelfHeaderClass);
-            //_shelfLabel = _shelfHeader.AddNew(new Label());
-            //_toggleShelfButton = _shelfHeader.AddNew(new Button(ToggleShelf));
-            //_toggleShelfButton.text = "Toggle Shelf";
-            //_shelfContent = _shelf.AddNew<VisualElement>(new VisualElement(), ShelfContentClass);
-            
-            CloseShelf();
         }
 
-        private void OpenShelf()
+        private void UpdateShelfVisibility(bool isOpen)
         {
-            _isShelfOpen = true;
-            UpdateShelfVisibility();
-        }
-
-        private void CloseShelf()
-        {
-            _isShelfOpen = false;
-            UpdateShelfVisibility();
-        }
-        private void ToggleShelf()
-        {
-            _isShelfOpen = !_isShelfOpen;
-            UpdateShelfVisibility();
-        }
-
-        private void UpdateShelfVisibility()
-        {
-            if (_isShelfOpen)
+            if (isOpen)
                 _shelfContent.RemoveFromClassList(ShelfClosedClass);
             else 
                 _shelfContent.AddToClassList(ShelfClosedClass);
@@ -96,13 +69,12 @@ namespace Game.Tools.UI
             _currentCatalogue = catalogue;
             if (_currentCatalogue == null || _currentCatalogue.Count == 0)
             {
-                LockShelf();
+                UpdateShelfVisibility(false);
                 return;
             }
 
-            UnlockShelf();
+            UpdateShelfVisibility(true);
             _shelfContent.Clear();
-            //_shelfLabel.text = categoryName;
             
             _randomButton = _shelfContent.AddNew(
                 CreateModelButton(ChooseRandomFromCategory, randomIcon.texture));
@@ -124,18 +96,6 @@ namespace Game.Tools.UI
             button.AddToClassList(ModelInfoClass);
             button.iconImage = icon;
             return button;
-        }
-
-        private void LockShelf()
-        {
-            CloseShelf();
-            //_toggleShelfButton.Hide();
-        }
-
-        private void UnlockShelf()
-        {
-            OpenShelf();
-            //_toggleShelfButton.Show();
         }
 
         private void ChooseRandomFromCategory()
@@ -173,16 +133,13 @@ namespace Game.Tools.UI
 
         private void HandleToolSelection(SelectToolEvent selectToolEventEvent)
         {
+            UpdateShelfVisibility(false);
             if (selectToolEventEvent.Tool.SelectionType != SelectionType.Face) return;
             _featureFactory ??= ServiceLocator.Instance.Get<FeatureFactory>();
             
             
             var catalogue = _featureFactory.GetCatalogue(selectToolEventEvent.Tool.FeatureType);
-            if (catalogue == null)
-            {
-                LockShelf();
-                return;
-            }
+            if (catalogue == null) return;
             DisplayModels(catalogue.FeatureType.ToString(), catalogue);
             ChooseRandomFromCategory();
         }

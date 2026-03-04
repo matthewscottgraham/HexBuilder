@@ -15,7 +15,7 @@ namespace Game.Weather
         [SerializeField] private Light sun;
         private const float Speed = 0.05f;
         private bool _isActive = true;
-        private float _currentTime = 6f;
+        private float _currentTime = 10f;
         
         private void Start()
         {

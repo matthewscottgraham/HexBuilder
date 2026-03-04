@@ -1,27 +1,10 @@
 SaveGameChooser {
-    background-color: #AB9B8E;
-    border-radius: 6px;
+    background-color: rgba(255,255,255,0.5);
     position: absolute;
-    width: 95%;
-    height: 90%;
+    width: 100%;
+    height: 100%;
     align-self: center;
-    top: 5%
-}
-
-.header-bar {
-    align-items: center;
-    background-color: #4D4539;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    flex-direction: row;
-    padding: 12px 24px;
-    height: 80px;
-}
-
-.header-bar-label {
-    color: white;
-    -unity-font-style: bold;
-    font-size: 24px;
+    padding: 64px;
 }
 
 .spacer {
@@ -31,14 +14,23 @@ SaveGameChooser {
 .new-game-container {
     flex-direction: row;
     flex-grow: 1;
-    padding: 72px;
+    padding: 4px;
+    background-color: rgba(77, 69, 73, 0.98);
+    border-radius: 28px;
 }
 
 .map-chooser-container{
     width: 25%;
-    padding-right: 48px;
+    padding: 24px 0;
 }
 
+.map-chooser-container Button{
+    border-radius: 22px;
+    width: 200px;
+    height: 60px;
+    margin-bottom: 12px;
+    align-self: center;
+}
 .map-chooser-container .unity-label{
     font-size: 32px;
     -unity-font-style: bold;
@@ -50,13 +42,26 @@ SaveGameChooser {
     flex-grow: 1;
     align-items: center;
 }
-.save-slot-container .unity-image{
-    margin-bottom: 24px;
+.save-slot-container .save-slot-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 24px;
+    background-size: cover;
 }
 
 .save-slot-container .unity-button {
     width: 300px;
     height: 60px;
-    font-size: 28px;
+    font-size: 24px;
     -unity-font-style: bold;
+    border-radius: 24px;
+}
+
+.save-slot-buttons{
+    position: absolute;
+    width: 100%;
+    flex-direction: row;
+    padding: 12px;
+    padding-top: 6px;
+    bottom: 0;
 }

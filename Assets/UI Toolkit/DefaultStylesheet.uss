@@ -44,6 +44,10 @@ unity-popup-menu__item:hover {
     min-width: 12px;
 }
 
+.expander {
+    flex-grow: 1;
+}
+
 .unity-button {
     background-color: #847875;
     border-width: 1px;

@@ -104,7 +104,6 @@ namespace Game.Options
 
         private void TakeScreenshot()
         {
-            Debug.Log(_captureUi);
             ServiceLocator.Instance.Get<ScreenshotController>().TakeScreenshot(_captureUi);
         }
 
