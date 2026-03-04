@@ -9,7 +9,7 @@ namespace Game.Tools
         public Eraser()
         {
             FeatureType = FeatureType.None;
-            Icon = Resources.Load<Sprite>("Sprites/subtract");
+            Icon = Resources.Load<Sprite>("Sprites/eraser");
         }
 
         public override bool Use(HexObject hex, ToolMode toolMode)

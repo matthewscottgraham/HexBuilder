@@ -89,6 +89,8 @@
 .model-info__container Image {
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .model-info__container.checked Image{
