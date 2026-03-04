@@ -78,6 +78,9 @@ namespace App.UIComponents
                 button.RegisterCallback<ClickEvent>(OnButtonClicked);
                 _buttons[i] = button;
                 Add(button);
+                
+                if (i == 0) button.AddToClassList("radio-bar__button-first");
+                if (i == array.Length - 1) button.AddToClassList("radio-bar__button-last");
             }
             
             SetValueWithoutNotify(0);

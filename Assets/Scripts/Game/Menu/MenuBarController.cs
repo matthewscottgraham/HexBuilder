@@ -61,15 +61,14 @@ namespace Game.Menu
 
         private void Awake()
         {
-            var uiDocument = GetComponent<UIDocument>();
+            var uiDocument = GetComponentInParent<UIDocument>();
             var root = uiDocument.rootVisualElement;
+            
             _mainContainer = root.AddNew<VisualElement>(new VisualElement(), "menu-bar");
             _mainContainer.pickingMode = PickingMode.Ignore;
             
             _headerContainer = _mainContainer.AddNew<VisualElement>(new VisualElement(), "menu-bar-header");
             _headerTabButtons = _headerContainer.AddNew<VisualElement>(new VisualElement(), "horizontal");
-            _headerContainer.AddSpacer();
-            _headerCustomElements = _headerContainer.AddNew<VisualElement>(new VisualElement(), "horizontal");
             
             _contentContainer = _mainContainer.AddNew(new VisualElement());
             _contentContainer.pickingMode = PickingMode.Ignore;

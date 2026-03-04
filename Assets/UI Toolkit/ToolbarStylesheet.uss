@@ -1,27 +1,44 @@
 .menu-bar {
+    padding: 4px;
+}
+
+.tool-bar {
+    position: absolute;
+    right: 0;
+    top: 0;
     margin: 12px;
+    justify-content: flex-end;
 }
 
 .menu-bar-header {
-    background-color: rgba(77, 69, 73, 0.75);
-    border-radius: 6px;
+    align-self: flex-start;
     flex-direction: row;
-    padding: 3px;
     align-items: center;
 }
 
 .menu-bar-content {
     align-self: flex-start;
-    background-color: rgba(77, 69, 73, 0.85);
-    border-radius: 6px;
+    background-color: rgba(77, 69, 73, 0.95);
+    border-radius: 12px;
     padding: 12px;
-    margin: 0;
+    margin: 12px 0;
+}
+
+.tool-bar-content {
+    align-self: flex-end;
+    background-color: rgba(77, 69, 73, 0.95);
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    transform-origin: 100% 0;
+    transition: all 0.5s ease-out;
 }
 
 .menu-bar__tab-button {
     height: 64px;
     width: 64px;
-    margin: 0;
+    
+    border-radius: 50%;
 }
 
 .hidden {
@@ -40,51 +57,38 @@
     flex-direction: row;
 }
 
-.model-shelf {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin: 12px;
-}
-
-.model-shelf__header {
-    background-color: rgba(77, 69, 73, 0.75);
-    border-radius: 6px;
+.model-shelf-content {
+    align-self: flex-end;
+    background-color: rgba(77, 69, 73, 0.95);
+    border-radius: 38px;
     flex-direction: row;
-    margin-bottom: 4px;
-    padding: 2px;
-    align-items: center;
-}
-
-.model-shelf__header Label {
-    font-size: 40px;
-}
-
-.model-shelf__header Button {
-    
-}
-
-.model-shelf__content {
-    align-self: flex-start;
-    background-color: rgba(77, 69, 73, 0.75);
-    border-radius: 6px;
-    flex-direction: row;
-    padding: 2px;
-    transform-origin: 100% 100%;
+    max-width: 189px;
+    flex-wrap: wrap;
+    padding: 4px 2px;
+    transform-origin: 100% 0;
     transition: all 0.5s ease-out;
+    margin-top: 12px;
 }
 
 .model-shelf__closed {
     scale: 0;
     padding: 0;
     height: 0;
+    margin: 0;
+    transform-origin: 100% 0;
+    transition: all 0.5s ease-out;
 }
 
 .model-info__container{
-    width: 128px;
-    height: 128px;
+    width: 84px;
+    height: 84px;
     padding: 0;
-    border-radius: 8px;
+    border-radius: 40%;
+}
+
+.model-info__container Image {
+    margin: 0;
+    padding: 0;
 }
 
 .model-info__container.checked Image{

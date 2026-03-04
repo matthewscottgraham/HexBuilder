@@ -93,17 +93,17 @@ Button.unity-button:checked {
     height: 64px;
 }
 .unity-slider__input {
-    min-width: 200px;
+    min-width: 250px;
 }
 Slider {
-    min-width: 200px;
+    min-width: 250px;
 }
 Slider:focus > .unity-base-field__label {
     color: white;
 }
 
 SliderInt {
-    min-width: 150px;
+    min-width: 250px;
 }
 SliderInt.unity-base-field{
     margin-right: 20px;
@@ -147,4 +147,15 @@ SliderInt:focus > .unity-base-field__label {
 }
 .radio-bar__button-icon.checked {
     background-color: #D1B187;
+}
+
+.radio-bar__button-first {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-color: transparent;
+}
+.radio-bar__button-last {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-color: transparent;
 }

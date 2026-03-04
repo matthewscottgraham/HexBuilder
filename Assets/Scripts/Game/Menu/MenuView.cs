@@ -18,7 +18,7 @@ namespace Game.Menu
         
         private void Start()
         {
-            _document = GetComponent<UIDocument>();
+            _document = GetComponentInParent<UIDocument>();
             
             var menuBarController = GetComponent<MenuBarController>();
             var menuIcon = Resources.Load<Sprite>("Sprites/menu");

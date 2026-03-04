@@ -3,20 +3,20 @@ using App.Events;
 using App.Services;
 using App.Utils;
 using Game.Events;
+using Game.Hexes.Features;
 using UnityEngine;
 using UnityEngine.UIElements;
 using SelectionType = Game.Selection.SelectionType;
 
-namespace Game.Hexes.Features
+namespace Game.Tools.UI
 {
     public class ModelShelf : MonoBehaviour
     {
         [SerializeField] private Sprite randomIcon;
         
-        private const string ShelfClassName = "model-shelf";
         private const string ShelfClosedClass = "model-shelf__closed";
-        private const string ShelfContentClass = "model-shelf__content";
-        private const string ShelfHeaderClass = "model-shelf__header";
+        //private const string ShelfContentClass = "model-shelf__content";
+        //private const string ShelfHeaderClass = "model-shelf__header";
         private const string ModelInfoClass = "model-info__container";
         
         private EventBinding<SelectionEvent> _selectionEventBinding;
@@ -54,13 +54,13 @@ namespace Game.Hexes.Features
         {
             _featureFactory = ServiceLocator.Instance.Get<FeatureFactory>();
             
-            var uiDocument = GetComponent<UIDocument>();
-            _shelf = uiDocument.rootVisualElement.AddNew<VisualElement>(new VisualElement(), ShelfClassName);
-            _shelfHeader = _shelf.AddNew<VisualElement>(new VisualElement(), ShelfHeaderClass);
-            _shelfLabel = _shelfHeader.AddNew(new Label());
-            _toggleShelfButton = _shelfHeader.AddNew(new Button(ToggleShelf));
-            _toggleShelfButton.text = "Toggle Shelf";
-            _shelfContent = _shelf.AddNew<VisualElement>(new VisualElement(), ShelfContentClass);
+            var toolMenuController = GetComponent<ToolMenuController>();
+            _shelfContent = toolMenuController.ModelsContainer;
+            //_shelfHeader = _shelf.AddNew<VisualElement>(new VisualElement(), ShelfHeaderClass);
+            //_shelfLabel = _shelfHeader.AddNew(new Label());
+            //_toggleShelfButton = _shelfHeader.AddNew(new Button(ToggleShelf));
+            //_toggleShelfButton.text = "Toggle Shelf";
+            //_shelfContent = _shelf.AddNew<VisualElement>(new VisualElement(), ShelfContentClass);
             
             CloseShelf();
         }
@@ -102,7 +102,7 @@ namespace Game.Hexes.Features
 
             UnlockShelf();
             _shelfContent.Clear();
-            _shelfLabel.text = categoryName;
+            //_shelfLabel.text = categoryName;
             
             _randomButton = _shelfContent.AddNew(
                 CreateModelButton(ChooseRandomFromCategory, randomIcon.texture));
@@ -129,13 +129,13 @@ namespace Game.Hexes.Features
         private void LockShelf()
         {
             CloseShelf();
-            _toggleShelfButton.Hide();
+            //_toggleShelfButton.Hide();
         }
 
         private void UnlockShelf()
         {
             OpenShelf();
-            _toggleShelfButton.Show();
+            //_toggleShelfButton.Show();
         }
 
         private void ChooseRandomFromCategory()

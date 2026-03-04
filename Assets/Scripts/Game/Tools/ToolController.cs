@@ -36,6 +36,21 @@ namespace Game.Tools
             if (CurrentTool == null) return _radius;
             return _radius + CurrentTool.RadiusIncrement;
         }
+
+        public int GetCurrentToolIndex()
+        {
+            if (Tools == null || Tools.Length == 0) return -1;
+            
+            for (var i = 0; i < Tools.Length; i++)
+            {
+                if (Tools[i].GetType() == CurrentTool.GetType())
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
         
         public void Initialize()
         {
