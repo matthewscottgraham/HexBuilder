@@ -4,12 +4,12 @@
 Years ago, when I was first learning Unity, I attempted an mostly failed to make a game that was a mashup of the board games Catan, Carcassonne and Scrabble. I found that the most enjoyable part of that project, was the Level Editor. This is a toy that mostly scratches that same itch, while being a much better made program.
 
 <p align="center">
-	<img src="images/ScreenshotA.jpg" alt="Screenshot A" height="250"/>
-	<img src="images/ScreenshotB.jpg" alt="Screenshot B" height="250"/>
-	<img src="images/ScreenshotC.jpg" alt="Screenshot C" height="250"/>
-  <img src="images/ScreenshotC.jpg" alt="Screenshot D" height="250"/>
-  <img src="images/ScreenshotC.jpg" alt="Screenshot E" height="250"/>
-  <img src="images/ScreenshotC.jpg" alt="Screenshot F" height="250"/>
+	<img src="images/ScreenshotA.jpg" alt="Screenshot A" height="200"/>
+	<img src="images/ScreenshotB.jpg" alt="Screenshot B" height="200"/>
+	<img src="images/ScreenshotC.jpg" alt="Screenshot C" height="200"/>
+  <img src="images/ScreenshotD.jpg" alt="Screenshot D" height="200"/>
+  <img src="images/ScreenshotE.jpg" alt="Screenshot E" height="200"/>
+  <img src="images/ScreenshotF.jpg" alt="Screenshot F" height="200"/>
 </p>
 
 ## Current Features
