@@ -6,6 +6,7 @@ using App.Utils;
 using Game.Cameras;
 using Game.Events;
 using Game.Menu;
+using Game.Weather;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -19,6 +20,7 @@ namespace Game.Options
         private Slider _dofSlider;
         private Slider _fovSlider;
         private Slider _timeSlider;
+        private bool _userSlidingTimeSlider = false;
         private Toggle _captureUIToggle;
         
         private Slider _musicVolumeSlider;
@@ -39,9 +41,12 @@ namespace Game.Options
             
             _fovSlider = screenshotTab.AddSlider("FOV", 60, 10, 110);
             _fovSlider.RegisterValueChangedCallback(HandleFovChanged);
+            _fovSlider.SetValueWithoutNotify(Camera.main.fieldOfView);
             
-            _timeSlider = screenshotTab.AddSlider("Time", 0, 0, 1);
+            _timeSlider = screenshotTab.AddSlider("Time", 0, 0, 24);
             _timeSlider.RegisterValueChangedCallback(HandleTimeChanged);
+            _timeSlider.RegisterCallback<PointerDownEvent>(_ => _userSlidingTimeSlider = true);
+            _timeSlider.RegisterCallback<PointerUpEvent>(_ => _userSlidingTimeSlider = false);
             
             _captureUIToggle = screenshotTab.AddNew(new Toggle("Capture UI"));
             _captureUIToggle.value = _captureUi;
@@ -82,6 +87,12 @@ namespace Game.Options
             _menuBarController.OnTabChange -= HandleTabChanged;
         }
 
+        private void LateUpdate()
+        {
+            if (_userSlidingTimeSlider) return;
+            _timeSlider?.SetValueWithoutNotify(LightController.CurrentTime);
+        }
+
         private void HandleDofChanged(ChangeEvent<float> evt)
         {
             EventBus<SetDofEvent>.Raise(new SetDofEvent(1f - evt.newValue));
@@ -94,7 +105,7 @@ namespace Game.Options
 
         private void HandleTimeChanged(ChangeEvent<float> evt)
         {
-            EventBus<SetTimeEvent>.Raise(new SetTimeEvent(evt.newValue * 24f));
+            EventBus<SetTimeEvent>.Raise(new SetTimeEvent(evt.newValue));
         }
 
         private void HandleCaptureUiToggleChanged(ChangeEvent<bool> evt)

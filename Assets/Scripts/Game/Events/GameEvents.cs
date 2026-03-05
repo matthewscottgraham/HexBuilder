@@ -31,7 +31,7 @@ namespace Game.Events
         {
             Tool = tool;
         }
-        public Tool Tool;
+        public readonly Tool Tool;
     }
 
     public struct SetCameraModeEvent : IEvent
@@ -40,7 +40,7 @@ namespace Game.Events
         {
             CameraMode = cameraMode;
         }
-        public CameraMode CameraMode;
+        public readonly CameraMode CameraMode;
     }
     public struct SetDofEvent : IEvent
     {
@@ -48,7 +48,7 @@ namespace Game.Events
         {
             Dof = dof;
         }
-        public float Dof;
+        public readonly float Dof;
     }
     public struct SetFovEvent : IEvent
     {
@@ -56,7 +56,7 @@ namespace Game.Events
         {
             Fov = fov;
         }
-        public float Fov;
+        public readonly float Fov;
     }
     public struct SetTimeEvent : IEvent
     {
@@ -64,7 +64,7 @@ namespace Game.Events
         {
             Time = time;
         }
-        public float Time;
+        public readonly float Time;
     }
 
     public struct SetWhiteBalanceEvent : IEvent
@@ -73,6 +73,6 @@ namespace Game.Events
         {
             Temperature = temperature;
         }
-        public float Temperature;
+        public readonly float Temperature;
     }
 }

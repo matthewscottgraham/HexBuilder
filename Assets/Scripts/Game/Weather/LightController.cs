@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using App.Events;
 using Game.Events;
 using UnityEngine;
@@ -15,7 +17,9 @@ namespace Game.Weather
         [SerializeField] private Light sun;
         private const float Speed = 0.05f;
         private bool _isActive = true;
-        private float _currentTime = 10f;
+        private static float _currentTime = 10f;
+        
+        public static float CurrentTime => _currentTime;
         
         private void Start()
         {
@@ -46,8 +50,15 @@ namespace Game.Weather
 
         private void HandleSetTime(SetTimeEvent setTimeEvent)
         {
-            _currentTime = setTimeEvent.Time / 24f;
+            _currentTime = setTimeEvent.Time;
+            _currentTime %= 24f;
+            Debug.Log(_currentTime);
             UpdateVisuals();
+        }
+
+        private IEnumerator SetNewTime(float time)
+        {
+            yield return new WaitForEndOfFrame();
         }
 
         private void Update()
