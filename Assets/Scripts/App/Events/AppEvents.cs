@@ -100,10 +100,11 @@ namespace App.Events
     }
     public struct PlayMusicEvent : IEvent { }
     public struct StopMusicEvent : IEvent { }
-    
+
     public struct HideUIEvent : IEvent { }
     public struct ShowUIEvent : IEvent { }
-
+    public struct HideMenuEvent : IEvent { }
+    
     public struct PlayVFXBurstEvent : IEvent
     {
         public PlayVFXBurstEvent(string effectID, Vector3 position, Vector3 rotation)

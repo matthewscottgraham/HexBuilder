@@ -18,6 +18,7 @@ namespace Game.Menu
 
         private EventBinding<HideUIEvent> _hideUIBinding;
         private EventBinding<ShowUIEvent> _showUIBinding;
+        private EventBinding<HideMenuEvent> _hideMenuBinding;
         
         private readonly Dictionary<string, Button> _tabButtons = new();
         private readonly Dictionary<string, VisualElement> _tabContents = new();
@@ -78,12 +79,16 @@ namespace Game.Menu
             
             _showUIBinding = new EventBinding<ShowUIEvent>(HandleShowUI);
             EventBus<ShowUIEvent>.Register(_showUIBinding);
+            
+            _hideMenuBinding = new EventBinding<HideMenuEvent>(HandleHideMenu);
+            EventBus<HideMenuEvent>.Register(_hideMenuBinding);
         }
 
         private void OnDestroy()
         {
             EventBus<HideUIEvent>.Deregister(_hideUIBinding);
             EventBus<ShowUIEvent>.Deregister(_showUIBinding);
+            EventBus<HideMenuEvent>.Deregister(_hideMenuBinding);
         }
 
         private void ShowTab(string tabId)
@@ -115,6 +120,12 @@ namespace Game.Menu
         private void HandleShowUI(ShowUIEvent evt)
         {
             _mainContainer.Show();
+            _contentContainer.Show();
+        }
+
+        private void HandleHideMenu(HideMenuEvent evt)
+        {
+            _contentContainer.Hide();
         }
     }
 }

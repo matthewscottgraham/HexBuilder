@@ -20,8 +20,8 @@ namespace App.Screenshots
 
         public void TakeScreenshot(bool captureGameUI)
         {
-            if (!captureGameUI)
-                EventBus<HideUIEvent>.Raise(new HideUIEvent());
+            if (captureGameUI) EventBus<HideMenuEvent>.Raise(new HideMenuEvent());
+            else EventBus<HideUIEvent>.Raise(new HideUIEvent());
             StartCoroutine(TakeScreenshotCoroutine(
                 ScreenshotDirectory, 
                 "screenshot", 
