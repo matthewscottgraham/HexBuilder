@@ -7,6 +7,7 @@ namespace Game.Tools
 {
     public class Tool
     {
+        public string PreviewName = null;
         public FeatureType FeatureType { get; protected set; }
         public int RadiusIncrement { get; protected set; }
         public Sprite Icon { get; protected set; }
@@ -36,6 +37,20 @@ namespace Game.Tools
             return false;
         }
 
+        public bool VerifyTileHeight(HexObject hex)
+        {
+            switch (TilePlacement)
+            {
+                case TilePlacement.Any:
+                    return true;
+                case TilePlacement.Land when hex.Height < HexFactory.WaterHeight:
+                case TilePlacement.Water when hex.Height >= HexFactory.WaterHeight:
+                    return false;
+                default:
+                    return true;
+            }
+        }
+
         private bool UseAdditive(HexObject hex, FeatureType currentFeatureType)
         {
             if (currentFeatureType == FeatureType) return false;
@@ -55,20 +70,6 @@ namespace Game.Tools
             return currentFeatureType != FeatureType 
                 ? UseAdditive(hex, currentFeatureType) 
                 : UseSubtractive(hex, currentFeatureType);
-        }
-
-        private bool VerifyTileHeight(HexObject hex)
-        {
-            switch (TilePlacement)
-            {
-                case TilePlacement.Any:
-                    return true;
-                case TilePlacement.Land when hex.Height < HexFactory.WaterHeight:
-                case TilePlacement.Water when hex.Height >= HexFactory.WaterHeight:
-                    return false;
-                default:
-                    return true;
-            }
         }
     }
 }

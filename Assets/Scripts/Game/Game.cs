@@ -9,6 +9,7 @@ using Game.Cameras;
 using Game.Grid;
 using Game.Hexes;
 using Game.Hexes.Features;
+using Game.Selection;
 using Game.Tools;
 using UnityEngine;
 
@@ -44,12 +45,14 @@ namespace Game
 
             var hexController = gameObject.AddChild<HexController>("Hexes");
             var toolController = gameObject.AddChild<ToolController>("Tools");
+            var toolPreviewController = gameObject.AddChild<ToolPreviewController>("ToolPreview");
 
             _resources = new IDisposable[]
             {
                 featureFactory,
                 hexController,
                 toolController,
+                toolPreviewController,
                 new CameraController(Camera.main)
             };
 
@@ -57,6 +60,7 @@ namespace Game
             
             hexController.Initialize();
             toolController.Initialize();
+            toolPreviewController.Initialize(toolController, hexController, featureFactory);
         }
 
         private void HandleGameReload(GameReloadEvent gameReloadEvent)

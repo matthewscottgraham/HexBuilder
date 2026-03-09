@@ -26,6 +26,11 @@ namespace Game.Hexes
             FeatureParent = Owner.gameObject.AddChild(Name).transform;
         }
 
+        public void SetVisibility(bool visibility)
+        {
+            FeatureParent.gameObject.SetActive(visibility);
+        }
+
         public virtual void SetHeight(int height)
         {
             FeatureParent.TweenLocalPosition(

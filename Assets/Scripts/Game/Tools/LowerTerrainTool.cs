@@ -10,6 +10,7 @@ namespace Game.Tools
         {
             FeatureType = FeatureType.None;
             Icon = Resources.Load<Sprite>("Sprites/lower");
+            PreviewName = "LowerTerrain";
         }
         
         public override bool Use(HexObject hex, ToolMode toolMode)

@@ -5,6 +5,7 @@ using Game.Events;
 using Game.Grid;
 using Game.Hexes.Features;
 using Game.Selection;
+using Game.Tools;
 using UnityEngine;
 
 namespace Game.Hexes
@@ -58,6 +59,11 @@ namespace Game.Hexes
             EventBus<HoverEvent>.Register(_hoverEventBinding);
         }
 
+        public void SetFeatureVisibility(bool visibility)
+        {
+            Face.SetVisibility(visibility);
+        }
+
         private void HandleHoverEvent(HoverEvent evt)
         {
             if (evt.HoverSelection.SelectionType == SelectionType.None)
@@ -85,6 +91,7 @@ namespace Game.Hexes
         {
             if (!_hovered) return;
             _hovered = false;
+            SetFeatureVisibility(true);
             SetMaterialBasedOnHeight();
         }
 

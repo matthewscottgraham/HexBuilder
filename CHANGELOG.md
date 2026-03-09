@@ -4,6 +4,8 @@
 * Changed title and company name for build.
 * Fixed saving and loading of features and waterfalls
 * When a face feature is placed on a river, or vice/versa, it will remove the existing feature.
+* Added more settlement models for variation
+* Added a tool preview to tiles.
 
 
 ## V0.7
