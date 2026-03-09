@@ -52,7 +52,6 @@ namespace Game.Weather
         {
             _currentTime = setTimeEvent.Time;
             _currentTime %= 24f;
-            Debug.Log(_currentTime);
             UpdateVisuals();
         }
 

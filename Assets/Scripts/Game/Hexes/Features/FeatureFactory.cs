@@ -26,8 +26,9 @@ namespace Game.Hexes.Features
             return modelCatalogue;
         }
 
-        public int GetRandomPrefabIndex(FeatureType featureType)
+        public int GetPrefabIndex(FeatureType featureType)
         {
+            if (CurrentVariation >= 0) return CurrentVariation;
             _catalogues.TryGetValue(featureType, out var modelCatalogue);
             return modelCatalogue ? modelCatalogue.GetRandomPrefabIndex() : 0;
         }

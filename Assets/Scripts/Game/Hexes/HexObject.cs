@@ -42,6 +42,7 @@ namespace Game.Hexes
             
             _hexTop = hexTop;
             _hexTop.SetParent(transform, false);
+            _hexTop.localRotation = Quaternion.Euler(0, Random.Range(0, 6) * 60, 0);
             
             Face = new FaceFeatures(this);
             Edges = new EdgeFeatures(this);

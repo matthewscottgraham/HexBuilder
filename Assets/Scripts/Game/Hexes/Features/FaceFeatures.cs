@@ -21,7 +21,7 @@ namespace Game.Hexes.Features
         {
             Remove(0);
             FeatureType = featureType;
-            FeatureVariation = _factory.GetRandomPrefabIndex(FeatureType);
+            FeatureVariation = _factory.GetPrefabIndex(FeatureType);
             var feature = _factory.CreateFeature(featureType, FeatureVariation);
             feature.transform.SetParent(FeatureParent, false);
             Feature = feature;
@@ -38,7 +38,7 @@ namespace Game.Hexes.Features
         public void Add(FeatureType featureType, int variation, int rotation)
         {
             FeatureType = featureType;
-            FeatureVariation = _factory.GetRandomPrefabIndex(FeatureType);
+            FeatureVariation = variation;
             var feature = _factory.CreateFeature(featureType, variation);
             feature.transform.SetParent(FeatureParent, false);
             Feature = feature;

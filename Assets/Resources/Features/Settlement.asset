@@ -44,3 +44,6 @@ MonoBehaviour:
   - prefab: {fileID: 5512701113124954922, guid: 40ef7493addc846ccbff7cc0382501cd, type: 3}
     allowRotation: 1
     icon: {fileID: 2800000, guid: b90001ea7d4264ac5992cbd9aabab96e, type: 3}
+  - prefab: {fileID: 177779037886603383, guid: 5644ad152901549f786b36f4c32774fd, type: 3}
+    allowRotation: 1
+    icon: {fileID: 2800000, guid: 47df308bbe5f64691a6ca8463605d26a, type: 3}
