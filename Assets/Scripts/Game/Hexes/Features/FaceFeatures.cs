@@ -33,7 +33,6 @@ namespace Game.Hexes.Features
             }
             
             SetHeight(Owner.Height);
-            Owner.SetFeatureVisibility(true);
         }
 
         public void Add(FeatureType featureType, int variation, int rotation)

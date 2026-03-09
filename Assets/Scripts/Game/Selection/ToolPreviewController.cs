@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using App.Events;
 using Game.Events;
 using System.Linq;
+using App.Input;
 using Game.Grid;
 using Game.Hexes;
 using Game.Hexes.Features;
@@ -15,29 +16,26 @@ namespace Game.Selection
     {
         private ToolController _toolController;
         private HexController _hexController;
-        private FeatureFactory _featureFactory;
 
-        private Dictionary<string, GameObject> _toolPreviews = new();
+        private readonly Dictionary<string, Texture2D> _toolCursors = new();
         private EventBinding<HoverEvent> _hoverEventBinding;
-        private EventBinding<SelectionEvent> _selectionEventBinding;
-        private Material _material;
-        private Material _errorMaterial;
-        private GameObject _preview;
         
-        public void Initialize(ToolController toolController, HexController hexController, FeatureFactory featureFactory)
+        private Texture2D _currentToolCursor;
+        private readonly Vector2 _cursorHotspot = new Vector2(1f, 1f);
+        private Color _errorColour = Color.red;
+
+        private bool _isDefaultCursor = true;
+        
+        public void Initialize(ToolController toolController, HexController hexController)
         {
             _toolController = toolController;
             _hexController = hexController;
-            _featureFactory = featureFactory;
-            _material = _material = Resources.Load<Material>("Materials/mat_preview");
-            _errorMaterial = Resources.Load<Material>("Materials/mat_error");
 
-            foreach (var tool in _toolController.Tools)
+            var cursors = Resources.LoadAll<Texture2D>("ToolPreviews");
+            foreach (var cursor in cursors)
             {
-                if (string.IsNullOrEmpty(tool.PreviewName)) continue;
-                var prefab = Resources.Load<GameObject>($"ToolPreviews/{tool.PreviewName}");
-                if (prefab != null)
-                    _toolPreviews.Add(tool.PreviewName, prefab);
+                _toolCursors.Add(cursor.name, cursor);
+                _toolCursors.Add($"{cursor.name}_error", GenerateErrorCursor(cursor));
             }
         }
 
@@ -49,73 +47,97 @@ namespace Game.Selection
         private void OnEnable()
         {
             _hoverEventBinding ??= new EventBinding<HoverEvent>(HandleHoverEvent);
-            _selectionEventBinding ??= new EventBinding<SelectionEvent>(HandleSelectionEvent);
             EventBus<HoverEvent>.Register(_hoverEventBinding);
-            EventBus<SelectionEvent>.Register(_selectionEventBinding);
         }
 
         private void OnDisable()
         {
             EventBus<HoverEvent>.Deregister(_hoverEventBinding);
-            EventBus<SelectionEvent>.Deregister(_selectionEventBinding);
+        }
+
+        private void LateUpdate()
+        {
+            switch (InputController.PointerIsOverUI)
+            {
+                case true when !_isDefaultCursor:
+                    UseDefaultCursor();
+                    break;
+                case false when _isDefaultCursor:
+                    UseToolCursor();
+                    break;
+            }
+        }
+
+        private Texture2D GenerateErrorCursor(Texture2D cursor)
+        {
+            var errorCursor = Instantiate(cursor);
+
+            var pixels = errorCursor.GetPixels();
+
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                pixels[i] *= _errorColour;
+            }
+
+            errorCursor.SetPixels(pixels);
+            errorCursor.Apply();
+            
+            return errorCursor;
         }
 
         private void HandleHoverEvent(HoverEvent evt)
         {
-            ReleasePreview();
+            UseDefaultCursor();
             var coordinates = evt.HoverSelection.Coordinates;
             var selectionType = evt.HoverSelection.SelectionType;
 
             if (coordinates.Count == 0) return;
             if (!HexGrid.InBounds(coordinates.FirstOrDefault())) return;
-            if (_toolController.GetCurrentToolRadius() > 0) return;
-            if (selectionType != SelectionType.Face) return;
             
-            GetPreview(coordinates.FirstOrDefault());
+            SetToolCursor(coordinates.FirstOrDefault());
         }
 
-        private void HandleSelectionEvent(SelectionEvent evt)
+        private void UseDefaultCursor()
         {
-            ReleasePreview();
+            _isDefaultCursor = true;
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        }
+
+        private void UseToolCursor()
+        {
+            if (!_currentToolCursor)
+            {
+                UseDefaultCursor();
+                return;
+            } 
+            
+            _isDefaultCursor = false;
+            Cursor.SetCursor(_currentToolCursor, _cursorHotspot, CursorMode.Auto);
         }
         
-        private void GetPreview(CubicCoordinate coordinate)
+        private void SetToolCursor(CubicCoordinate coordinate)
         {
             var tool = _toolController.CurrentTool;
             var hex = _hexController.GetHexObject(coordinate);
-
-            if (!string.IsNullOrEmpty(tool.PreviewName) && _toolPreviews.ContainsKey(tool.PreviewName))
-            {
-                _preview = Instantiate(_toolPreviews[tool.PreviewName], transform);
-            }
-            else
-            {
-                var prefabIndex = _featureFactory.GetPrefabIndex(tool.FeatureType);
-                _preview = _featureFactory.CreateFeature(tool.FeatureType, prefabIndex);
-            }
+            var isError = CheckIfValidHex(tool, hex);
             
-            if (_preview == null) return;
-            hex.SetFeatureVisibility(false);
-            _preview.transform.position = hex.transform.position + new Vector3(0, hex.Height, 0);
-            
-            var material = tool.VerifyTileHeight(hex) ? _material : _errorMaterial; 
-            var mrs = _preview.GetComponentsInChildren<MeshRenderer>();
-            foreach (var mr in mrs)
-            {
-                mr.sharedMaterial = material;
-            }
+            _currentToolCursor = (isError) ? _toolCursors[tool.Icon.name] : _toolCursors[tool.Icon.name + "_error"];
+            UseToolCursor();
         }
 
-        private void GetToolPreview(GameObject prefab)
+        private static bool CheckIfValidHex(Tool tool, HexObject hex)
         {
-            _preview = Instantiate(prefab, transform);
-        }
+            if (tool.GetType() == typeof(RaiseTerrainTool))
+            { 
+                return hex.Height != HexFactory.MaxHeight;
+            }
 
-        private void ReleasePreview()
-        {
-            if (_preview == null) return;
-            Destroy(_preview);
-            _preview = null;
+            if (tool.GetType() == typeof(LowerTerrainTool))
+            {
+                return hex.Height != 0;
+            }
+            
+            return tool.VerifyTileHeight(hex);
         }
     }
 }

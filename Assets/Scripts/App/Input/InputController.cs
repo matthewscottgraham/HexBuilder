@@ -20,6 +20,7 @@ namespace App.Input
         private bool _wasDragged;
         private bool _moving;
         
+        public static bool PointerIsOverUI { get; private set; }
         public static bool PointerHasMovedThisFrame { get; private set; }
         public static Vector2 PointerPosition => Pointer.current.position.ReadValue();
         private static Vector2 LastMousePosition { get; set; }
@@ -59,11 +60,11 @@ namespace App.Input
         {
             if (_moving) EventBus<MoveEvent>.Raise(new MoveEvent(_inputSystem.Player.Move.ReadValue<Vector2>()));
 
-            var pointerOverUi = IsPointerOverUI();
+            PointerIsOverUI = IsPointerOverUI();
             
             if (_clicking || _rotating)
             {
-                if (pointerOverUi)
+                if (PointerIsOverUI)
                 {
                     CancelClick();
                     return;
@@ -76,7 +77,7 @@ namespace App.Input
                 else EventBus<DragEvent>.Raise(new DragEvent(delta.normalized));
             }
 
-            if (pointerOverUi) return;
+            if (PointerIsOverUI) return;
             PointerHasMovedThisFrame = Vector2.Distance(LastMousePosition, PointerPosition) > Mathf.Epsilon;
             LastMousePosition = PointerPosition;
         }

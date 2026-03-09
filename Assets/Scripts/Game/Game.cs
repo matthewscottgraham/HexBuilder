@@ -60,7 +60,7 @@ namespace Game
             
             hexController.Initialize();
             toolController.Initialize();
-            toolPreviewController.Initialize(toolController, hexController, featureFactory);
+            toolPreviewController.Initialize(toolController, hexController);
         }
 
         private void HandleGameReload(GameReloadEvent gameReloadEvent)

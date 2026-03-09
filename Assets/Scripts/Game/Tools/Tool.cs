@@ -7,7 +7,6 @@ namespace Game.Tools
 {
     public class Tool
     {
-        public string PreviewName = null;
         public FeatureType FeatureType { get; protected set; }
         public int RadiusIncrement { get; protected set; }
         public Sprite Icon { get; protected set; }
