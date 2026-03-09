@@ -20,20 +20,6 @@ namespace Game.Hexes.Features
         {
             _factory = ServiceLocator.Instance.Get<FeatureFactory>();
         }
-
-        public void AddWaterfall(Transform waterfall, int edgeIndex)
-        {
-            waterfall.SetParent(FeatureParent, false);
-            // Add 120 degrees because it is misaligned when it was generated to make the maths easier.
-            waterfall.localRotation = Quaternion.Euler(0, edgeIndex * 60 + 120, 0);
-            RemoveWaterfall(edgeIndex);
-            _waterfalls[edgeIndex] = waterfall;
-        }
-
-        public void RemoveWaterfall(int edgeIndex)
-        {
-            if (_waterfalls[edgeIndex]) Object.Destroy(_waterfalls[edgeIndex].gameObject);
-        }
         
         public CubicCoordinate[] GetCellsClosestToPosition(Vector3 cursorPosition)
         {
@@ -55,16 +41,29 @@ namespace Game.Hexes.Features
             var closestNeighbour = HexGrid.GetNeighbourSharingEdge(Owner.Coordinate, closestEdgeIndex);
             return new[] { Owner.Coordinate, closestNeighbour };
         }
-        
+
+        public override void Set(int index, bool hasFeature)
+        {
+            base.Set(index, hasFeature);
+            SetWaterfall(index, hasFeature);
+        }
+
         protected override void UpdateFeatureType()
         {
             FeatureType = HasFeatures.Any(t=> t) ? FeatureType.River : FeatureType.None;
+        }
+
+        protected override void Add(int index)
+        {
+            base.Add(index);
+            Owner.Face.SetAll(false);
         }
 
         protected override void Remove(int index)
         {
             base.Remove(index);
             RemoveWaterfall(index);
+            RemoveSharedEdge(index);
         }
 
         protected override void UpdateMesh()
@@ -75,6 +74,55 @@ namespace Game.Hexes.Features
             edgeObject?.transform.SetLocalHeight(0.01f);
             Feature = edgeObject;
         }
-        
+
+        private void RemoveSilently(int index)
+        {
+            base.Remove(index);
+            RemoveWaterfall(index);
+        }
+
+        private void RemoveSharedEdge(int index)
+        {
+            var neighbour = HexGrid.GetNeighbourSharingEdge(Owner.Coordinate, index);
+            if (!HexGrid.InBounds(neighbour)) return;
+            var hexController = ServiceLocator.Instance.Get<HexController>();
+            var hex = hexController.GetHexObject(neighbour);
+            hex.Edges.RemoveSilently(HexGrid.OppositeEdge(index));
+        }
+
+        private void SetWaterfall(int edgeIndex, bool hasFeature)
+        {
+            if (hasFeature)
+            {
+                AddWaterfall(edgeIndex);
+            }
+            else
+            {
+                RemoveWaterfall(edgeIndex);
+            }
+        }
+
+        private void AddWaterfall(int edgeIndex)
+        {
+            var neighbour = HexGrid.GetNeighbourSharingEdge(Owner.Coordinate, edgeIndex);
+            if (!HexGrid.InBounds(neighbour)) return;
+            
+            var hexController = ServiceLocator.Instance.Get<HexController>();
+            var hex = hexController.GetHexObject(neighbour);
+            if (!hex) return;
+            if (hex.Height == Owner.Height) return;
+            if (_waterfalls[edgeIndex]) RemoveWaterfall(edgeIndex); // The waterfall may need to be resized so remove it
+
+            var waterfall = hexController.WaterfallFactory.CreateWaterFall(Owner, hex);
+            waterfall.SetParent(FeatureParent, false);
+            // Add 120 degrees because it is misaligned when it was generated to make the maths easier.
+            waterfall.localRotation = Quaternion.Euler(0, edgeIndex * 60 + 120, 0);
+            _waterfalls[edgeIndex] = waterfall;
+        }
+
+        private void RemoveWaterfall(int edgeIndex)
+        {
+            if (_waterfalls[edgeIndex]) Object.Destroy(_waterfalls[edgeIndex].gameObject);
+        }
     }
 }

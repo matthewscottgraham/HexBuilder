@@ -26,10 +26,16 @@ namespace Game.Hexes.Features
             return modelCatalogue;
         }
 
-        public GameObject CreateFeature(FeatureType featureType)
+        public int GetRandomPrefabIndex(FeatureType featureType)
         {
-            return CreateNewFeature(featureType, CurrentVariation);
+            _catalogues.TryGetValue(featureType, out var modelCatalogue);
+            return modelCatalogue ? modelCatalogue.GetRandomPrefabIndex() : 0;
         }
+
+        // public GameObject CreateFeature(FeatureType featureType)
+        // {
+        //     return CreateNewFeature(featureType, CurrentVariation);
+        // }
 
         public GameObject CreateFeature(FeatureType featureType, int variation)
         {

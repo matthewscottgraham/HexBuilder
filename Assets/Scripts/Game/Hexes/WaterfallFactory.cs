@@ -19,9 +19,12 @@ namespace Game.Hexes
             ServiceLocator.Instance.Get<VFXController>().RegisterVFX(WaterfallVfxID);
         }
         
-        public Transform CreateWaterFall(HexObject hexA, HexObject hexB, int edgeA, int edgeB)
+        public Transform CreateWaterFall(HexObject hexA, HexObject hexB)
         {
-            var height = Mathf.Abs(hexA.Height - hexB.Height);
+            var top = hexA.Height > hexB.Height ? hexA : hexB;
+            var bottom = hexA.Height > hexB.Height ? hexB : hexA;
+            
+            var height = top.Height - bottom.Height;
             
             var waterfall = new GameObject("Waterfall");
             
@@ -48,10 +51,10 @@ namespace Game.Hexes
                 name = $"Waterfall_{height}",
                 vertices = new Vector3[]
                 {
-                    new (-1.74f, 0, -1 * WaterfallWidth),
-                    new (-1.74f, 0, 1 * WaterfallWidth),
-                    new (-1.74f, -height, -1 * WaterfallWidth),
-                    new (-1.74f, -height, 1 * WaterfallWidth),
+                    new (-1.74f + WaterfallDepth, 0, -1 * WaterfallWidth),
+                    new (-1.74f + WaterfallDepth, 0, 1 * WaterfallWidth),
+                    new (-1.74f + WaterfallDepth, -height, -1 * WaterfallWidth),
+                    new (-1.74f + WaterfallDepth, -height, 1 * WaterfallWidth),
                     new (-1.74f - WaterfallDepth, 0, -1 * WaterfallWidth),
                     new (-1.74f - WaterfallDepth, 0, 1 * WaterfallWidth),
                     new (-1.74f - WaterfallDepth, -height, -1 * WaterfallWidth),

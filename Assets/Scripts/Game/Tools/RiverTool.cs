@@ -35,28 +35,6 @@ namespace Game.Tools
             var changed = Use(hexes[0], sharedEdgeA, exists);
             changed += Use(hexes[1], sharedEdgeB, exists);
             
-            // TODO: Below code should be replaced when the feature meshes are decided based on neighbour hexes
-            if (hexes[0].Height == hexes[1].Height || exists)
-            {
-                hexes[0].Edges.RemoveWaterfall(sharedEdgeA);
-                hexes[1].Edges.RemoveWaterfall(sharedEdgeB);
-                return changed > 0;
-            }
-            
-            var waterfallA = _hexController.WaterfallFactory.CreateWaterFall(
-                hexes[0], 
-                hexes[1], 
-                sharedEdgeA,
-                sharedEdgeB);
-            hexes[0].Edges.AddWaterfall(waterfallA, sharedEdgeA);
-                
-            var waterfallB = _hexController.WaterfallFactory.CreateWaterFall(
-                hexes[1], 
-                hexes[0], 
-                sharedEdgeB,
-                sharedEdgeA);
-            hexes[1].Edges.AddWaterfall(waterfallB, sharedEdgeB);
-            
             return changed > 0;
         }
         

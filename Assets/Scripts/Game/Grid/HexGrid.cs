@@ -153,5 +153,10 @@ namespace Game.Grid
                 _ => throw new ArgumentOutOfRangeException(nameof(edgeIndex), edgeIndex, null)
             };
         }
+
+        public static int OppositeEdge(int edgeIndex)
+        {
+            return (edgeIndex + 3) % 6;
+        }
     }
 }

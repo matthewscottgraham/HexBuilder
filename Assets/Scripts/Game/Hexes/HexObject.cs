@@ -11,7 +11,6 @@ namespace Game.Hexes
 {
     public class HexObject : MonoBehaviour
     {
-        private HexController _hexController;
         private bool _hovered;
         private Transform _hexMesh;
         private Transform _hexTop;
@@ -26,12 +25,17 @@ namespace Game.Hexes
         public FaceFeatures Face { get; private set; }
         public EdgeFeatures Edges { get; private set; }
         public VertexFeatures Vertices { get; private set; }
-        
-        public int Variation { get; private set; }
+
+        [ContextMenu("Print")]
+        public void Print()
+        {
+            Debug.Log("Face Feature: " + Face.FeatureType);
+            Debug.Log("Face Variation: " + Face.FeatureVariation);
+            Debug.Log("Face Rotation: " + Face.FeatureRotation);
+        }
         
         public void Initialize(CubicCoordinate coordinate, Transform hexMesh, Transform hexTop)
         {
-            _hexController = ServiceLocator.Instance.Get<HexController>();
             Coordinate = coordinate;
             _hexMesh = hexMesh;
             _hexMesh.SetParent(transform, false);

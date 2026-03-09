@@ -1,7 +1,20 @@
 # Changelog
 
+## V0.8
+* Changed title and company name for build.
+* Fixed saving and loading of features and waterfalls
+* When a face feature is placed on a river, or vice/versa, it will remove the existing feature.
+
+
 ## V0.7
-*
+* Visual tweaks, such as fog, better day night, colour temps, new colour palette
+* Added splash screen
+* Bug fixes for screenshot mode
+* Updated icons and map previews
+* Updated UI look and feel
+* Added ocean tile features
+* Added feature picker so you have more control
+* Added an eraser tool
 
 ## V0.6
 * The camera can now 'focus' on the highlighted hex by pressing the F key.

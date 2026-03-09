@@ -21,21 +21,29 @@ namespace Game.Hexes.Features
         {
             Remove(0);
             FeatureType = featureType;
-            var feature = _factory.CreateFeature(featureType);
+            FeatureVariation = _factory.GetRandomPrefabIndex(FeatureType);
+            var feature = _factory.CreateFeature(featureType, FeatureVariation);
             feature.transform.SetParent(FeatureParent, false);
             Feature = feature;
             HasFeatures[0] = true;
+
+            if (Owner.Edges.AnyFeaturesPresent)
+            {
+                Owner.Edges.SetAll(false);
+            }
             
             SetHeight(Owner.Height);
         }
 
-        public void Add(FeatureType featureType, int variation)
+        public void Add(FeatureType featureType, int variation, int rotation)
         {
+            FeatureType = featureType;
+            FeatureVariation = _factory.GetRandomPrefabIndex(FeatureType);
             var feature = _factory.CreateFeature(featureType, variation);
             feature.transform.SetParent(FeatureParent, false);
             Feature = feature;
             HasFeatures[0] = true;
-            
+            FeatureParent.localRotation = Quaternion.Euler(0, rotation, 0);
             SetHeightImmediately(Owner.Height);
         }
         protected override void UpdateFeatureType()

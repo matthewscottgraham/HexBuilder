@@ -1,5 +1,7 @@
 using App.Events;
+using App.Services;
 using App.Utils;
+using Game.Hexes;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -10,6 +12,7 @@ namespace Game.Menu
         private UIDocument _document;
         private Button _exitButton;
         private Button _newGameButton;
+        private Button _saveButton;
         private Button _pauseButton;
         private Button _resumeButton;
         
@@ -33,6 +36,7 @@ namespace Game.Menu
             _resumeButton.Hide();
 
             _newGameButton = tabContent.AddButton("New", HandleNewGameButtonClicked);
+            _saveButton = tabContent.AddButton("Save", HandleSaveButtonClicked);
             _exitButton = tabContent.AddButton("", HandleExitButtonClicked);
             _exitButton.AddToClassList("exit-button");
             _exitButton.iconImage = Resources.Load<Sprite>("Sprites/exit")?.texture;
@@ -46,6 +50,7 @@ namespace Game.Menu
         private void OnDestroy()
         {
             if (_newGameButton != null) _newGameButton.clicked -= HandleNewGameButtonClicked;
+            if (_saveButton != null) _saveButton.clicked -= HandleSaveButtonClicked;
             if (_exitButton != null) _exitButton.clicked -= HandleExitButtonClicked;
             if (_pauseButton != null) _pauseButton.clicked -= HandlePauseButtonClicked;
             if (_resumeButton != null) _resumeButton.clicked -= HandleResumeButtonClicked;
@@ -57,6 +62,11 @@ namespace Game.Menu
         private void HandleNewGameButtonClicked()
         {
             _document.rootVisualElement.Add(new SaveGameChooser());
+        }
+
+        private void HandleSaveButtonClicked()
+        {
+            ServiceLocator.Instance.Get<HexController>().SaveData();
         }
 
         private static void HandleExitButtonClicked()

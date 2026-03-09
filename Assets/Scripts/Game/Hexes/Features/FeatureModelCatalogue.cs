@@ -17,26 +17,25 @@ namespace Game.Hexes.Features
 
         public FeatureType FeatureType => featureType;
         public int Count => prefabs.Length;
+
+        public int GetRandomPrefabIndex()
+        {
+            return Random.Range(0, prefabs.Length);
+        }
         
         public FeaturePrefab GetPrefab(int variation)
         {
-            if (variation < 0) return GetRandomPrefab().Item1;
             variation %= prefabs.Length;
             return prefabs[variation];
         }
         
-        public (FeaturePrefab, int) GetPrefab(bool useRandom = true, int variation = -1)
-        {
-            if (useRandom || variation < 0) return GetRandomPrefab();
-        
-            variation %= prefabs.Length;
-            return (prefabs[variation], variation);
-        }
-        private (FeaturePrefab, int) GetRandomPrefab()
-        {
-            var index = Random.Range(0, prefabs.Length);
-            return (prefabs[index], index);
-        }
+        // public (FeaturePrefab, int) GetPrefab(bool useRandom = true, int variation = -1)
+        // {
+        //     if (useRandom || variation < 0) return GetRandomPrefab();
+        //
+        //     variation %= prefabs.Length;
+        //     return (prefabs[variation], variation);
+        // }
         
 #if UNITY_EDITOR
         [ContextMenu("Generate Icons")]

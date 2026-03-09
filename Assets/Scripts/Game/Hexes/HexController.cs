@@ -57,14 +57,9 @@ namespace Game.Hexes
             ServiceLocator.Instance?.Get<SaveDataController>().SaveGame(gameData);
         }
 
-        public HexObject GetHexObject(CubicCoordinate coordinate, bool createIfMissing = false)
+        public HexObject GetHexObject(CubicCoordinate coordinate)
         {
-            if (!HexGrid.InBounds(coordinate)) return null;
-            if (!_map.ContainsKey(coordinate) && createIfMissing)
-            {
-                CreateNewHex(coordinate);
-            }
-            return _map[coordinate];
+            return !HexGrid.InBounds(coordinate) ? null : _map.GetValueOrDefault(coordinate);
         }
         public HexObject[] GetHexObjects(IEnumerable<CubicCoordinate> coordinates, bool createIfMissing = false)
         {
@@ -94,15 +89,22 @@ namespace Game.Hexes
         
         private void CreateHexes(List<HexInfo> hexInfos)
         {
+            // Create all objects
             foreach (var hexInfo in hexInfos)
             {
                 if (!HexGrid.InBounds(hexInfo.Coordinate)) continue;
                 var hexObject = CreateNewHex(hexInfo.Coordinate);
                 hexObject.SetHeightImmediately(hexInfo.Height);
-
+            }
+            
+            // Set their features after creation
+            foreach (var hexInfo in hexInfos)
+            {
+                var hexObject = _map[hexInfo.Coordinate];
+                
                 if (hexInfo.FeatureType != FeatureType.None)
                 {
-                    hexObject.Face.Add(hexInfo.FeatureType, hexInfo.FeatureVariation);
+                    hexObject.Face.Add(hexInfo.FeatureType, hexInfo.FeatureVariation, hexInfo.FeatureRotation);
                 }
 
                 for (var i = 0; i < hexInfo.EdgeFeatures.Length; i++)
