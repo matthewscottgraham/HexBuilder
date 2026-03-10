@@ -2,11 +2,11 @@
 
 ## V0.8
 * Changed title and company name for build.
-* Fixed saving and loading of features and waterfalls
+* Fixed saving and loading of features and waterfalls.
 * When a face feature is placed on a river, or vice/versa, it will remove the existing feature.
-* Added more settlement models for variation
-* Added a tool preview to tiles.
-
+* Added more settlement models for variation.
+* Added a tool cursor that changes colour if current tile is invalid for tool.
+* Improved the water shaders and models, and added vegetation to the river tiles.
 
 ## V0.7
 * Visual tweaks, such as fog, better day night, colour temps, new colour palette
