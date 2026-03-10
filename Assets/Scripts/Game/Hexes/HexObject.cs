@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using App.Events;
 using App.Services;
 using App.Tweens;
@@ -7,6 +9,7 @@ using Game.Hexes.Features;
 using Game.Selection;
 using Game.Tools;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game.Hexes
 {
@@ -49,11 +52,9 @@ namespace Game.Hexes
             Edges = new EdgeFeatures(this);
             Vertices = new VertexFeatures(this);
 
-            _meshRenderers = new[]
-            {
-                _hexMesh.GetComponentInChildren<MeshRenderer>(),
-                _hexTop.GetComponentInChildren<MeshRenderer>()
-            };
+            var meshRenderers = _hexTop.GetComponentsInChildren<MeshRenderer>().ToList();
+            meshRenderers.Add(_hexMesh.GetComponentInChildren<MeshRenderer>());
+            _meshRenderers = meshRenderers.ToArray();
             
             _hoverEventBinding = new EventBinding<HoverEvent>(HandleHoverEvent);
             EventBus<HoverEvent>.Register(_hoverEventBinding);
