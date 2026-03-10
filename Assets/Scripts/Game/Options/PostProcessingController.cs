@@ -64,7 +64,7 @@ namespace Game.Options
 
         private void HandleSetWhiteBalance(SetWhiteBalanceEvent evt)
         {
-            _whiteBalance.temperature.value = Mathf.Lerp(-20, 0, evt.Temperature);
+            _whiteBalance.temperature.value = evt.Temperature * 100;
         }
     }
 }

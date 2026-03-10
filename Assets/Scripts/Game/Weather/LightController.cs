@@ -14,9 +14,11 @@ namespace Game.Weather
 
         [SerializeField] private AnimationCurve intensity;
         [SerializeField] private AnimationCurve shadowIntensity;
+        [SerializeField] private AnimationCurve whiteBalance;
         [SerializeField] private Light sun;
         private const float Speed = 0.05f;
         private bool _isActive = true;
+        private float _lastSetTimeEvent = 0f;
         private static float _currentTime = 10f;
         
         public static float CurrentTime => _currentTime;
@@ -55,17 +57,23 @@ namespace Game.Weather
             UpdateVisuals();
         }
 
-        private IEnumerator SetNewTime(float time)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-
         private void Update()
         {
             if (!_isActive) return;
             UpdateVisuals();
             _currentTime += Speed * Time.deltaTime;
             _currentTime %= 24;
+
+            if (_currentTime > _lastSetTimeEvent + 1)
+            {
+                EventBus<TimeUpdateEvent>.Raise(new TimeUpdateEvent(_currentTime));
+                _lastSetTimeEvent = _currentTime;
+            }
+
+            if (_lastSetTimeEvent > 24f)
+            {
+                _lastSetTimeEvent = 0;
+            }
         }
 
         private void UpdateVisuals()
@@ -76,8 +84,7 @@ namespace Game.Weather
             sun.intensity = intensity.Evaluate(percent);
             sun.shadowStrength = shadowIntensity.Evaluate(percent);
             
-            var temperature = Mathf.Sin(percent * Mathf.PI);
-            EventBus<SetWhiteBalanceEvent>.Raise(new SetWhiteBalanceEvent(temperature));
+            EventBus<SetWhiteBalanceEvent>.Raise(new SetWhiteBalanceEvent(whiteBalance.Evaluate(percent)));
         }
     }
 }

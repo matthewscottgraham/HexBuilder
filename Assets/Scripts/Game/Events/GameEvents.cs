@@ -67,6 +67,15 @@ namespace Game.Events
         public readonly float Time;
     }
 
+    public struct TimeUpdateEvent : IEvent
+    {
+        public TimeUpdateEvent(float time)
+        {
+            Time = time;
+        }
+        public readonly float Time;
+    }
+
     public struct SetWhiteBalanceEvent : IEvent
     {
         public SetWhiteBalanceEvent(float temperature)

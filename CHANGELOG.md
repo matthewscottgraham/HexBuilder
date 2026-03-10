@@ -9,6 +9,7 @@
 * Improved the water shaders and models, and added vegetation to the river tiles.
 * Hex top models made more interesting
 * Added grass to the wilderness tiles.
+* Added falling dust particles
 
 ## V0.7
 * Visual tweaks, such as fog, better day night, colour temps, new colour palette
