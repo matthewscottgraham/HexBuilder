@@ -105,7 +105,7 @@ namespace Game.Options
 
         private void HandleTimeChanged(ChangeEvent<float> evt)
         {
-            EventBus<SetTimeEvent>.Raise(new SetTimeEvent(evt.newValue));
+            EventBus<SetTimeOverrideEvent>.Raise(new SetTimeOverrideEvent(evt.newValue));
         }
 
         private void HandleCaptureUiToggleChanged(ChangeEvent<bool> evt)

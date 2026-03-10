@@ -58,9 +58,9 @@ namespace Game.Events
         }
         public readonly float Fov;
     }
-    public struct SetTimeEvent : IEvent
+    public struct SetTimeOverrideEvent : IEvent
     {
-        public SetTimeEvent(float time)
+        public SetTimeOverrideEvent(float time)
         {
             Time = time;
         }

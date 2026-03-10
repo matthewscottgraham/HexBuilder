@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using App.Events;
 using Game.Events;
 using UnityEngine;
@@ -10,7 +8,7 @@ namespace Game.Weather
     {
         private EventBinding<GamePauseEvent> _pauseBinding;
         private EventBinding<GameResumeEvent> _resumeBinding;
-        private EventBinding<SetTimeEvent> _timeEventBinding;
+        private EventBinding<SetTimeOverrideEvent> _timeEventBinding;
 
         [SerializeField] private AnimationCurve intensity;
         [SerializeField] private AnimationCurve shadowIntensity;
@@ -18,7 +16,7 @@ namespace Game.Weather
         [SerializeField] private Light sun;
         private const float Speed = 0.05f;
         private bool _isActive = true;
-        private float _lastSetTimeEvent = 0f;
+        private int _lastSegment = -1;
         private static float _currentTime = 10f;
         
         public static float CurrentTime => _currentTime;
@@ -27,17 +25,17 @@ namespace Game.Weather
         {
             _pauseBinding = new EventBinding<GamePauseEvent>(HandleGamePause);
             _resumeBinding = new EventBinding<GameResumeEvent>(HandleGameResume);
-            _timeEventBinding = new EventBinding<SetTimeEvent>(HandleSetTime);
+            _timeEventBinding = new EventBinding<SetTimeOverrideEvent>(HandleSetTime);
             EventBus<GamePauseEvent>.Register(_pauseBinding);
             EventBus<GameResumeEvent>.Register(_resumeBinding);
-            EventBus<SetTimeEvent>.Register(_timeEventBinding);
+            EventBus<SetTimeOverrideEvent>.Register(_timeEventBinding);
         }
 
         private void OnDestroy()
         {
             EventBus<GamePauseEvent>.Deregister(_pauseBinding);
             EventBus<GameResumeEvent>.Deregister(_resumeBinding);
-            EventBus<SetTimeEvent>.Deregister(_timeEventBinding);
+            EventBus<SetTimeOverrideEvent>.Deregister(_timeEventBinding);
         }
 
         private void HandleGamePause()
@@ -47,12 +45,12 @@ namespace Game.Weather
 
         private void HandleGameResume()
         {
-            _isActive = false;
+            _isActive = true;
         }
 
-        private void HandleSetTime(SetTimeEvent setTimeEvent)
+        private void HandleSetTime(SetTimeOverrideEvent setTimeOverrideEvent)
         {
-            _currentTime = setTimeEvent.Time;
+            _currentTime = setTimeOverrideEvent.Time;
             _currentTime %= 24f;
             UpdateVisuals();
         }
@@ -60,20 +58,17 @@ namespace Game.Weather
         private void Update()
         {
             if (!_isActive) return;
-            UpdateVisuals();
+            
             _currentTime += Speed * Time.deltaTime;
             _currentTime %= 24;
-
-            if (_currentTime > _lastSetTimeEvent + 1)
-            {
-                EventBus<TimeUpdateEvent>.Raise(new TimeUpdateEvent(_currentTime));
-                _lastSetTimeEvent = _currentTime;
-            }
-
-            if (_lastSetTimeEvent > 24f)
-            {
-                _lastSetTimeEvent = 0;
-            }
+            
+            UpdateVisuals();
+            
+            var segment = Mathf.FloorToInt(_currentTime * 12f); // every 5 minutes in game time
+            if (segment == _lastSegment) return;
+            
+            EventBus<TimeUpdateEvent>.Raise(new TimeUpdateEvent(_currentTime));
+            _lastSegment = segment;
         }
 
         private void UpdateVisuals()

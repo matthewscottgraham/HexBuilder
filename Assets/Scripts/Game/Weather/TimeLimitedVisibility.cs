@@ -1,4 +1,3 @@
-using System;
 using App.Events;
 using Game.Events;
 using UnityEngine;
@@ -7,12 +6,15 @@ namespace Game.Weather
 {
     public class TimeLimitedVisibility : MonoBehaviour
     {
-
+        private const float OffTime = 2f;
+        private const float OnTime = 17f;
+        private float _randomTime = 0;
         private EventBinding<TimeUpdateEvent> _timeUpdateEventBinding;
         private MeshRenderer _meshRenderer;
         
         private void OnEnable()
         {
+            _randomTime = Random.Range(-0.5f, 0.5f);
             Toggle(LightController.CurrentTime);
 
             _timeUpdateEventBinding ??= new EventBinding<TimeUpdateEvent>(HandleTimeUpdate);
@@ -31,8 +33,14 @@ namespace Game.Weather
         
         private void Toggle(float time)
         {
-            if (time is > 2 and < 17) TurnOff();
-            else TurnOn();
+            if (time >= OffTime + _randomTime && time < OnTime + _randomTime)
+            {
+                TurnOff();
+            }
+            else
+            {
+                TurnOn();
+            }
         }
 
         private void TurnOff()
