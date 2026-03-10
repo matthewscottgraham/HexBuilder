@@ -7,6 +7,8 @@
 * Added more settlement models for variation.
 * Added a tool cursor that changes colour if current tile is invalid for tool.
 * Improved the water shaders and models, and added vegetation to the river tiles.
+* Hex top models made more interesting
+* Added grass to the wilderness tiles.
 
 ## V0.7
 * Visual tweaks, such as fog, better day night, colour temps, new colour palette
