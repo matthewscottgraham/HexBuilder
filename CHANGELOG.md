@@ -10,6 +10,8 @@
 * Hex top models made more interesting
 * Added grass to the wilderness tiles.
 * Added falling dust particles
+* Added nightime lights
+* the cursor hover no longer works when dragging or rotating the camera
 
 ## V0.7
 * Visual tweaks, such as fog, better day night, colour temps, new colour palette

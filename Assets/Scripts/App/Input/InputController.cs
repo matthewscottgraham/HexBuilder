@@ -17,9 +17,9 @@ namespace App.Input
         private Vector2 _clickStartPosition;
         private bool _clicking;
         private bool _rotating;
-        private bool _wasDragged;
         private bool _moving;
         
+        public static bool IsDragging { get; private set; }
         public static bool PointerIsOverUI { get; private set; }
         public static bool PointerHasMovedThisFrame { get; private set; }
         public static Vector2 PointerPosition => Pointer.current.position.ReadValue();
@@ -71,7 +71,7 @@ namespace App.Input
                 }
                 if (Vector2.Distance(_clickStartPosition, PointerPosition) < DragThreshold) return;
                 
-                _wasDragged = true;
+                IsDragging = true;
                 var delta = LastMousePosition - PointerPosition;
                 if (_rotating) EventBus<RotateEvent>.Raise(new RotateEvent(delta.normalized));
                 else EventBus<DragEvent>.Raise(new DragEvent(delta.normalized));
@@ -113,7 +113,7 @@ namespace App.Input
 
         private void HandleInteractEnd(InputAction.CallbackContext ctx)
         {
-            if (_clicking && !_wasDragged)
+            if (_clicking && !IsDragging)
             {
                 EventBus<InteractEvent>.Raise(new InteractEvent());
             }
@@ -122,7 +122,7 @@ namespace App.Input
 
         private void CancelClick()
         {
-            _wasDragged = false;
+            IsDragging = false;
             _clicking = false;
         }
 

@@ -32,6 +32,11 @@ namespace Game.Selection
         {
             if (!_isActive) return;
             if (!InputController.PointerHasMovedThisFrame) return;
+            if (InputController.PointerIsOverUI || InputController.IsDragging)
+            {
+                SetBlankHover();
+                return;
+            }
             Hover();
         }
 
@@ -61,8 +66,7 @@ namespace Game.Selection
             var ray = _camera.ScreenPointToRay(InputController.PointerPosition);
             if (!Physics.Raycast(ray, out var hit))
             {
-                Hovered = BlankSelection;
-                EventBus<HoverEvent>.Raise(new HoverEvent(BlankSelection));
+                SetBlankHover();
                 return;
             }
             SetHoveredSelection(hit.transform.GetComponentInParent<HexObject>(), hit.point);
@@ -72,8 +76,7 @@ namespace Game.Selection
         {
             if (!hexObject)
             {
-                Hovered = BlankSelection;
-                EventBus<HoverEvent>.Raise(new HoverEvent(BlankSelection));
+                SetBlankHover();
                 return;
             }
             if (Hovered.Coordinates.FirstOrDefault().Equals(hexObject.Coordinate)) return;
@@ -81,6 +84,12 @@ namespace Game.Selection
             Hovered = newHover;
             EventBus<HoverEvent>.Raise(new HoverEvent(newHover));
             EventBus<PlaySoundEvent>.Raise(new PlaySoundEvent(HoverSoundID, true));
+        }
+
+        private static void SetBlankHover()
+        {
+            Hovered = BlankSelection;
+            EventBus<HoverEvent>.Raise(new HoverEvent(BlankSelection));
         }
 
         private static IEnumerator InvokeSelectionEvent()
