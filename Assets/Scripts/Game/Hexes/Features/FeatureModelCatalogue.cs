@@ -29,14 +29,6 @@ namespace Game.Hexes.Features
             return prefabs[variation];
         }
         
-        // public (FeaturePrefab, int) GetPrefab(bool useRandom = true, int variation = -1)
-        // {
-        //     if (useRandom || variation < 0) return GetRandomPrefab();
-        //
-        //     variation %= prefabs.Length;
-        //     return (prefabs[variation], variation);
-        // }
-        
 #if UNITY_EDITOR
         [ContextMenu("Generate Icons")]
         public void GenerateIcons()
@@ -91,7 +83,7 @@ namespace Game.Hexes.Features
             light.transform.rotation = Quaternion.Euler(50, 50, 0);
 
             var bounds = CalculateBounds(instance);
-            camera.transform.position = bounds.center + new Vector3(0, 2, -bounds.extents.magnitude * 2);
+            camera.transform.position = bounds.center + new Vector3(0, 1, -bounds.extents.magnitude * 1.5f);
             camera.transform.LookAt(bounds.center);
 
             var rt = new RenderTexture(size, size, 24);

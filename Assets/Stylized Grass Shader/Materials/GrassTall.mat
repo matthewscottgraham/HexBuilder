@@ -156,7 +156,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.57345855, g: 0.6886792, b: 0.14618193, a: 1}
+    - _BaseColor: {r: 0.5032258, g: 0.5660378, b: 0.27500895, a: 1}
     - _BendTint: {r: 0.8, g: 0.8, b: 0.8, a: 1}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
