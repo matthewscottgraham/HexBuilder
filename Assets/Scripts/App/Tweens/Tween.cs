@@ -197,6 +197,9 @@ namespace App.Tweens
             if (startValue is Vector2 startValueVector2 && endValue is Vector2 endValueVector2)
                 return (T)(object)Vector2.LerpUnclamped(startValueVector2, endValueVector2, time);
             
+            if (startValue is Quaternion startValueQuaternion && endValue is Quaternion endValueQuaternion)
+                return (T)(object)Quaternion.SlerpUnclamped(startValueQuaternion, endValueQuaternion, time);
+            
             if (startValue is Color startValueColor && endValue is Color endValueColor)
                 return (T)(object)Color.Lerp(startValueColor, endValueColor, time);
 

@@ -12,6 +12,10 @@
 * Added falling dust particles
 * Added nightime lights
 * the cursor hover no longer works when dragging or rotating the camera or over the UI
+* Added tween rotations, a rotator component and animated the lighthouse and windmills
+* Added a roam component.
+* Updated the sheep tiles
+* updated house light shader
 
 ## V0.7
 * Visual tweaks, such as fog, better day night, colour temps, new colour palette
