@@ -17,8 +17,8 @@ MonoBehaviour:
   - prefab: {fileID: 2021093281289282885, guid: 73e0f4d1f73954b0fa0f9138ea4949d7, type: 3}
     allowRotation: 1
     icon: {fileID: 2800000, guid: 2e1249061d61d49c1a2f686564916390, type: 3}
-  - prefab: {fileID: 2096918973143824915, guid: e6530ff4432ee48149ee421479bc035a, type: 3}
-    allowRotation: 0
+  - prefab: {fileID: 3357181384462790806, guid: bfc2edf2f7b5946d486f25db4303fa53, type: 3}
+    allowRotation: 1
     icon: {fileID: 2800000, guid: d2587ef0bbfef41fb9e499f9ead3b3b7, type: 3}
   - prefab: {fileID: 6142636613007321832, guid: b31b6eec6e44348cd921466871354ad3, type: 3}
     allowRotation: 1

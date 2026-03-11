@@ -31,6 +31,25 @@ namespace App.Tweens
             return new Tween<Vector3>(transform, startPos, endPos, duration,
                 value => { if (transform) transform.localPosition = value; });
         }
+        
+        public static Tween<Quaternion> TweenRotation(this Transform transform, Quaternion startRot, Quaternion endRot,
+            float duration)
+        {
+            return new Tween<Quaternion>(transform, startRot, endRot, duration,
+                value => { if (transform) transform.rotation = value; });
+        }
+        
+        public static Tween<float> TweenLocalRotationAroundAxis(this Transform transform, Vector3 axis, float degrees,
+            float duration)
+        {
+            axis = axis.normalized;
+            var startRot = transform.localRotation;
+
+            return new Tween<float>(transform, 0f, degrees, duration,
+                value => {
+                    if (transform) transform.localRotation = startRot * Quaternion.AngleAxis(value, axis);
+                });
+        }
 
         public static Tween<Vector3> TweenScale(this Transform transform, Vector3 startScale, Vector3 endScale,
             float duration)

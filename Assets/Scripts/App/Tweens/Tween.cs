@@ -32,7 +32,7 @@ namespace App.Tweens
             _duration = duration;
             _onTweenUpdate = onUpdate;
 
-            ServiceLocator.Instance.Get<TweenController>().AddTween(this);
+            ServiceLocator.Instance?.Get<TweenController>().AddTween(this);
         }
 
         public object Target { get; }
@@ -196,7 +196,7 @@ namespace App.Tweens
 
             if (startValue is Vector2 startValueVector2 && endValue is Vector2 endValueVector2)
                 return (T)(object)Vector2.LerpUnclamped(startValueVector2, endValueVector2, time);
-
+            
             if (startValue is Color startValueColor && endValue is Color endValueColor)
                 return (T)(object)Color.Lerp(startValueColor, endValueColor, time);
 

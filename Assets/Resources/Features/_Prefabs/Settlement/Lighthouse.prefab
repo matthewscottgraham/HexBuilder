@@ -96,6 +96,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8663196d0a1854addba7e5c361e69212, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6265567567483972154}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8663196d0a1854addba7e5c361e69212, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 432595376419568559}
   m_SourcePrefab: {fileID: 100100000, guid: 8663196d0a1854addba7e5c361e69212, type: 3}
 --- !u!4 &8285298580967784853 stripped
 Transform:
@@ -119,6 +122,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b06e7939fbfe459195711763f08dda4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game::TimeLimitedVisibility
+--- !u!114 &432595376419568559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8768679473816165167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6af03defd10a4590987a1bb5acd9dfd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: App::App.Tweens.Rotator
+  axis: {x: 0, y: 1, z: 0}
+  duration: 16
 --- !u!1001 &9044269953133181489
 PrefabInstance:
   m_ObjectHideFlags: 0
